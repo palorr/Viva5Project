@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VivaWallet.Server.Web.Api", "VivaWallet.Server.Web.Api\VivaWallet.Server.Web.Api.csproj", "{A77567F3-534C-4913-94F8-A93E50E169F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VivaWallet.Server.Web.Api.Tests", "VivaWallet.Server.Web.Api.Tests\VivaWallet.Server.Web.Api.Tests.csproj", "{C2853E0E-7BB9-4D11-B0A1-E5CC5930D499}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VivaWallet.AuthServer.Authorization.Web.Api", "VivaWallet.AuthServer.Authorization.Web.Api\VivaWallet.AuthServer.Authorization.Web.Api.csproj", "{09E1ACEF-032D-4EFB-9833-783D9D66995E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VivaWallet.AuthServer.Authorization.Web.Api.Tests", "VivaWallet.AuthServer.Authorization.Web.Api.Tests\VivaWallet.AuthServer.Authorization.Web.Api.Tests.csproj", "{4B88DA4B-8FA1-46FE-B088-867C9E077D4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VivaWallet.DAL", "VivaWallet.DAL\VivaWallet.DAL.csproj", "{639072B3-7206-4939-BC10-39C3A3D64AA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viva.Wallet.BAL", "Viva.Wallet.BAL\Viva.Wallet.BAL.csproj", "{8265A147-C808-458C-933C-FE80304C4A31}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A77567F3-534C-4913-94F8-A93E50E169F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A77567F3-534C-4913-94F8-A93E50E169F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A77567F3-534C-4913-94F8-A93E50E169F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A77567F3-534C-4913-94F8-A93E50E169F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2853E0E-7BB9-4D11-B0A1-E5CC5930D499}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2853E0E-7BB9-4D11-B0A1-E5CC5930D499}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2853E0E-7BB9-4D11-B0A1-E5CC5930D499}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2853E0E-7BB9-4D11-B0A1-E5CC5930D499}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09E1ACEF-032D-4EFB-9833-783D9D66995E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09E1ACEF-032D-4EFB-9833-783D9D66995E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09E1ACEF-032D-4EFB-9833-783D9D66995E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09E1ACEF-032D-4EFB-9833-783D9D66995E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B88DA4B-8FA1-46FE-B088-867C9E077D4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B88DA4B-8FA1-46FE-B088-867C9E077D4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B88DA4B-8FA1-46FE-B088-867C9E077D4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B88DA4B-8FA1-46FE-B088-867C9E077D4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{639072B3-7206-4939-BC10-39C3A3D64AA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{639072B3-7206-4939-BC10-39C3A3D64AA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{639072B3-7206-4939-BC10-39C3A3D64AA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{639072B3-7206-4939-BC10-39C3A3D64AA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8265A147-C808-458C-933C-FE80304C4A31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8265A147-C808-458C-933C-FE80304C4A31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8265A147-C808-458C-933C-FE80304C4A31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8265A147-C808-458C-933C-FE80304C4A31}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
