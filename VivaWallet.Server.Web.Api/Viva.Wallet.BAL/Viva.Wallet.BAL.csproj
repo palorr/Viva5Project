@@ -50,7 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\ProjectCategoriesModel.cs" />
+    <Compile Include="Models\ProjectCommentModel.cs" />
     <Compile Include="Models\ProjectModel.cs" />
+    <Compile Include="Repository\ProjectCategoryRepository.cs" />
+    <Compile Include="Repository\ProjectCommentRepository.cs" />
     <Compile Include="Repository\ProjectRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

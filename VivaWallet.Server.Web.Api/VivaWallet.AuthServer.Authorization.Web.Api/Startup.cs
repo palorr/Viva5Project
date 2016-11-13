@@ -35,8 +35,8 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api
         private void ConfigureOAuth(IAppBuilder app)
         {
 
-            app.UseExternalSignInCookie(Microsoft.AspNet.Identity.DefaultAuthenticationTypes.ExternalCookie); //not sure if we want this yet
-           var  OAuthBearerOptions = new OAuthBearerAuthenticationOptions();
+            //app.UseExternalSignInCookie(Microsoft.AspNet.Identity.DefaultAuthenticationTypes.ExternalCookie); //not sure if we want this yet
+            var  OAuthBearerOptions = new OAuthBearerAuthenticationOptions();
 
             OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions()
             {

@@ -25,7 +25,7 @@ namespace VivaWallet.Server.Web.Api
            
            
             
-          var  OAuthBearerOptions = new OAuthBearerAuthenticationOptions();
+            var  OAuthBearerOptions = new OAuthBearerAuthenticationOptions();
 
             app.UseOAuthBearerAuthentication(OAuthBearerOptions);
 

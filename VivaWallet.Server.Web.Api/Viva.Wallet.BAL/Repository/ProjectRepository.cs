@@ -33,7 +33,7 @@ namespace Viva.Wallet.BAL
 
         public IList<ProjectModel> GetAll()
         {
-           return uow.ProjectRepository.All().Select(e => new ProjectModel()
+           return uow.ProjectRepository.All()?.Select(e => new ProjectModel()
             {
                Id = e.Id,
                Title = e.Title,
