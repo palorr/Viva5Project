@@ -17,15 +17,7 @@ namespace Viva.Wallet.BAL.Repository
         {
             uow = new UnitOfWork();
         }
-
-        public string get()
-        {
-
-            var tp = uow.ProjectCategoryRepository.All();
-
-            return null;
-        }
-
+        
         public IList<ProjectCategoriesModel> GetAll()
         {
             return uow.ProjectCategoryRepository.All()?.Select(e => new ProjectCategoriesModel()

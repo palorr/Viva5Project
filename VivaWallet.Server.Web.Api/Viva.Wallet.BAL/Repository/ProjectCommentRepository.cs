@@ -17,15 +17,7 @@ namespace Viva.Wallet.BAL
         {
             uow = new UnitOfWork();
         }
-
-        public string get()
-        {
-
-            var tp = uow.ProjectCommentreRepository.All();
-
-            return null;
-        }
-
+        
         public IList<ProjectCommentModel> GetAllProjectComments(int projectId)
         {
             return uow.ProjectCommentreRepository.All()?
@@ -40,6 +32,54 @@ namespace Viva.Wallet.BAL
                 WhenDateTime = e.WhenDateTime,
                 Description = e.Description
             }).ToList();
+        }
+
+        public void InsertComment(ProjectCommentModel source, int projectId)
+        {
+
+            try
+            {
+                var _projectComment = new ProjectComment()
+                {
+                    ProjectId = projectId,
+                    UserId = source.UserId,
+                    AttachmentSetId = source.AttachmentSetId,
+                    WhenDateTime = DateTime.Now,
+                    Description = source.Description
+                };
+                
+                uow.ProjectCommentreRepository.Insert(_projectComment, true);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool UpdateComment(ProjectCommentModel source, int projectId, int commentId)
+        {
+            try
+            {
+                var _projectComment = uow.ProjectCommentreRepository.FindById(commentId);
+
+                if(_projectComment != null)
+                {
+                    _projectComment.WhenDateTime = DateTime.Now;
+                    _projectComment.Description = source.Description;
+                }
+                else
+                {
+                    return false;
+                }
+
+                uow.ProjectCommentreRepository.Update(_projectComment, true);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void Dispose()
