@@ -14,6 +14,7 @@ namespace Viva.Wallet.BAL
         private Repository<FundingPackage> _FundingPackageRepository;
         private Repository<ProjectComment> _ProjectCommentreRepository;
         private Repository<ProjectUpdate> _ProjectUpdateRepository;
+        private Repository<ProjectStat> _ProjectStatRepository;
         private Repository<Attachment> _AttachemntRepository;
         private VivaWalletEntities _dbContext;
 
@@ -40,10 +41,14 @@ namespace Viva.Wallet.BAL
             get { return _ProjectCategoryRepository ?? new Repository<ProjectCategory>(_dbContext); }
         }
 
+        public Repository<ProjectStat> ProjectStatRepository
+        {
+            get { return _ProjectStatRepository ?? new Repository<ProjectStat>(_dbContext); }
+        }
+
         public Repository<FundingPackage> FundingPackageRepository
         {
-            get { return _FundingPackageRepository ?? new Repository<FundingPackage>(_dbContext); }
-            
+            get { return _FundingPackageRepository ?? new Repository<FundingPackage>(_dbContext); }         
         }
         
         public Repository<ProjectComment> ProjectCommentreRepository
