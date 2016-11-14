@@ -13,6 +13,7 @@ namespace Viva.Wallet.BAL
         private Repository<ProjectCategory> _ProjectCategoryRepository;
         private Repository<FundingPackage> _FundingPackageRepository;
         private Repository<ProjectComment> _ProjectCommentreRepository;
+        private Repository<ProjectUpdate> _ProjectUpdateRepository;
         private Repository<Attachment> _AttachemntRepository;
         private VivaWalletEntities _dbContext;
 
@@ -50,6 +51,11 @@ namespace Viva.Wallet.BAL
             get { return _ProjectCommentreRepository ?? new Repository<ProjectComment>(_dbContext); }
         }
 
+        public Repository<ProjectUpdate> ProjectUpdateRepository
+        {
+            get { return _ProjectUpdateRepository ?? new Repository<ProjectUpdate>(_dbContext); }
+        }
+
         public Repository<Attachment> AttachemntRepository
         {
             get { return _AttachemntRepository ?? new Repository<Attachment>(_dbContext); }
@@ -68,6 +74,9 @@ namespace Viva.Wallet.BAL
 
             if (_ProjectCommentreRepository != null)
                 _ProjectCommentreRepository.Dispose();
+
+            if (_ProjectUpdateRepository != null)
+                _ProjectUpdateRepository.Dispose();
 
             if (_ProjectRepository != null)
                 _ProjectRepository.Dispose();
