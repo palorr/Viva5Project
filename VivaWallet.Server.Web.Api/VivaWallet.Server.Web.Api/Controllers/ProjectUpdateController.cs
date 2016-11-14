@@ -94,7 +94,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
         }
 
         [HttpDelete]
-        [Route("{projectId}/comment/{updateId}")]
+        [Route("{projectId}/update/{updateId}")]
         public HttpResponseMessage DeleteComment(int projectId, int updateId)
         {
             if (projectId <= 0 || updateId <= 0)
