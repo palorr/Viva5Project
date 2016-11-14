@@ -32,7 +32,7 @@ namespace Viva.Wallet.BAL
                 AttachmentSetId = e.AttachmentSetId,
                 WhenDateTime = e.WhenDateTime,
                 Description = e.Description
-            }).ToList();
+            }).OrderByDescending(e => e.WhenDateTime).ToList();
         }
 
         public void InsertComment(ProjectCommentModel source, int projectId)
@@ -57,7 +57,7 @@ namespace Viva.Wallet.BAL
             }
         }
 
-        public int UpdateComment(ProjectCommentModel source, ClaimsIdentity identity,int projectId, int commentId)
+        public StatusCodes UpdateComment(ProjectCommentModel source, ClaimsIdentity identity,int projectId, int commentId)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace Viva.Wallet.BAL
 
                 if(_projectComment == null)
                 {
-                    return (int)StatusCodes.NOT_FOUND;
+                    return StatusCodes.NOT_FOUND;
                 }
                 else
                 {
@@ -75,7 +75,7 @@ namespace Viva.Wallet.BAL
                     
                     if (_projectComment.User.Username != userIdClaim.Value)
                     {
-                        return (int)StatusCodes.NOT_AUTHORIZED;
+                        return StatusCodes.NOT_AUTHORIZED;
                     }
                     
                     _projectComment.WhenDateTime = DateTime.Now;
@@ -84,7 +84,7 @@ namespace Viva.Wallet.BAL
                     uow.ProjectCommentreRepository.Update(_projectComment, true);
                 }
 
-                return (int)StatusCodes.OK;
+                return StatusCodes.OK;
             }
             catch (Exception)
             {
@@ -92,7 +92,7 @@ namespace Viva.Wallet.BAL
             }
         }
 
-        public int DeleteComment(ClaimsIdentity identity, int commentId)
+        public StatusCodes DeleteComment(ClaimsIdentity identity, int commentId)
         {
             try
             {
@@ -101,7 +101,7 @@ namespace Viva.Wallet.BAL
                 //comment not found
                 if (_projectComment == null)
                 {
-                    return (int)StatusCodes.NOT_FOUND;
+                    return StatusCodes.NOT_FOUND;
                 }
                 else
                 {
@@ -111,13 +111,13 @@ namespace Viva.Wallet.BAL
 
                     if (_projectComment.User.Username != userIdClaim.Value)
                     {
-                        return (int)StatusCodes.NOT_AUTHORIZED;
+                        return StatusCodes.NOT_AUTHORIZED;
                     }
 
                     uow.ProjectCommentreRepository.Delete(_projectComment);
                 }
 
-                return (int)StatusCodes.OK;
+                return StatusCodes.OK;
             }
             catch (Exception)
             {

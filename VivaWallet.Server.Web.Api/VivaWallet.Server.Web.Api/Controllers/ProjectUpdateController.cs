@@ -48,20 +48,22 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 //insert project update
                 if (updateId.Equals(0))
                 {
-                    int hasInserted = s.InsertProjectUpdate(projectUpdate, identity, projectId);
+                    ProjectUpdateRepository.StatusCodes hasInserted = s.InsertProjectUpdate(projectUpdate, identity, projectId);
 
                     switch (hasInserted)
                     {
                         //project creator not found
-                        case 0:
+                        case ProjectUpdateRepository.StatusCodes.NOT_FOUND:
                             httpStatusCode = HttpStatusCode.NotFound;
                             break;
+
                         //not authorized to insert a project update to this project - you are not the project creator
-                        case 1:
+                        case ProjectUpdateRepository.StatusCodes.NOT_AUTHORIZED:
                             httpStatusCode = HttpStatusCode.MethodNotAllowed;
                             break;
+
                         //project update inserted ok
-                        case 2:
+                        case ProjectUpdateRepository.StatusCodes.OK:
                             httpStatusCode = HttpStatusCode.Created;
                             break;
                     }
@@ -70,20 +72,22 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 //update existing project update
                 else
                 {
-                    int hasUpdated = s.EditProjectUpdate(projectUpdate, identity, projectId, updateId);
+                    ProjectUpdateRepository.StatusCodes hasUpdated = s.EditProjectUpdate(projectUpdate, identity, projectId, updateId);
 
                     switch (hasUpdated)
                     {
                         //project update not found
-                        case 0:
+                        case ProjectUpdateRepository.StatusCodes.NOT_FOUND:
                             httpStatusCode = HttpStatusCode.NotFound;
                             break;
+
                         //not authorized to update this project update
-                        case 1:
+                        case ProjectUpdateRepository.StatusCodes.NOT_AUTHORIZED:
                             httpStatusCode = HttpStatusCode.MethodNotAllowed;
                             break;
+
                         //project update edited ok
-                        case 2:
+                        case ProjectUpdateRepository.StatusCodes.OK:
                             httpStatusCode = HttpStatusCode.OK;
                             break;
                     }
@@ -95,7 +99,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
         [HttpDelete]
         [Route("{projectId}/update/{updateId}")]
-        public HttpResponseMessage DeleteComment(int projectId, int updateId)
+        public HttpResponseMessage DeleteProjectUpdate(int projectId, int updateId)
         {
             if (projectId <= 0 || updateId <= 0)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
@@ -107,20 +111,22 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
                 var httpStatusCode = HttpStatusCode.NoContent;
 
-                int hasDeleted = s.DeleteProjectUpdate(identity, updateId);
+                ProjectUpdateRepository.StatusCodes hasDeleted = s.DeleteProjectUpdate(identity, updateId);
 
                 switch (hasDeleted)
                 {
                     //project update not found
-                    case 0:
+                    case ProjectUpdateRepository.StatusCodes.NOT_FOUND:
                         httpStatusCode = HttpStatusCode.NotFound;
                         break;
+
                     //not authorized to delete this project update
-                    case 1:
+                    case ProjectUpdateRepository.StatusCodes.NOT_AUTHORIZED:
                         httpStatusCode = HttpStatusCode.MethodNotAllowed;
                         break;
+
                     //project update deleted ok
-                    case 2:
+                    case ProjectUpdateRepository.StatusCodes.OK:
                         httpStatusCode = HttpStatusCode.NoContent;
                         break;
                 }

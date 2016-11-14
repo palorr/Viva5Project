@@ -31,10 +31,10 @@ namespace Viva.Wallet.BAL
                         Title = e.Title,
                         Description = e.Description,
                         WhenDateTime = e.WhenDateTime
-                    }).ToList();
+                    }).OrderByDescending(e => e.WhenDateTime).ToList();
         }
 
-        public int InsertProjectUpdate(ProjectUpdateModel source, ClaimsIdentity identity, int projectId)
+        public StatusCodes InsertProjectUpdate(ProjectUpdateModel source, ClaimsIdentity identity, int projectId)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace Viva.Wallet.BAL
 
                 if (_projectCreator == "")
                 {
-                    return (int)StatusCodes.NOT_FOUND;
+                    return StatusCodes.NOT_FOUND;
                 }
 
                 else
@@ -55,7 +55,7 @@ namespace Viva.Wallet.BAL
 
                     if (_projectCreator != userIdClaim.Value)
                     {
-                        return (int)StatusCodes.NOT_AUTHORIZED;
+                        return StatusCodes.NOT_AUTHORIZED;
                     }
 
                     var _projectUpdate = new ProjectUpdate()
@@ -70,7 +70,7 @@ namespace Viva.Wallet.BAL
                     uow.ProjectUpdateRepository.Insert(_projectUpdate, true);
                 }
 
-                return (int)StatusCodes.OK;
+                return StatusCodes.OK;
             }
             catch (Exception)
             {
@@ -78,7 +78,7 @@ namespace Viva.Wallet.BAL
             }
         }
 
-        public int EditProjectUpdate(ProjectUpdateModel source, ClaimsIdentity identity, int projectId, int updateId)
+        public StatusCodes EditProjectUpdate(ProjectUpdateModel source, ClaimsIdentity identity, int projectId, int updateId)
         {
             try
             {
@@ -86,7 +86,7 @@ namespace Viva.Wallet.BAL
 
                 if (_projectUpdate == null)
                 {
-                    return (int)StatusCodes.NOT_FOUND;
+                    return StatusCodes.NOT_FOUND;
                 }
                 else
                 {
@@ -96,7 +96,7 @@ namespace Viva.Wallet.BAL
 
                     if (_projectUpdate.Project.User.Username != userIdClaim.Value)
                     {
-                        return (int)StatusCodes.NOT_AUTHORIZED;
+                        return StatusCodes.NOT_AUTHORIZED;
                     }
 
                     _projectUpdate.WhenDateTime = DateTime.Now;
@@ -106,7 +106,7 @@ namespace Viva.Wallet.BAL
                     uow.ProjectUpdateRepository.Update(_projectUpdate, true);
                 }
 
-                return (int)StatusCodes.OK;
+                return StatusCodes.OK;
             }
             catch (Exception)
             {
@@ -114,7 +114,7 @@ namespace Viva.Wallet.BAL
             }
         }
 
-        public int DeleteProjectUpdate(ClaimsIdentity identity, int updateId)
+        public StatusCodes DeleteProjectUpdate(ClaimsIdentity identity, int updateId)
         {
             try
             {
@@ -123,7 +123,7 @@ namespace Viva.Wallet.BAL
                 //project update not found
                 if (_projectUpdate == null)
                 {
-                    return (int)StatusCodes.NOT_FOUND;
+                    return StatusCodes.NOT_FOUND;
                 }
                 else
                 {
@@ -133,13 +133,13 @@ namespace Viva.Wallet.BAL
 
                     if (_projectUpdate.Project.User.Username != userIdClaim.Value)
                     {
-                        return (int)StatusCodes.NOT_AUTHORIZED;
+                        return StatusCodes.NOT_AUTHORIZED;
                     }
 
                     uow.ProjectUpdateRepository.Delete(_projectUpdate  );
                 }
 
-                return (int)StatusCodes.OK;
+                return StatusCodes.OK;
             }
             catch (Exception)
             {

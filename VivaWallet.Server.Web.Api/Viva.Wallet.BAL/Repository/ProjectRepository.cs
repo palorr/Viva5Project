@@ -12,6 +12,7 @@ namespace Viva.Wallet.BAL
     public class ProjectRepository  :IDisposable
     {
         protected UnitOfWork uow;
+
         public ProjectRepository()
         {
             uow = new UnitOfWork();
@@ -21,16 +22,7 @@ namespace Viva.Wallet.BAL
         {
             uow.Dispose();
         }
-
-        public string get()
-        {
-
-           var tp = uow.ProjectRepository.All();
-
-            return null;
-        }
-
-
+        
         public IList<ProjectModel> GetAll()
         {
            return uow.ProjectRepository.All()?.Select(e => new ProjectModel()
@@ -41,15 +33,35 @@ namespace Viva.Wallet.BAL
                Description = e.Description,
                FundingEndDate = e.FundingEndDate,
                FundingGoal = e.FundingGoal,
+               OwnerId = e.User.Id,
                OwnerName = e.User.Name,
                ProjectCategoryDesc = e.ProjectCategory.Name,
                ProjectCategoryId = e.ProjectCategoryId,
                Status = e.Status,
                UpdatedDate = e.UpdateDate
 
-           }).ToList();
+           }).OrderByDescending(e => e.CreatedDate).ToList();
         }
 
+        public IList<ProjectModel> GetProjectById(long projectId)
+        {
+            return uow.ProjectRepository.All().Where(e => e.Id == projectId)?.Select(e => new ProjectModel()
+            {
+                Id = e.Id,
+                Title = e.Title,
+                CreatedDate = e.CreatedDate,
+                Description = e.Description,
+                FundingEndDate = e.FundingEndDate,
+                FundingGoal = e.FundingGoal,
+                OwnerId = e.User.Id,
+                OwnerName = e.User.Name,
+                ProjectCategoryDesc = e.ProjectCategory.Name,
+                ProjectCategoryId = e.ProjectCategoryId,
+                Status = e.Status,
+                UpdatedDate = e.UpdateDate
+
+            }).ToList();
+        }
 
         public IList<ProjectModel> GetByCategoryId(long catId)
         {
@@ -62,7 +74,8 @@ namespace Viva.Wallet.BAL
                     Description =e.Description,
                     FundingEndDate =e.FundingEndDate,
                     FundingGoal = e.FundingGoal,
-                    OwnerName =e.User.Name,
+                    OwnerId = e.User.Id,
+                    OwnerName = e.User.Name,
                     ProjectCategoryDesc = e.ProjectCategory.Name,
                     ProjectCategoryId =e.ProjectCategoryId,
                     Status =e.Status,

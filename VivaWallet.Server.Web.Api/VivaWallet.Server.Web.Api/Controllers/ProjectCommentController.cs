@@ -54,20 +54,22 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 //update existing comment
                 else
                 {
-                    int hasUpdated = s.UpdateComment(projectComment, identity, projectId, commentId);
+                    ProjectCommentRepository.StatusCodes hasUpdated = s.UpdateComment(projectComment, identity, projectId, commentId);
 
                     switch(hasUpdated)
                     {
                         //comment not found
-                        case 0:
+                        case ProjectCommentRepository.StatusCodes.NOT_FOUND:
                             httpStatusCode = HttpStatusCode.NotFound;
                             break;
+
                         //not authorized to update this comment
-                        case 1:
+                        case ProjectCommentRepository.StatusCodes.NOT_AUTHORIZED:
                             httpStatusCode = HttpStatusCode.MethodNotAllowed;
                             break;
+
                         //comment updated ok
-                        case 2:
+                        case ProjectCommentRepository.StatusCodes.OK:
                             httpStatusCode = HttpStatusCode.OK;
                             break;
                     }
@@ -90,21 +92,23 @@ namespace VivaWallet.Server.Web.Api.Controllers
             {
 
                 var httpStatusCode = HttpStatusCode.NoContent;
-                
-                int hasDeleted = s.DeleteComment(identity, commentId);
+
+                ProjectCommentRepository.StatusCodes hasDeleted = s.DeleteComment(identity, commentId);
 
                 switch (hasDeleted)
                 {
                     //comment not found
-                    case 0:
+                    case ProjectCommentRepository.StatusCodes.NOT_FOUND:
                         httpStatusCode = HttpStatusCode.NotFound;
                         break;
+
                     //not authorized to delete this comment
-                    case 1:
+                    case ProjectCommentRepository.StatusCodes.NOT_AUTHORIZED:
                         httpStatusCode = HttpStatusCode.MethodNotAllowed;
                         break;
+
                     //comment deleted ok
-                    case 2:
+                    case ProjectCommentRepository.StatusCodes.OK:
                         httpStatusCode = HttpStatusCode.NoContent;
                         break;
                 }               
