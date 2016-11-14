@@ -39,9 +39,9 @@ namespace Viva.Wallet.BAL
             try
             {
                 //get the project's creator username
-                var _projectCreator = uow.ProjectRepository.FindById(projectId).User.Username;
+                var _project = uow.ProjectRepository.FindById(projectId);
 
-                if (_projectCreator == "")
+                if (_project == null)
                 {
                     return StatusCodes.NOT_FOUND;
                 }
@@ -53,7 +53,7 @@ namespace Viva.Wallet.BAL
                     var userIdClaim = identity.Claims
                                 .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
 
-                    if (_projectCreator != userIdClaim.Value)
+                    if (_project.User.Username != userIdClaim.Value)
                     {
                         return StatusCodes.NOT_AUTHORIZED;
                     }
