@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Viva.Wallet.BAL.Models;
@@ -56,25 +57,67 @@ namespace Viva.Wallet.BAL
             }
         }
 
-        public bool UpdateComment(ProjectCommentModel source, int projectId, int commentId)
+        public int UpdateComment(ProjectCommentModel source, ClaimsIdentity identity,int projectId, int commentId)
         {
             try
             {
                 var _projectComment = uow.ProjectCommentreRepository.FindById(commentId);
 
-                if(_projectComment != null)
+                if(_projectComment == null)
                 {
-                    _projectComment.WhenDateTime = DateTime.Now;
-                    _projectComment.Description = source.Description;
+                    return (int)StatusCodes.NOT_FOUND;
                 }
                 else
                 {
-                    return false;
+                    // comment found. does the user that wishes to update it really is the comment creator? check this here
+                    var userIdClaim = identity.Claims
+                        .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+                    
+                    if (_projectComment.UserId.ToString() != userIdClaim.Value)
+                    {
+                        return (int)StatusCodes.NOT_AUTHORIZED;
+                    }
+                    
+                    _projectComment.WhenDateTime = DateTime.Now;
+                    _projectComment.Description = source.Description;
+                    
+                    uow.ProjectCommentreRepository.Update(_projectComment, true);
                 }
 
-                uow.ProjectCommentreRepository.Update(_projectComment, true);
+                return (int)StatusCodes.OK;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
-                return true;
+        public int DeleteComment(ClaimsIdentity identity, int projectId, int commentId)
+        {
+            try
+            {
+                var _projectComment = uow.ProjectCommentreRepository.FindById(commentId);
+
+                //comment not found
+                if (_projectComment == null)
+                {
+                    return (int)StatusCodes.NOT_FOUND;
+                }
+                else
+                {
+                    // comment found. does the user that wishes to delete it really is the comment creator? check this here
+                    var userIdClaim = identity.Claims
+                        .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+
+                    if (_projectComment.UserId.ToString() != userIdClaim.Value)
+                    {
+                        return (int)StatusCodes.NOT_AUTHORIZED;
+                    }
+
+                    uow.ProjectCommentreRepository.Delete(_projectComment);
+                }
+
+                return (int)StatusCodes.OK;
             }
             catch (Exception)
             {
@@ -86,5 +129,12 @@ namespace Viva.Wallet.BAL
         {
             uow.Dispose();
         }
+
+        public enum StatusCodes
+        {
+            NOT_FOUND = 0,
+            NOT_AUTHORIZED = 1,
+            OK = 2
+        };
     }
 }

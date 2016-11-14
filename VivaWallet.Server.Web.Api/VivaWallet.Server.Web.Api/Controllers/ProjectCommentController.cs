@@ -19,13 +19,11 @@ namespace VivaWallet.Server.Web.Api.Controllers
         [Route("{projectId}/comments")]
         public HttpResponseMessage Get(int projectId)
         {
-            //var identity = User.Identity as ClaimsIdentity;
-
-            //return identity.Name;
+            if (projectId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
 
             using (var s = new ProjectCommentRepository())
             {
-
                 var v = s.GetAllProjectComments(projectId);
 
                 return Request.CreateResponse(HttpStatusCode.OK, v);
@@ -37,34 +35,80 @@ namespace VivaWallet.Server.Web.Api.Controllers
         public HttpResponseMessage InsertOrUpdateComment(ProjectCommentModel projectComment, int projectId, int commentId = 0)
         {
             
-            var identity = User.Identity as ClaimsIdentity;
-
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || projectId <= 0 || commentId < 0)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            var identity = User.Identity as ClaimsIdentity;
 
             using (var s = new ProjectCommentRepository())
             {
 
                 var httpStatusCode = HttpStatusCode.Created;
                 
+                //insert comment
                 if(commentId.Equals(0))
                 {
                     s.InsertComment(projectComment, projectId);
                 }
+
+                //update existing comment
                 else
                 {
-                    bool hasUpdated = s.UpdateComment(projectComment, projectId, commentId);
+                    int hasUpdated = s.UpdateComment(projectComment, identity, projectId, commentId);
 
-                    if (hasUpdated)
+                    switch(hasUpdated)
                     {
-                        httpStatusCode = HttpStatusCode.OK;
-                    }
-                    else
-                    {
-                        httpStatusCode = HttpStatusCode.NotFound;
+                        //comment not found
+                        case 0:
+                            httpStatusCode = HttpStatusCode.NotFound;
+                            break;
+                        //not authorized to update this comment
+                        case 1:
+                            httpStatusCode = HttpStatusCode.MethodNotAllowed;
+                            break;
+                        //comment updated ok
+                        case 2:
+                            httpStatusCode = HttpStatusCode.OK;
+                            break;
                     }
                 }
                 
+                return Request.CreateResponse(httpStatusCode);
+            }
+        }
+        
+        [HttpDelete]
+        [Route("{projectId}/comment/{commentId}")]
+        public HttpResponseMessage DeleteComment(int projectId, int commentId)
+        {
+            if (projectId <= 0 || commentId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new ProjectCommentRepository())
+            {
+
+                var httpStatusCode = HttpStatusCode.NoContent;
+                
+                int hasDeleted = s.DeleteComment(identity, projectId, commentId);
+
+                switch (hasDeleted)
+                {
+                    //comment not found
+                    case 0:
+                        httpStatusCode = HttpStatusCode.NotFound;
+                        break;
+                    //not authorized to delete this comment
+                    case 1:
+                        httpStatusCode = HttpStatusCode.MethodNotAllowed;
+                        break;
+                    //comment deleted ok
+                    case 2:
+                        httpStatusCode = HttpStatusCode.NoContent;
+                        break;
+                }               
+
                 return Request.CreateResponse(httpStatusCode);
             }
         }
