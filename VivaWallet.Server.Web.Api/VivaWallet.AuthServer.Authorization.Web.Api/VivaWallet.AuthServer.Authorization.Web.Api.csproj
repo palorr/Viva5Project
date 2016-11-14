@@ -175,6 +175,7 @@
     <Compile Include="AudienceStore.cs" />
     <Compile Include="AuthContext.cs" />
     <Compile Include="AuthRepository.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AudienceController.cs" />
     <Compile Include="Entities\Client.cs" />
     <Compile Include="Entities\Audience.cs" />
@@ -184,6 +185,7 @@
     </Compile>
     <Compile Include="Models\ApplicationTypeEnum.cs" />
     <Compile Include="Models\AudienceModel.cs" />
+    <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\CustomOAuthProvider.cs" />
     <Compile Include="Startup.cs" />

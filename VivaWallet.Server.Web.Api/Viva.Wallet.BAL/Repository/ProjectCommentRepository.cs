@@ -73,7 +73,7 @@ namespace Viva.Wallet.BAL
                     var userIdClaim = identity.Claims
                         .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
                     
-                    if (_projectComment.UserId.ToString() != userIdClaim.Value)
+                    if (_projectComment.User.Username != userIdClaim.Value)
                     {
                         return (int)StatusCodes.NOT_AUTHORIZED;
                     }
@@ -92,7 +92,7 @@ namespace Viva.Wallet.BAL
             }
         }
 
-        public int DeleteComment(ClaimsIdentity identity, int projectId, int commentId)
+        public int DeleteComment(ClaimsIdentity identity, int commentId)
         {
             try
             {
@@ -109,7 +109,7 @@ namespace Viva.Wallet.BAL
                     var userIdClaim = identity.Claims
                         .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
 
-                    if (_projectComment.UserId.ToString() != userIdClaim.Value)
+                    if (_projectComment.User.Username != userIdClaim.Value)
                     {
                         return (int)StatusCodes.NOT_AUTHORIZED;
                     }

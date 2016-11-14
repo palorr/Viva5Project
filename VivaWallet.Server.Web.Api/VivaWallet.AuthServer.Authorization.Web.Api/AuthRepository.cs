@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using VivaWallet.AuthServer.Authorization.Web.Api.Models;
 
 namespace VivaWallet.AuthServer.Authorization.Web.Api
 {
@@ -42,6 +43,7 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api
             }
         }
 
+        /*
         public async Task RegisterUser(string username , string password)
         {
             try
@@ -58,6 +60,19 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api
 
                 throw;
             }
+        }
+        */
+
+        public async Task<IdentityResult> RegisterUser(UserModel userModel)
+        {
+            IdentityUser user = new IdentityUser
+            {
+                UserName = userModel.UserName
+            };
+
+            var result = await _userManager.CreateAsync(user, userModel.Password);
+
+            return result;
         }
 
         public async Task<IdentityUser> FindUserById(int id)

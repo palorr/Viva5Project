@@ -91,7 +91,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
                 var httpStatusCode = HttpStatusCode.NoContent;
                 
-                int hasDeleted = s.DeleteComment(identity, projectId, commentId);
+                int hasDeleted = s.DeleteComment(identity, commentId);
 
                 switch (hasDeleted)
                 {
