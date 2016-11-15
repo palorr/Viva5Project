@@ -54,6 +54,24 @@ namespace Viva.Wallet.BAL
                     }).ToList();
         }
 
+        public UserModel GetUserByUsername(string userName)
+        {
+            return uow.UserRepository
+                    .SearchFor(e => e.Username == userName)
+                    .Select(e => new UserModel()
+                    {
+                        Id = e.Id,
+                        Username = e.Username,
+                        IsVerified = e.IsVerified,
+                        VerificationToken = e.VerificationToken,
+                        CreatedDateTime = e.CreatedDateTime,
+                        UpdatedDateTime = e.UpdateDateTime,
+                        Name = e.Name,
+                        ShortBio = e.ShortBio,
+                        AvatarImage = e.AvatarImage
+                    }).SingleOrDefault();
+        }
+
         public void CreateUser(UserModel source)
         {
             try

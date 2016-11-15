@@ -55,6 +55,26 @@ namespace VivaWallet.Server.Web.Api.Controllers
         }
 
         [HttpPost]
+        [Route("findByUsername")]
+        public HttpResponseMessage GetUserByUsername(UserModel user)
+        {
+            if (!ModelState.IsValid)
+                return Request.CreateResponse(HttpStatusCode.BadRequest); ;
+
+            using (var s = new UserRepository())
+            {
+                var v = s.GetUserByUsername(user.Username);
+
+                if (v == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
+        [HttpPost]
         [Route("")]
         public HttpResponseMessage CreateUser(UserModel user)
         {
