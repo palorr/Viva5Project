@@ -9,6 +9,7 @@ namespace Viva.Wallet.BAL
 {
    public class UnitOfWork : IDisposable, IUnitOfWork
     {
+        private Repository<User> _UserRepository;
         private Repository<Project> _ProjectRepository;
         private Repository<ProjectCategory> _ProjectCategoryRepository;
         private Repository<FundingPackage> _FundingPackageRepository;
@@ -34,6 +35,11 @@ namespace Viva.Wallet.BAL
             }
 
             set { _ProjectRepository = value; }
+        }
+
+        public Repository<User> UserRepository
+        {
+            get { return _UserRepository ?? new Repository<User>(_dbContext); }
         }
 
         public Repository<ProjectCategory> ProjectCategoryRepository

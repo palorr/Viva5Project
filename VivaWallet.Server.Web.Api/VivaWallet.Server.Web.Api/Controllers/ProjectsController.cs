@@ -12,7 +12,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 {
     [Authorize]
     [RoutePrefix("api/projects")]
-    public class ProjectController : ApiController
+    public class ProjectsController : ApiController
     {
 
         /*

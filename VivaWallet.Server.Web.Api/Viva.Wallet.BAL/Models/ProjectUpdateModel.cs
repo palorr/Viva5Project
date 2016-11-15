@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Viva.Wallet.BAL
+namespace Viva.Wallet.BAL.Models
 {
     public class ProjectUpdateModel
     {
