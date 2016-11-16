@@ -55,6 +55,7 @@
     <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\ProjectStatModel.cs" />
     <Compile Include="Models\ProjectUpdateModel.cs" />
+    <Compile Include="Models\UserFundingModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Repository\ProjectCategoryRepository.cs" />
     <Compile Include="Repository\ProjectCommentRepository.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\ProjectStatRepository.cs" />
     <Compile Include="Repository\ProjectUpdateRepository.cs" />
+    <Compile Include="Repository\UserFundingRepository.cs" />
     <Compile Include="Repository\UserRepository.cs" />
   </ItemGroup>
   <ItemGroup>

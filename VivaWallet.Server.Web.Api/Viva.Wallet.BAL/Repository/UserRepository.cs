@@ -169,6 +169,139 @@ namespace Viva.Wallet.BAL
             }
         }
 
+        public IList<ProjectModel> GetUserCreatedProjects(int userId)
+        {
+            var _user = uow.UserRepository.FindById(userId);
+
+            //user not found
+            if (_user == null)
+            {
+                return new List<ProjectModel>() { };
+            }
+
+            else { 
+                return uow.ProjectRepository
+                        .SearchFor(e => (e.UserId == userId && e.Status != "CRE" && e.Status != "FAI"))
+                        .Select(e => new ProjectModel()
+                        {
+                            Id = e.Id,
+                            OwnerId = e.UserId,
+                            OwnerName = e.User.Name,
+                            ProjectCategoryId = e.ProjectCategoryId,
+                            ProjectCategoryDesc = e.ProjectCategory.Name,
+                            Title = e.Title,
+                            Description = e.Description,
+                            CreatedDate = e.CreatedDate,
+                            UpdatedDate = e.UpdateDate,
+                            FundingEndDate = e.FundingEndDate,
+                            FundingGoal = e.FundingGoal,
+                            Status = e.Status
+                        }).OrderByDescending(e => e.UpdatedDate).ToList();
+            }
+        }
+
+        public IList<ProjectModel> GetCurrentLoggedInUserCreatedProjects(ClaimsIdentity identity, int requestorId)
+        {
+            var _requestUser = uow.UserRepository.FindById(requestorId);
+
+            // user not found - return empty list
+            if (_requestUser == null)
+            {
+                return new List<ProjectModel>() { };
+            }
+
+            var userIdClaim = identity.Claims
+                        .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+
+            // if requester is not the current logged in user then return empty project list
+            // other users wont have the ability to see other users all created projects
+            // they have the ability to see the projects that have status ('UFU' || 'COM')
+            // with the GetUserCreatedProjects function above
+
+            if (_requestUser.Username != userIdClaim.Value)
+            {
+                return new List<ProjectModel>() { };
+            }
+
+            return uow.ProjectRepository
+                    .SearchFor(e => e.UserId == requestorId)
+                    .Select(e => new ProjectModel()
+                    {
+                        Id = e.Id,
+                        OwnerId = e.UserId,
+                        OwnerName = e.User.Name,
+                        ProjectCategoryId = e.ProjectCategoryId,
+                        ProjectCategoryDesc = e.ProjectCategory.Name,
+                        Title = e.Title,
+                        Description = e.Description,
+                        CreatedDate = e.CreatedDate,
+                        UpdatedDate = e.UpdateDate,
+                        FundingEndDate = e.FundingEndDate,
+                        FundingGoal = e.FundingGoal,
+                        Status = e.Status
+                    }).OrderByDescending(e => e.UpdatedDate).ToList();
+
+        }
+
+        public IList<ProjectModel> GetUserFundedProjects(int userId)
+        {
+            var _user = uow.UserRepository.FindById(userId);
+
+            //user not found
+            if (_user == null)
+            {
+                return new List<ProjectModel>() { };
+            }
+
+            else
+            {
+                using (var ctx = new VivaWalletEntities())
+                {
+                    //Get user funded projects
+                    return ctx.Database.SqlQuery<ProjectModel>(
+                        @" 
+                            SELECT 
+                                p.Id Id,
+	                            pc.Id ProjectCategoryId, 
+	                            pc.Name ProjectCategoryDesc,
+	                            p.AttachmentSetId AttachmentSetId,
+	                            p.Title Title,
+	                            p.Description Description,
+	                            p.CreatedDate CreatedDate,
+	                            p.UpdateDate UpdateDate,
+	                            p.FundingEndDate FundingEndDate,
+	                            p.FundingGoal FundingGoal,
+	                            p.Status Status,
+	                            p.UserId OwnerId,
+	                            u.Name OwnerName
+                            FROM 
+	                            UserFundings uf
+                            LEFT JOIN
+	                            FundingPackages fp
+                            ON 
+	                            uf.FundingPackageId = fp.Id
+                            LEFT JOIN 
+	                            Projects p
+                            ON 
+	                            fp.ProjectId = p.Id
+                            LEFT JOIN
+                                ProjectCategories pc
+                            ON 
+                                p.ProjectCategoryId = pc.Id
+                            LEFT JOIN
+	                            Users u
+                            ON
+	                            p.UserId = u.Id
+                            WHERE
+	                            uf.UserId = {0}
+                            ORDER BY
+	                            uf.WhenDateTime DESC
+                        ", userId
+                    ).ToList<ProjectModel>();
+                }
+            }
+        }
+
         public void Dispose()
         {
             uow.Dispose();

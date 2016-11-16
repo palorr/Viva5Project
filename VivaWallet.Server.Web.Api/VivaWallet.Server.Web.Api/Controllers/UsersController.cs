@@ -170,5 +170,69 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 return Request.CreateResponse(httpStatusCode);
             }
         }
+
+        /*
+         *
+         * USER PROJECTS ROUTES
+         * 
+         */
+
+        [HttpGet]
+        [Route("{currentUserId}/myCreatedProjects")]
+        public HttpResponseMessage GetCurrentLoggedInUserCreatedProjects(int currentUserId)
+        {
+            if (currentUserId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new UserRepository())
+            {
+                var v = s.GetCurrentLoggedInUserCreatedProjects(identity, currentUserId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("{userId}/userCreatedProjects")]
+        public HttpResponseMessage GetUserCreatedProjects(int userId)
+        {
+            if (userId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+            
+            using (var s = new UserRepository())
+            {
+                var v = s.GetUserCreatedProjects(userId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+        
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("{userId}/userBackedProjects")]
+        public HttpResponseMessage GetUserFundedProjects(int userId)
+        {
+            if (userId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            using (var s = new UserRepository())
+            {
+                var v = s.GetUserFundedProjects(userId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
+        /*
+         * 
+         * USER PROJECT FUNDINGS ROUTES 
+         * 
+         */
+
+        //TODO - Add routes for fundings
+
     }
 }
