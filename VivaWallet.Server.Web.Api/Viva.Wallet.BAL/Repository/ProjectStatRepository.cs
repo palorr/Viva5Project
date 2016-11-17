@@ -19,35 +19,55 @@ namespace Viva.Wallet.BAL.Repository
             uow = new UnitOfWork();
         }
 
-        public IList<ProjectStatModel> GetProjectStats(int projectId)
-        {
-            return uow.ProjectStatRepository.All()?
-                    .Where(e => e.ProjectId == projectId)
-                    .Select(e => new ProjectStatModel()
-                    {
-                        Id = e.Id,
-                        ProjectId = e.ProjectId,
-                        BackersNo = e.BackersNo,
-                        MoneyPledged = e.MoneyPledged,
-                        SharesNo = e.SharesNo,
-                        CommentsNo = e.CommentsNo  
-                    }).ToList();
-        }
-
-        public void CreateProjectStat(int projectId)
+        public ProjectStatModel GetProjectStats(int projectId)
         {
             try
             {
-                var _projectStat = new ProjectStat()
-                {
-                    ProjectId = projectId,
-                    BackersNo = 0,
-                    MoneyPledged = 0,
-                    SharesNo = 0,
-                    CommentsNo = 0
-                };
+                return uow.ProjectStatRepository
+                      .SearchFor(e => e.ProjectId == projectId)
+                      .Select(e => new ProjectStatModel()
+                      {
+                          Id = e.Id,
+                          ProjectId = e.ProjectId,
+                          BackersNo = e.BackersNo,
+                          MoneyPledged = e.MoneyPledged,
+                          SharesNo = e.SharesNo,
+                          CommentsNo = e.CommentsNo
+                      }).SingleOrDefault();
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException("Project stat screen lookup for project Id failed", ex);
+            }
+            
+        }
 
-                uow.ProjectStatRepository.Insert(_projectStat, true);
+        public bool CreateProjectStat(int projectId)
+        {
+            try
+            {
+                //get the project
+                var _project = uow.ProjectRepository.FindById(projectId);
+
+                if (_project == null)
+                {
+                    return false;
+                }
+
+                else { 
+                    var _projectStat = new ProjectStat()
+                    {
+                        ProjectId = projectId,
+                        BackersNo = 0,
+                        MoneyPledged = 0,
+                        SharesNo = 0,
+                        CommentsNo = 0
+                    };
+
+                    uow.ProjectStatRepository.Insert(_projectStat, true);
+                }
+
+                return true;
             }
             catch (Exception)
             {
@@ -55,11 +75,40 @@ namespace Viva.Wallet.BAL.Repository
             }
         }
 
-        public void UpdateProjectStat(ProjectStatModel source, int projectId)
+        private ProjectStat GetProjectStatOfProject(int projectId)
         {
             try
             {
-                var _projectStat = uow.ProjectStatRepository.All().Where(e => e.ProjectId == projectId).SingleOrDefault();
+                var _projectStat = uow.ProjectStatRepository
+                                  .SearchFor(e => e.ProjectId == projectId)
+                                  .SingleOrDefault();
+
+                return _projectStat;
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException("Project stat lookup for project Id failed", ex);
+            }
+        }
+
+        public bool UpdateProjectStatFromModel(ProjectStatModel source, int projectId)
+        {
+            try
+            {
+                //get the project
+                var _project = uow.ProjectRepository.FindById(projectId);
+
+                if (_project == null)
+                {
+                    return false;
+                }
+
+                var _projectStat = this.GetProjectStatOfProject(projectId);
+                
+                if (_projectStat == null)
+                {
+                    return false;
+                }
 
                 _projectStat.BackersNo = source.BackersNo;
                 _projectStat.MoneyPledged = source.MoneyPledged;
@@ -67,6 +116,8 @@ namespace Viva.Wallet.BAL.Repository
                 _projectStat.CommentsNo = source.CommentsNo;
 
                 uow.ProjectStatRepository.Update(_projectStat, true);
+
+                return true;
                 
             }
             catch (Exception)
@@ -75,13 +126,160 @@ namespace Viva.Wallet.BAL.Repository
             }
         }
 
-        public void DeleteProjectStat(int projectId)
+        public bool IncrementProjectStatBackersNo(int projectId)
         {
             try
             {
-                var _projectStat = uow.ProjectStatRepository.All().Where(e => e.ProjectId == projectId).SingleOrDefault();
+                //get the project
+                var _project = uow.ProjectRepository.FindById(projectId);
+
+                if (_project == null)
+                {
+                    return false;
+                }
+
+                var _projectStat = this.GetProjectStatOfProject(projectId);
+
+                if (_projectStat == null)
+                {
+                    return false;
+                }
+
+                _projectStat.BackersNo++;
+                
+                uow.ProjectStatRepository.Update(_projectStat, true);
+
+                return true;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool IncrementProjectStatMoneyPledged(int projectId, decimal amountPledged)
+        {
+            try
+            {
+                //get the project
+                var _project = uow.ProjectRepository.FindById(projectId);
+
+                if (_project == null)
+                {
+                    return false;
+                }
+
+                var _projectStat = this.GetProjectStatOfProject(projectId);
+
+                if (_projectStat == null)
+                {
+                    return false;
+                }
+
+                _projectStat.MoneyPledged += amountPledged;
+
+                uow.ProjectStatRepository.Update(_projectStat, true);
+
+                return true;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool IncrementProjectStatSharesNo(int projectId)
+        {
+            try
+            {
+                //get the project
+                var _project = uow.ProjectRepository.FindById(projectId);
+
+                if (_project == null)
+                {
+                    return false;
+                }
+
+                var _projectStat = this.GetProjectStatOfProject(projectId);
+
+                if (_projectStat == null)
+                {
+                    return false;
+                }
+
+                _projectStat.SharesNo++;
+
+                uow.ProjectStatRepository.Update(_projectStat, true);
+
+                return true;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool ChangeProjectStatCommentsNo(int projectId, bool willIncrement = true)
+        {
+            try
+            {
+                //get the project
+                var _project = uow.ProjectRepository.FindById(projectId);
+
+                if (_project == null)
+                {
+                    return false;
+                }
+
+                var _projectStat = this.GetProjectStatOfProject(projectId);
+
+                if (_projectStat == null)
+                {
+                    return false;
+                }
+
+                if (willIncrement)
+                    _projectStat.CommentsNo++;
+
+                else
+                    _projectStat.CommentsNo--;
+
+                uow.ProjectStatRepository.Update(_projectStat, true);
+
+                return true;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool DeleteProjectStat(int projectId)
+        {
+            try
+            {
+                //get the project
+                var _project = uow.ProjectRepository.FindById(projectId);
+
+                if (_project == null)
+                {
+                    return false;
+                }
+
+                var _projectStat = this.GetProjectStatOfProject(projectId);
+
+                if (_projectStat == null)
+                {
+                    return false;
+                }
 
                 uow.ProjectStatRepository.Delete(_projectStat);
+
+                return true;
             }
             catch (Exception)
             {
