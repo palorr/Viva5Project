@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Web.Http;
 using Viva.Wallet.BAL;
 using Viva.Wallet.BAL.Models;
+using Viva.Wallet.BAL.Repository;
 
 namespace VivaWallet.Server.Web.Api.Controllers
 {
@@ -23,6 +24,20 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
         [AllowAnonymous]
         [HttpGet]
+        [Route("projectCategories")]
+        public HttpResponseMessage GetProjectCategories()
+        {
+            using (var s = new ProjectCategoryRepository())
+            {
+                var v = s.GetAll();
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
+        //OK
+        [AllowAnonymous]
+        [HttpGet]
         [Route("")]
         public HttpResponseMessage GetAllProjects()
         {
@@ -34,10 +49,11 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        // OK
         [AllowAnonymous]
         [HttpGet]
         [Route("{projectId}")]
-        public HttpResponseMessage GetProjectById(int projectId)
+        public HttpResponseMessage GetProjectByIdForAllUsers(int projectId)
         {
             if (projectId <= 0)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
@@ -46,12 +62,53 @@ namespace VivaWallet.Server.Web.Api.Controllers
             {
                 var v = s.GetProjectById(projectId);
 
-                if(!v.Any<ProjectModel>())
+                if(v == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound);
                 }
 
                 return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
+        // OK
+        [HttpGet]
+        [Route("myProjects/{projectId}")]
+        public HttpResponseMessage GetMyProjectsById(int projectId)
+        {
+            if (projectId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new ProjectRepository())
+            {
+                var v = s.GetProjectById(projectId, identity);
+
+                if (v == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
+        // OK
+        [HttpPost]
+        [Route("")]
+        public HttpResponseMessage CreateProject(ProjectModel project)
+        {
+            if (!ModelState.IsValid)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new ProjectRepository())
+            {
+                long v = s.Insert(project, identity);
+                
+                return Request.CreateResponse(HttpStatusCode.Created, v);
             }
         }
 
@@ -61,6 +118,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
          *
          */
 
+        // OK
         [AllowAnonymous]
         [HttpGet]
         [Route("{projectId}/updates")]
@@ -77,6 +135,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        // OK
         [HttpPost]
         [Route("{projectId}/updates/{updateId?}")]
         public HttpResponseMessage InsertOrEditProjectUpdate(ProjectUpdateModel projectUpdate, int projectId, int updateId = 0)
@@ -119,7 +178,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 //update existing project update
                 else
                 {
-                    ProjectUpdateRepository.StatusCodes hasUpdated = s.EditProjectUpdate(projectUpdate, identity, projectId, updateId);
+                    ProjectUpdateRepository.StatusCodes hasUpdated = s.EditProjectUpdate(projectUpdate, identity, updateId);
 
                     switch (hasUpdated)
                     {
@@ -144,6 +203,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        // OK
         [HttpDelete]
         [Route("{projectId}/updates/{updateId}")]
         public HttpResponseMessage DeleteProjectUpdate(int projectId, int updateId)
@@ -188,6 +248,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
          *
          */
 
+        // OK
         [AllowAnonymous]
         [HttpGet]
         [Route("{projectId}/comments")]
@@ -204,6 +265,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        // OK
         [HttpPost]
         [Route("{projectId}/comments/{commentId?}")]
         public HttpResponseMessage InsertOrUpdateComment(ProjectCommentModel projectComment, int projectId, int commentId = 0)
@@ -222,13 +284,26 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 //insert comment
                 if (commentId.Equals(0))
                 {
-                    s.InsertComment(projectComment, projectId);
+                    ProjectCommentRepository.StatusCodes hasInserted = s.InsertComment(projectComment, identity, projectId);
+
+                    switch (hasInserted)
+                    {
+                        //project not found to insert the comment
+                        case ProjectCommentRepository.StatusCodes.NOT_FOUND:
+                            httpStatusCode = HttpStatusCode.NotFound;
+                            break;
+
+                        //comment inserted ok
+                        case ProjectCommentRepository.StatusCodes.OK:
+                            httpStatusCode = HttpStatusCode.Created;
+                            break;
+                    }
                 }
 
                 //update existing comment
                 else
                 {
-                    ProjectCommentRepository.StatusCodes hasUpdated = s.UpdateComment(projectComment, identity, projectId, commentId);
+                    ProjectCommentRepository.StatusCodes hasUpdated = s.UpdateComment(projectComment, identity, commentId);
 
                     switch (hasUpdated)
                     {
@@ -253,6 +328,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        // OK
         [HttpDelete]
         [Route("{projectId}/comments/{commentId}")]
         public HttpResponseMessage DeleteComment(int projectId, int commentId)

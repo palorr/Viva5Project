@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Viva.Wallet.BAL.Models;
 using VivaWallet.DAL;
 
-namespace Viva.Wallet.BAL
+namespace Viva.Wallet.BAL.Repository
 {
     public class ProjectUpdateRepository : IDisposable
     {
@@ -19,26 +19,28 @@ namespace Viva.Wallet.BAL
             uow = new UnitOfWork();
         }
 
+        // OK
         public IList<ProjectUpdateModel> GetAllProjectUpdates(int projectId)
         {
-            return uow.ProjectUpdateRepository.All()?
-                    .Where(e => e.ProjectId == projectId)
-                    .Select(e => new ProjectUpdateModel()
-                    {
-                        Id = e.Id,
-                        ProjectId = e.ProjectId,
-                        AttachmentSetId = e.AttachmentSetId,
-                        Title = e.Title,
-                        Description = e.Description,
-                        WhenDateTime = e.WhenDateTime
-                    }).OrderByDescending(e => e.WhenDateTime).ToList();
+            return uow.ProjectUpdateRepository
+                      .SearchFor(e => e.ProjectId == projectId)
+                      .Select(e => new ProjectUpdateModel()
+                      {
+                          Id = e.Id,
+                          ProjectId = e.ProjectId,
+                          AttachmentSetId = e.AttachmentSetId,
+                          Title = e.Title,
+                          Description = e.Description,
+                          WhenDateTime = e.WhenDateTime
+                      }).OrderByDescending(e => e.WhenDateTime).ToList();
         }
 
+        // OK
         public StatusCodes InsertProjectUpdate(ProjectUpdateModel source, ClaimsIdentity identity, int projectId)
         {
             try
             {
-                //get the project's creator username
+                //get the project
                 var _project = uow.ProjectRepository.FindById(projectId);
 
                 if (_project == null)
@@ -50,10 +52,21 @@ namespace Viva.Wallet.BAL
                 {
                     //check if current user is the projectId's creator
                     //else return NOT ALLOWED
-                    var userIdClaim = identity.Claims
-                                .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+                    long requestorUserId;
 
-                    if (_project.User.Username != userIdClaim.Value)
+                    try
+                    {
+                        requestorUserId = uow.UserRepository
+                                             .SearchFor(e => e.Username == identity.Name)
+                                             .Select(e => e.Id)
+                                             .SingleOrDefault();
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        throw new InvalidOperationException("User lookup for requestor Id for project update creation failed", ex);
+                    }
+                    
+                    if (_project.User.Id != requestorUserId)
                     {
                         return StatusCodes.NOT_AUTHORIZED;
                     }
@@ -78,7 +91,8 @@ namespace Viva.Wallet.BAL
             }
         }
 
-        public StatusCodes EditProjectUpdate(ProjectUpdateModel source, ClaimsIdentity identity, int projectId, int updateId)
+        // OK
+        public StatusCodes EditProjectUpdate(ProjectUpdateModel source, ClaimsIdentity identity, int updateId)
         {
             try
             {
@@ -91,10 +105,21 @@ namespace Viva.Wallet.BAL
                 else
                 {
                     // update found. does the user that wishes to update it really is the project creator? check this here
-                    var userIdClaim = identity.Claims
-                        .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+                    long requestorUserId;
 
-                    if (_projectUpdate.Project.User.Username != userIdClaim.Value)
+                    try
+                    {
+                        requestorUserId = uow.UserRepository
+                                             .SearchFor(e => e.Username == identity.Name)
+                                             .Select(e => e.Id)
+                                             .SingleOrDefault();
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        throw new InvalidOperationException("User lookup for requestor Id for project update creation failed", ex);
+                    }
+
+                    if (_projectUpdate.Project.UserId != requestorUserId)
                     {
                         return StatusCodes.NOT_AUTHORIZED;
                     }
@@ -114,6 +139,7 @@ namespace Viva.Wallet.BAL
             }
         }
 
+        // OK
         public StatusCodes DeleteProjectUpdate(ClaimsIdentity identity, int updateId)
         {
             try
@@ -128,15 +154,26 @@ namespace Viva.Wallet.BAL
                 else
                 {
                     // project update found. does the user that wishes to delete it really is the project creator? check this here
-                    var userIdClaim = identity.Claims
-                        .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+                    long requestorUserId;
 
-                    if (_projectUpdate.Project.User.Username != userIdClaim.Value)
+                    try
+                    {
+                        requestorUserId = uow.UserRepository
+                                             .SearchFor(e => e.Username == identity.Name)
+                                             .Select(e => e.Id)
+                                             .SingleOrDefault();
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        throw new InvalidOperationException("User lookup for requestor Id for project update creation failed", ex);
+                    }
+
+                    if (_projectUpdate.Project.UserId != requestorUserId)
                     {
                         return StatusCodes.NOT_AUTHORIZED;
                     }
 
-                    uow.ProjectUpdateRepository.Delete(_projectUpdate  );
+                    uow.ProjectUpdateRepository.Delete(_projectUpdate, true);
                 }
 
                 return StatusCodes.OK;

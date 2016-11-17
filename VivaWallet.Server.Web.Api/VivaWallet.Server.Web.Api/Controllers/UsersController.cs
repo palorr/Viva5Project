@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Web.Http;
 using Viva.Wallet.BAL;
 using Viva.Wallet.BAL.Models;
+using Viva.Wallet.BAL.Repository;
 
 namespace VivaWallet.Server.Web.Api.Controllers
 {
@@ -20,6 +21,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
          *
          */
 
+        // OK
         [AllowAnonymous]
         [HttpGet]
         [Route("")]
@@ -33,6 +35,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        // OK
         [AllowAnonymous]
         [HttpGet]
         [Route("{userId}")]
@@ -45,7 +48,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             {
                 var v = s.GetUser(userId);
 
-                if (!v.Any<UserModel>())
+                if (v == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound);
                 }
@@ -54,6 +57,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        // OK
         [HttpPost]
         [Route("findByUsername")]
         public HttpResponseMessage GetUserByUsername(UserModel user)
@@ -74,6 +78,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        /*
         [HttpPost]
         [Route("")]
         public HttpResponseMessage CreateUser(UserModel user)
@@ -95,12 +100,14 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
         }
+        */
 
+        // OK
         [HttpPut]
-        [Route("{userId}")]
-        public HttpResponseMessage UpdateUserMainInfo(UserModel user, int userId)
+        [Route("")]
+        public HttpResponseMessage UpdateUserMainInfo(UserModel user)
         {
-            if (!ModelState.IsValid || userId <= 0)
+            if (!ModelState.IsValid)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
 
             var identity = User.Identity as ClaimsIdentity;
@@ -109,22 +116,17 @@ namespace VivaWallet.Server.Web.Api.Controllers
             {
                 var httpStatusCode = HttpStatusCode.OK;
 
-                UserRepository.StatusCodes hasUpdated = s.UpdateUser(user, identity, userId);
+                bool hasUpdated = s.UpdateUser(user, identity);
 
                 switch (hasUpdated)
                 {
                     //user not found
-                    case UserRepository.StatusCodes.NOT_FOUND:
+                    case false:
                         httpStatusCode = HttpStatusCode.NotFound;
                         break;
-
-                    //not authorized to update this user
-                    case UserRepository.StatusCodes.NOT_AUTHORIZED:
-                        httpStatusCode = HttpStatusCode.MethodNotAllowed;
-                        break;
-
+                        
                     //user updated ok
-                    case UserRepository.StatusCodes.OK:
+                    case true:
                         httpStatusCode = HttpStatusCode.OK;
                         break;
                 }
@@ -133,6 +135,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        // OK
         [HttpDelete]
         [Route("{userId}")]
         public HttpResponseMessage DeactivateUserAccount(int userId)
@@ -177,23 +180,22 @@ namespace VivaWallet.Server.Web.Api.Controllers
          * 
          */
 
+        // OK
         [HttpGet]
-        [Route("{currentUserId}/myCreatedProjects")]
-        public HttpResponseMessage GetCurrentLoggedInUserCreatedProjects(int currentUserId)
+        [Route("myCreatedProjects")]
+        public HttpResponseMessage GetCurrentLoggedInUserCreatedProjects()
         {
-            if (currentUserId <= 0)
-                return Request.CreateResponse(HttpStatusCode.BadRequest);
-
             var identity = User.Identity as ClaimsIdentity;
 
             using (var s = new UserRepository())
             {
-                var v = s.GetCurrentLoggedInUserCreatedProjects(identity, currentUserId);
+                var v = s.GetCurrentLoggedInUserCreatedProjects(identity);
 
                 return Request.CreateResponse(HttpStatusCode.OK, v);
             }
         }
 
+        // OK
         [AllowAnonymous]
         [HttpGet]
         [Route("{userId}/userCreatedProjects")]
@@ -210,6 +212,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
         
+        // OK
         [AllowAnonymous]
         [HttpGet]
         [Route("{userId}/userBackedProjects")]

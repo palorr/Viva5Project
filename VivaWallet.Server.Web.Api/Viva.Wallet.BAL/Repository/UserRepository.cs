@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Viva.Wallet.BAL.Models;
 using VivaWallet.DAL;
 
-namespace Viva.Wallet.BAL
+namespace Viva.Wallet.BAL.Repository
 {
     public class UserRepository : IDisposable
     {
@@ -19,6 +19,7 @@ namespace Viva.Wallet.BAL
             uow = new UnitOfWork();
         }
 
+        // OK
         public IList<UserModel> GetAllUsers()
         {
             return uow.UserRepository.All()?
@@ -36,42 +37,59 @@ namespace Viva.Wallet.BAL
                     }).OrderByDescending(e => e.UpdatedDateTime).ToList();
         }
 
-        public IList<UserModel> GetUser(int userId)
+        // OK
+        public UserModel GetUser(int userId)
         {
-            return uow.UserRepository.All()?
-                    .Where(e => e.Id == userId)
-                    .Select(e => new UserModel()
-                    {
-                        Id = e.Id,
-                        Username = e.Username,
-                        IsVerified = e.IsVerified,
-                        VerificationToken = e.VerificationToken,
-                        CreatedDateTime = e.CreatedDateTime,
-                        UpdatedDateTime = e.UpdateDateTime,
-                        Name = e.Name,
-                        ShortBio = e.ShortBio,
-                        AvatarImage = e.AvatarImage
-                    }).ToList();
+            try
+            {
+                return uow.UserRepository
+                          .SearchFor(e => e.Id == userId)
+                          .Select(e => new UserModel()
+                          {
+                              Id = e.Id,
+                              Username = e.Username,
+                              IsVerified = e.IsVerified,
+                              VerificationToken = e.VerificationToken,
+                              CreatedDateTime = e.CreatedDateTime,
+                              UpdatedDateTime = e.UpdateDateTime,
+                              Name = e.Name,
+                              ShortBio = e.ShortBio,
+                              AvatarImage = e.AvatarImage
+                          }).SingleOrDefault();
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException("User lookup failed", ex);
+            }
         }
 
+        // OK
         public UserModel GetUserByUsername(string userName)
         {
-            return uow.UserRepository
-                    .SearchFor(e => e.Username == userName)
-                    .Select(e => new UserModel()
-                    {
-                        Id = e.Id,
-                        Username = e.Username,
-                        IsVerified = e.IsVerified,
-                        VerificationToken = e.VerificationToken,
-                        CreatedDateTime = e.CreatedDateTime,
-                        UpdatedDateTime = e.UpdateDateTime,
-                        Name = e.Name,
-                        ShortBio = e.ShortBio,
-                        AvatarImage = e.AvatarImage
-                    }).SingleOrDefault();
+            try
+            {
+                return uow.UserRepository
+                          .SearchFor(e => e.Username == userName)
+                          .Select(e => new UserModel()
+                            {
+                                Id = e.Id,
+                                Username = e.Username,
+                                IsVerified = e.IsVerified,
+                                VerificationToken = e.VerificationToken,
+                                CreatedDateTime = e.CreatedDateTime,
+                                UpdatedDateTime = e.UpdateDateTime,
+                                Name = e.Name,
+                                ShortBio = e.ShortBio,
+                                AvatarImage = e.AvatarImage
+                            }).SingleOrDefault();
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException("User lookup failed", ex);
+            }
         }
 
+        // OK
         public void CreateUser(UserModel source)
         {
             try
@@ -97,37 +115,35 @@ namespace Viva.Wallet.BAL
             }
         }
 
-        public StatusCodes UpdateUser(UserModel source, ClaimsIdentity identity, int userId)
+        // OK
+        public bool UpdateUser(UserModel source, ClaimsIdentity identity)
         {
             try
             {
-                var _user = uow.UserRepository.FindById(userId);
+                User _user;
+                    
+                try
+                {
+                    _user = uow.UserRepository
+                               .SearchFor(e => e.Username == identity.Name)
+                               .SingleOrDefault();
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw new InvalidOperationException("User lookup for requestor Id failed", ex);
+                }
+
+                if (_user == null) return false; 
                 
-                if (_user == null)
-                {
-                    return StatusCodes.NOT_FOUND;
-                }
-                else
-                {
-                    // user found. does the user that wishes to update it really is the user him/her self? check this here
-                    var userIdClaim = identity.Claims
-                        .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+                //update user from UserModel
+                _user.UpdateDateTime = DateTime.Now;
+                _user.Name = source.Name;
+                _user.ShortBio = source.ShortBio;
+                _user.AvatarImage = source.AvatarImage;
 
-                    if (_user.Username != userIdClaim.Value)
-                    {
-                        return StatusCodes.NOT_AUTHORIZED;
-                    }
-
-                    //update user from UserModel
-                    _user.UpdateDateTime = DateTime.Now;
-                    _user.Name = source.Name;
-                    _user.ShortBio = source.ShortBio;
-                    _user.AvatarImage = source.AvatarImage;
-
-                    uow.UserRepository.Update(_user, true);
-                }
-
-                return StatusCodes.OK;
+                uow.UserRepository.Update(_user, true);
+                
+                return true;
             }
             catch (Exception)
             {
@@ -135,6 +151,7 @@ namespace Viva.Wallet.BAL
             }
         }
 
+        // OK
         public StatusCodes DeactivateUserAccount(ClaimsIdentity identity, int userId)
         {
             try
@@ -150,10 +167,24 @@ namespace Viva.Wallet.BAL
                 else
                 {
                     // user found. is the user authorized? check this here
-                    var userIdClaim = identity.Claims
-                        .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+                    long requestorUserId;
 
-                    if (_user.Username != userIdClaim.Value)
+                    try
+                    {
+                        requestorUserId = uow.UserRepository
+                                             .SearchFor(e => e.Username == identity.Name)
+                                             .Select(e => e.Id)
+                                             .SingleOrDefault();
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        throw new InvalidOperationException("User lookup for requestor Id failed", ex);
+                    }
+
+                    //var userIdClaim = identity.Claims
+                    //.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+
+                    if (userId != requestorUserId)
                     {
                         return StatusCodes.NOT_AUTHORIZED;
                     }
@@ -169,6 +200,7 @@ namespace Viva.Wallet.BAL
             }
         }
 
+        // OK
         public IList<ProjectModel> GetUserCreatedProjects(int userId)
         {
             var _user = uow.UserRepository.FindById(userId);
@@ -181,50 +213,44 @@ namespace Viva.Wallet.BAL
 
             else { 
                 return uow.ProjectRepository
-                        .SearchFor(e => (e.UserId == userId && e.Status != "CRE" && e.Status != "FAI"))
-                        .Select(e => new ProjectModel()
-                        {
-                            Id = e.Id,
-                            OwnerId = e.UserId,
-                            OwnerName = e.User.Name,
-                            ProjectCategoryId = e.ProjectCategoryId,
-                            ProjectCategoryDesc = e.ProjectCategory.Name,
-                            Title = e.Title,
-                            Description = e.Description,
-                            CreatedDate = e.CreatedDate,
-                            UpdatedDate = e.UpdateDate,
-                            FundingEndDate = e.FundingEndDate,
-                            FundingGoal = e.FundingGoal,
-                            Status = e.Status
-                        }).OrderByDescending(e => e.UpdatedDate).ToList();
+                          .SearchFor(e => (e.UserId == userId && e.Status != "CRE" && e.Status != "FAI"))
+                          .Select(e => new ProjectModel()
+                            {
+                                Id = e.Id,
+                                OwnerId = e.UserId,
+                                OwnerName = e.User.Name,
+                                ProjectCategoryId = e.ProjectCategoryId,
+                                ProjectCategoryDesc = e.ProjectCategory.Name,
+                                Title = e.Title,
+                                Description = e.Description,
+                                CreatedDate = e.CreatedDate,
+                                UpdatedDate = e.UpdateDate,
+                                FundingEndDate = e.FundingEndDate,
+                                FundingGoal = e.FundingGoal,
+                                Status = e.Status
+                            }).OrderByDescending(e => e.UpdatedDate).ToList();
             }
         }
 
-        public IList<ProjectModel> GetCurrentLoggedInUserCreatedProjects(ClaimsIdentity identity, int requestorId)
+        // OK
+        public IList<ProjectModel> GetCurrentLoggedInUserCreatedProjects(ClaimsIdentity identity)
         {
-            var _requestUser = uow.UserRepository.FindById(requestorId);
+            long currentUserId;
 
-            // user not found - return empty list
-            if (_requestUser == null)
+            try
             {
-                return new List<ProjectModel>() { };
+                currentUserId = uow.UserRepository
+                                 .SearchFor(e => e.Username == identity.Name)
+                                 .Select(e => e.Id)
+                                 .SingleOrDefault();
             }
-
-            var userIdClaim = identity.Claims
-                        .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
-
-            // if requester is not the current logged in user then return empty project list
-            // other users wont have the ability to see other users all created projects
-            // they have the ability to see the projects that have status ('UFU' || 'COM')
-            // with the GetUserCreatedProjects function above
-
-            if (_requestUser.Username != userIdClaim.Value)
+            catch (InvalidOperationException ex)
             {
-                return new List<ProjectModel>() { };
+                throw new InvalidOperationException("User lookup for current logged in User Id failed", ex);
             }
-
+            
             return uow.ProjectRepository
-                    .SearchFor(e => e.UserId == requestorId)
+                    .SearchFor(e => e.UserId == currentUserId)
                     .Select(e => new ProjectModel()
                     {
                         Id = e.Id,
@@ -243,6 +269,7 @@ namespace Viva.Wallet.BAL
 
         }
 
+        // OK
         public IList<ProjectModel> GetUserFundedProjects(int userId)
         {
             var _user = uow.UserRepository.FindById(userId);

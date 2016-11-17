@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Viva.Wallet.BAL.Models;
 using VivaWallet.DAL;
 
-namespace Viva.Wallet.BAL
+namespace Viva.Wallet.BAL.Repository
 {
     public class UserFundingRepository : IDisposable
     {

@@ -20,11 +20,13 @@ namespace Viva.Wallet.BAL.Repository
         
         public IList<ProjectCategoriesModel> GetAll()
         {
-            return uow.ProjectCategoryRepository.All()?.Select(e => new ProjectCategoriesModel()
-            {
-                Id = e.Id,
-                Name = e.Name
-            }).ToList();
+            return uow.ProjectCategoryRepository
+                      .All()?
+                      .Select(e => new ProjectCategoriesModel()
+                      {
+                          Id = e.Id,
+                          Name = e.Name
+                      }).ToList();
         }
 
         public void Dispose()
