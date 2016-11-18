@@ -119,8 +119,17 @@ namespace VivaWallet.Server.Web.Api.Controllers
                     }
                 }
 
-                //TODO - STEP 3 - Create new Project Funding Package for Donations
-                
+                //STEP 3 - Create new Project Funding Package for Donations
+                using (var fpRepo = new FundingPackageRepository())
+                {
+                    FundingPackageModel newFundingPackageModel = new FundingPackageModel();
+                    newFundingPackageModel.AttachmentSetId = null;
+                    newFundingPackageModel.Title = "Donations Funding Package";
+                    newFundingPackageModel.Description = "Feel free to donate whatever amount you wish!";
+
+                    fpRepo.CreateFundingPackage(newFundingPackageModel, identity, (int)newProjectId, true);
+                }
+
                 return Request.CreateResponse(HttpStatusCode.Created, newProjectId);
             }
         }
@@ -372,6 +381,164 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
                     //comment deleted ok
                     case ProjectCommentRepository.StatusCodes.OK:
+                        httpStatusCode = HttpStatusCode.NoContent;
+                        break;
+                }
+
+                return Request.CreateResponse(httpStatusCode);
+            }
+        }
+
+        /*
+         * 
+         * PROJECT FUNDING PACKAGES ROUTES
+         * 
+         * */
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("{projectId}/fundingPackages")]
+        public HttpResponseMessage GetProjectFundingPackages(int projectId)
+        {
+            if (projectId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            using (var s = new FundingPackageRepository())
+            {
+                var v = s.GetAllProjectFundingPackages(projectId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("{projectId}/fundingPackages/{fundingPackageId}")]
+        public HttpResponseMessage GetSpecificFundingPackageFromProject(int projectId, int fundingPackageId)
+        {
+            if (projectId <= 0 || fundingPackageId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            using (var s = new FundingPackageRepository())
+            {
+                var v = s.GetProjectFundingPackageById(fundingPackageId);
+
+                if (v == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
+        
+        [HttpPost]
+        [Route("{projectId}/fundingPackages")]
+        public HttpResponseMessage CreateFundingPackage(FundingPackageModel fundingPackage, int projectId)
+        {
+            if (!ModelState.IsValid || projectId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new FundingPackageRepository())
+            {
+
+                var httpStatusCode = HttpStatusCode.Created;
+
+                FundingPackageRepository.StatusCodes hasInserted = s.CreateFundingPackage(fundingPackage, identity, projectId, false);
+
+                switch (hasInserted)
+                {
+                    //project for inserting the funding package not found
+                    case FundingPackageRepository.StatusCodes.NOT_FOUND:
+                        httpStatusCode = HttpStatusCode.NotFound;
+                        break;
+
+                    //not authorized to add this funding package to this specific project
+                    case FundingPackageRepository.StatusCodes.NOT_AUTHORIZED:
+                        httpStatusCode = HttpStatusCode.MethodNotAllowed;
+                        break;
+
+                    //funding package inserted ok
+                    case FundingPackageRepository.StatusCodes.OK:
+                        httpStatusCode = HttpStatusCode.Created;
+                        break;
+                }
+
+                return Request.CreateResponse(httpStatusCode);
+            }
+        }
+        
+
+        [HttpPut]
+        [Route("{projectId}/fundingPackages/{fundingPackageId}")]
+        public HttpResponseMessage UpdateFundingPackage(FundingPackageModel fundingPackage, int projectId, int fundingPackageId)
+        {
+            if (!ModelState.IsValid || projectId <= 0 || fundingPackageId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new FundingPackageRepository())
+            {
+                var httpStatusCode = HttpStatusCode.OK;
+
+                FundingPackageRepository.StatusCodes hasUpdated = s.EditFundingPackage(fundingPackage, identity, fundingPackageId);
+
+                switch (hasUpdated)
+                {
+                    //funding package not found
+                    case FundingPackageRepository.StatusCodes.NOT_FOUND:
+                        httpStatusCode = HttpStatusCode.NotFound;
+                        break;
+
+                    //not authorized to update this funding package. You are not the project creator that has this specific funding package
+                    case FundingPackageRepository.StatusCodes.NOT_AUTHORIZED:
+                        httpStatusCode = HttpStatusCode.MethodNotAllowed;
+                        break;
+
+                    //funding package updated ok
+                    case FundingPackageRepository.StatusCodes.OK:
+                        httpStatusCode = HttpStatusCode.OK;
+                        break;
+                }
+
+                return Request.CreateResponse(httpStatusCode);
+            }
+        }
+
+        [HttpDelete]
+        [Route("{projectId}/fundingPackages/{fundingPackageId}")]
+        public HttpResponseMessage DeleteFundingPackage(int projectId, int fundingPackageId)
+        {
+            if (projectId <= 0 || fundingPackageId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new FundingPackageRepository())
+            {
+
+                var httpStatusCode = HttpStatusCode.NoContent;
+
+                FundingPackageRepository.StatusCodes hasDeleted = s.DeleteFundingPackage(identity, fundingPackageId);
+
+                switch (hasDeleted)
+                {
+                    //funding package to delete not found
+                    case FundingPackageRepository.StatusCodes.NOT_FOUND:
+                        httpStatusCode = HttpStatusCode.NotFound;
+                        break;
+
+                    //not authorized to delete this funding package - either you are not the project creator or this is a donations package automatically created by the system
+                    case FundingPackageRepository.StatusCodes.NOT_AUTHORIZED:
+                        httpStatusCode = HttpStatusCode.MethodNotAllowed;
+                        break;
+
+                    //funding package deleted ok
+                    case FundingPackageRepository.StatusCodes.OK:
                         httpStatusCode = HttpStatusCode.NoContent;
                         break;
                 }
