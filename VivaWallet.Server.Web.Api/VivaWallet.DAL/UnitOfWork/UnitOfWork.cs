@@ -98,6 +98,14 @@ namespace Viva.Wallet.BAL
             if (_ProjectRepository != null)
                 _ProjectRepository.Dispose();
 
+            if (_UserRepository != null)
+                _UserRepository.Dispose();
+
+            if (_UserFundingRepository != null)
+                _UserFundingRepository.Dispose();
+
+            if (_ProjectStatRepository != null)
+                _ProjectStatRepository.Dispose();
 
             _dbContext.Dispose();
         }

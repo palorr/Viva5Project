@@ -99,6 +99,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
         [Route("")]
         public HttpResponseMessage CreateProject(ProjectModel project)
         {
+            //STEP 1 - Create the Project from Project Model coming from the client
             if (!ModelState.IsValid)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
 
@@ -106,9 +107,21 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             using (var s = new ProjectRepository())
             {
-                long v = s.Insert(project, identity);
+                long newProjectId = s.Insert(project, identity);
+
+                //STEP 2 - Create Project Stats Screen and Save to ProjectStats Table
+                using (var sr = new ProjectStatRepository())
+                {
+                    bool statCreated = sr.CreateProjectStat((int)newProjectId);
+                    if(!statCreated)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound);
+                    }
+                }
+
+                //TODO - STEP 3 - Create new Project Funding Package for Donations
                 
-                return Request.CreateResponse(HttpStatusCode.Created, v);
+                return Request.CreateResponse(HttpStatusCode.Created, newProjectId);
             }
         }
 
