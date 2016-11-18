@@ -395,6 +395,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
          * 
          * */
 
+        // OK
         [AllowAnonymous]
         [HttpGet]
         [Route("{projectId}/fundingPackages")]
@@ -411,6 +412,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        // OK
         [AllowAnonymous]
         [HttpGet]
         [Route("{projectId}/fundingPackages/{fundingPackageId}")]
@@ -432,7 +434,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        
+        // OK
         [HttpPost]
         [Route("{projectId}/fundingPackages")]
         public HttpResponseMessage CreateFundingPackage(FundingPackageModel fundingPackage, int projectId)
@@ -470,8 +472,8 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 return Request.CreateResponse(httpStatusCode);
             }
         }
-        
 
+        // OK
         [HttpPut]
         [Route("{projectId}/fundingPackages/{fundingPackageId}")]
         public HttpResponseMessage UpdateFundingPackage(FundingPackageModel fundingPackage, int projectId, int fundingPackageId)
@@ -485,11 +487,11 @@ namespace VivaWallet.Server.Web.Api.Controllers
             {
                 var httpStatusCode = HttpStatusCode.OK;
 
-                FundingPackageRepository.StatusCodes hasUpdated = s.EditFundingPackage(fundingPackage, identity, fundingPackageId);
+                FundingPackageRepository.StatusCodes hasUpdated = s.EditFundingPackage(fundingPackage, identity, projectId, fundingPackageId);
 
                 switch (hasUpdated)
                 {
-                    //funding package not found
+                    //project or funding package not found
                     case FundingPackageRepository.StatusCodes.NOT_FOUND:
                         httpStatusCode = HttpStatusCode.NotFound;
                         break;
@@ -509,6 +511,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        // OK
         [HttpDelete]
         [Route("{projectId}/fundingPackages/{fundingPackageId}")]
         public HttpResponseMessage DeleteFundingPackage(int projectId, int fundingPackageId)
@@ -523,11 +526,11 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
                 var httpStatusCode = HttpStatusCode.NoContent;
 
-                FundingPackageRepository.StatusCodes hasDeleted = s.DeleteFundingPackage(identity, fundingPackageId);
+                FundingPackageRepository.StatusCodes hasDeleted = s.DeleteFundingPackage(identity, projectId, fundingPackageId);
 
                 switch (hasDeleted)
                 {
-                    //funding package to delete not found
+                    //project not found or funding package to delete not found
                     case FundingPackageRepository.StatusCodes.NOT_FOUND:
                         httpStatusCode = HttpStatusCode.NotFound;
                         break;

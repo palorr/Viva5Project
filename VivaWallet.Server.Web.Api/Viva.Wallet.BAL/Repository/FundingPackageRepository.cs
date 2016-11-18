@@ -24,6 +24,7 @@ namespace Viva.Wallet.BAL.Repository
             uow.Dispose();
         }
 
+        // OK
         public IList<FundingPackageModel> GetAllProjectFundingPackages(int projectId)
         {
             return uow.FundingPackageRepository
@@ -41,6 +42,7 @@ namespace Viva.Wallet.BAL.Repository
                       }).OrderByDescending(e => e.WhenDateTime).ToList();
         }
 
+        // OK
         public FundingPackageModel GetProjectFundingPackageById(int fundingPackageId)
         {
             try
@@ -65,6 +67,7 @@ namespace Viva.Wallet.BAL.Repository
             }
         }
 
+        // OK
         public StatusCodes CreateFundingPackage(FundingPackageModel source, ClaimsIdentity identity, int projectId, bool isForDonations)
         {
             try
@@ -110,13 +113,15 @@ namespace Viva.Wallet.BAL.Repository
             }
         }
 
-        public StatusCodes EditFundingPackage(FundingPackageModel source, ClaimsIdentity identity, int fundingPackageId)
+        // OK
+        public StatusCodes EditFundingPackage(FundingPackageModel source, ClaimsIdentity identity, int projectId, int fundingPackageId)
         {
             try
             {
+                var _project = uow.ProjectRepository.FindById(projectId);
                 var _fundingPackage = uow.FundingPackageRepository.FindById(fundingPackageId);
 
-                if (_fundingPackage == null)
+                if (_project == null || _fundingPackage == null)
                 {
                     return StatusCodes.NOT_FOUND;
                 }
@@ -153,13 +158,15 @@ namespace Viva.Wallet.BAL.Repository
             }
         }
 
-        public StatusCodes DeleteFundingPackage(ClaimsIdentity identity, int fundingPackageId)
+        // OK
+        public StatusCodes DeleteFundingPackage(ClaimsIdentity identity, int projectId, int fundingPackageId)
         {
             try
             {
+                var _project = uow.ProjectRepository.FindById(projectId);
                 var _fundingPackage = uow.FundingPackageRepository.FindById(fundingPackageId);
 
-                if (_fundingPackage == null)
+                if (_project == null || _fundingPackage == null)
                 {
                     return StatusCodes.NOT_FOUND;
                 }
@@ -185,6 +192,7 @@ namespace Viva.Wallet.BAL.Repository
             }
         }
 
+        // OK
         private long GetRequestorIdFromIdentity(ClaimsIdentity identity)
         {
             try
