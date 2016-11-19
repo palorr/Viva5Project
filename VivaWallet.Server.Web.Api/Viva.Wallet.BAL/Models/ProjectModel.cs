@@ -15,6 +15,8 @@ namespace Viva.Wallet.BAL.Models
 
         public string ProjectCategoryDesc { get; set; }
 
+        public long? AttachmentSetId { get; set; }
+
         public string Title { get; set; }
 
         public string Description { get; set; }
