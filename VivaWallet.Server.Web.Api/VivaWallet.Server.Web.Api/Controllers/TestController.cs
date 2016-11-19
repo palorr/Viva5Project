@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Web.Http;
 using Viva.Wallet.BAL;
 using Viva.Wallet.BAL.Models;
+using Viva.Wallet.BAL.Repository;
 
 namespace VivaWallet.Server.Web.Api.Controllers
 {
@@ -24,27 +25,26 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             using(var s = new ProjectRepository())
             {
-                var newProject = new ProjectModel()
-                {
-                    Title = "Test Project For Me",
-                    Description = "Descripiton Lalalallala",
-                    FundingEndDate = DateTime.Now.AddDays(20),
-                    FundingGoal = 190000,
-                    ProjectCategoryId = 5,
-                    Status = "CRE",
-                    OwnerId = 1
-                };
-
-                s.Insert(newProject);
 
                 var v = s.GetAll();
 
-                
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
 
-                
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("projectCategories")]
+        public HttpResponseMessage GetProjectCategories()
+        {
+            using (var s = new ProjectCategoryRepository())
+            {
+
+                var v = s.GetAll();
 
                 return Request.CreateResponse(HttpStatusCode.OK, v);
             }
         }
     }
+    
 }

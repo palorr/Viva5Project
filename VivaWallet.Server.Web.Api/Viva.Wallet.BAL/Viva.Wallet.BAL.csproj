@@ -41,6 +41,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,10 +50,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\FundingPackageModel.cs" />
     <Compile Include="Models\ProjectCategoriesModel.cs" />
+    <Compile Include="Models\ProjectCommentModel.cs" />
     <Compile Include="Models\ProjectModel.cs" />
+    <Compile Include="Models\ProjectStatModel.cs" />
+    <Compile Include="Models\ProjectUpdateModel.cs" />
+    <Compile Include="Models\UserFundingModel.cs" />
+    <Compile Include="Models\UserModel.cs" />
+    <Compile Include="Repository\FundingPackageRepository.cs" />
+    <Compile Include="Repository\ProjectCategoryRepository.cs" />
+    <Compile Include="Repository\ProjectCommentRepository.cs" />
     <Compile Include="Repository\ProjectRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\ProjectStatRepository.cs" />
+    <Compile Include="Repository\ProjectUpdateRepository.cs" />
+    <Compile Include="Repository\UserFundingRepository.cs" />
+    <Compile Include="Repository\UserRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VivaWallet.DAL\VivaWallet.DAL.csproj">

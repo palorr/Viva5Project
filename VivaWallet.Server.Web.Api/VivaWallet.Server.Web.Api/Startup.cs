@@ -18,6 +18,8 @@ namespace VivaWallet.Server.Web.Api
             // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=316888
 
             ConfigureOAuth(app);
+
+            app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
         }
 
         public void ConfigureOAuth(IAppBuilder app)
@@ -25,7 +27,7 @@ namespace VivaWallet.Server.Web.Api
            
            
             
-          var  OAuthBearerOptions = new OAuthBearerAuthenticationOptions();
+            var  OAuthBearerOptions = new OAuthBearerAuthenticationOptions();
 
             app.UseOAuthBearerAuthentication(OAuthBearerOptions);
 
