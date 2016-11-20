@@ -56,21 +56,7 @@ namespace Viva.Wallet.BAL.Repository
 
             if(identity != null)
             {
-                long currentUserId;
-
-                try
-                {
-                    currentUserId = uow.UserRepository
-                                     .SearchFor(e => e.Username == identity.Name)
-                                     .Select(e => e.Id)
-                                     .SingleOrDefault();
-                }
-                catch (InvalidOperationException ex)
-                {
-                    throw new InvalidOperationException("User lookup for current logged in User Id failed", ex);
-                }
-
-                isRequestorProjectCreator = IsProjectCreator((int)projectId, (int)currentUserId); 
+                isRequestorProjectCreator = IsProjectCreator((int)projectId, identity); 
             }
 
             try
@@ -101,15 +87,30 @@ namespace Viva.Wallet.BAL.Repository
             }
         }
 
-        public bool IsProjectCreator(int projectId, int currentUserId)
+        // OK
+        public bool IsProjectCreator(int projectId, ClaimsIdentity identity)
         {
+            long requestorUserId;
+
+            try
+            {
+                requestorUserId = uow.UserRepository
+                                     .SearchFor(e => e.Username == identity.Name)
+                                     .Select(e => e.Id)
+                                     .SingleOrDefault();
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException("User lookup for requestor Id failed", ex);
+            }
+
             try
             {
                 Project project = uow.ProjectRepository
                                      .SearchFor(e => e.Id == projectId)
                                      .SingleOrDefault();
 
-                if (project.UserId == currentUserId) return true;
+                if (project.UserId == requestorUserId) return true;
 
                 return false;
 

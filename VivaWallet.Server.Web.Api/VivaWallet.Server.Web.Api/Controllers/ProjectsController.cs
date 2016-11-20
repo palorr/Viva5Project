@@ -180,6 +180,24 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        // OK
+        [HttpGet]
+        [Route("{projectId}/isCurrentUserProjectCreator")]
+        public HttpResponseMessage IsRequestorUserProjectCreator(int projectId)
+        {
+            if (projectId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var pr = new ProjectRepository())
+            {
+                var v = pr.IsProjectCreator(projectId, identity);
+                
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
         /*
          *  
          * PROJECT UPDATES ROUTES
