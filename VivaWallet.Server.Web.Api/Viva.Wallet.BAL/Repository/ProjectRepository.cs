@@ -50,15 +50,11 @@ namespace Viva.Wallet.BAL.Repository
         }
 
         // OK
-        public ProjectModel GetProjectById(long projectId, ClaimsIdentity identity = null)
+        public ProjectModelToView GetProjectById(long projectId, ClaimsIdentity identity = null)
         {
-            Expression<Func<Project, bool>> predicate;
+            bool isRequestorProjectCreator = false;
 
-            if(identity == null)
-            {
-                predicate = e => e.Id == projectId && e.Status != "CRE" && e.Status != "FAI";
-            } 
-            else
+            if(identity != null)
             {
                 long currentUserId;
 
@@ -74,14 +70,14 @@ namespace Viva.Wallet.BAL.Repository
                     throw new InvalidOperationException("User lookup for current logged in User Id failed", ex);
                 }
 
-                predicate = e => e.Id == projectId && e.UserId == currentUserId;
+                isRequestorProjectCreator = IsProjectCreator((int)projectId, (int)currentUserId); 
             }
 
             try
             {
                 return uow.ProjectRepository
-                          .SearchFor(predicate)
-                          .Select(e => new ProjectModel()
+                          .SearchFor(e => e.Id == projectId)
+                          .Select(e => new ProjectModelToView()
                           {
                               Id = e.Id,
                               Title = e.Title,
@@ -94,9 +90,28 @@ namespace Viva.Wallet.BAL.Repository
                               ProjectCategoryDesc = e.ProjectCategory.Name,
                               ProjectCategoryId = e.ProjectCategoryId,
                               Status = e.Status,
-                              UpdatedDate = e.UpdateDate
-
+                              UpdatedDate = e.UpdateDate,
+                              IsRequestorProjectCreator = isRequestorProjectCreator
                           }).SingleOrDefault();
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException("Project lookup for project Id failed", ex);
+            }
+        }
+
+        public bool IsProjectCreator(int projectId, int currentUserId)
+        {
+            try
+            {
+                Project project = uow.ProjectRepository
+                                     .SearchFor(e => e.Id == projectId)
+                                     .SingleOrDefault();
+
+                if (project.UserId == currentUserId) return true;
+
+                return false;
+
             }
             catch (InvalidOperationException ex)
             {
@@ -148,6 +163,7 @@ namespace Viva.Wallet.BAL.Repository
             {
                 var _pro = new Project()
                 {
+                    AttachmentSetId = source.AttachmentSetId,
                     Title = source.Title,
                     Description = source.Description,
                     FundingEndDate = source.FundingEndDate,
@@ -168,5 +184,67 @@ namespace Viva.Wallet.BAL.Repository
                 throw;
             }
         }
+
+        // OK
+        public StatusCodes Update(ProjectModel source, ClaimsIdentity identity, int projectId)
+        {
+            try
+            {
+                var _project = uow.ProjectRepository.FindById(projectId);
+
+                if (_project == null)
+                {
+                    return StatusCodes.NOT_FOUND;
+                }
+                else
+                {
+                    // project found. does the user that wishes to update it really is the project creator? check this here
+                    long requestorUserId;
+
+                    try
+                    {
+                        requestorUserId = uow.UserRepository
+                                             .SearchFor(e => e.Username == identity.Name)
+                                             .Select(e => e.Id)
+                                             .SingleOrDefault();
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        throw new InvalidOperationException("User lookup for requestor Id for project update creation failed", ex);
+                    }
+
+                    if (_project.UserId != requestorUserId)
+                    {
+                        return StatusCodes.NOT_AUTHORIZED;
+                    }
+
+                    _project.ProjectCategoryId = source.ProjectCategoryId;
+                    _project.AttachmentSetId = source.AttachmentSetId;
+                    _project.Title = source.Title;
+                    _project.Description = source.Description;
+                    _project.UpdateDate = DateTime.Now;
+
+                    // TO BE CONSIDERED IF THEY CAN CHANGE ONCE DEFINED IN CREATION PHASE - KICKSTARTER DOES NOT ALLOW THESE TO CHANGE
+                    //_project.FundingEndDate = source.FundingEndDate;
+                    //_project.FundingGoal = source.FundingGoal;
+
+                    uow.ProjectRepository.Update(_project, true);
+                }
+
+                return StatusCodes.OK;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public enum StatusCodes
+        {
+            NOT_FOUND = 0,
+            NOT_AUTHORIZED = 1,
+            OK = 2
+        };
+
     }
 }

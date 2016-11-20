@@ -52,12 +52,12 @@ namespace VivaWallet.Server.Web.Api.Controllers
         // OK
         [AllowAnonymous]
         [HttpGet]
-        [Route("{projectId}")]
-        public HttpResponseMessage GetProjectByIdForAllUsers(int projectId)
+        [Route("{projectId}/allowAll")]
+        public HttpResponseMessage GetProjectByIdForLoggedOutUsers(int projectId)
         {
             if (projectId <= 0)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
-
+            
             using (var s = new ProjectRepository())
             {
                 var v = s.GetProjectById(projectId);
@@ -73,8 +73,8 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
         // OK
         [HttpGet]
-        [Route("myProjects/{projectId}")]
-        public HttpResponseMessage GetMyProjectsById(int projectId)
+        [Route("{projectId}")]
+        public HttpResponseMessage GetProjectByIdForLoggedInUsers(int projectId)
         {
             if (projectId <= 0)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
@@ -107,9 +107,17 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             using (var s = new ProjectRepository())
             {
+                //STEP 1 - Create new Attachment Set and assign it to the model coming from the client
+                using (var attRepo = new AttachmentSetRepository())
+                {
+                    long attachmentSetId = attRepo.CreateAttachmentSet();
+                    project.AttachmentSetId = attachmentSetId;
+                }
+                
+                //STEP 2 - Create the Project and save to Projects table
                 long newProjectId = s.Insert(project, identity);
 
-                //STEP 2 - Create Project Stats Screen and Save to ProjectStats Table
+                //STEP 3 - Create Project Stats Screen and Save to ProjectStats Table
                 using (var sr = new ProjectStatRepository())
                 {
                     bool statCreated = sr.CreateProjectStat((int)newProjectId);
@@ -119,7 +127,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
                     }
                 }
 
-                //STEP 3 - Create new Project Funding Package for Donations
+                //STEP 4 - Create new Project Funding Package for Donations
                 using (var fpRepo = new FundingPackageRepository())
                 {
                     FundingPackageModel newFundingPackageModel = new FundingPackageModel();
@@ -129,8 +137,46 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
                     fpRepo.CreateFundingPackage(newFundingPackageModel, identity, (int)newProjectId, true);
                 }
-
+                
                 return Request.CreateResponse(HttpStatusCode.Created, newProjectId);
+            }
+        }
+
+        // OK
+        [HttpPut]
+        [Route("{projectId}")]
+        public HttpResponseMessage EditProject(ProjectModel project, int projectId)
+        {
+            if (!ModelState.IsValid || projectId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new ProjectRepository())
+            {
+                var httpStatusCode = HttpStatusCode.OK;
+
+                ProjectRepository.StatusCodes hasUpdated = s.Update(project, identity, projectId);
+
+                switch (hasUpdated)
+                {
+                    //project not found
+                    case ProjectRepository.StatusCodes.NOT_FOUND:
+                        httpStatusCode = HttpStatusCode.NotFound;
+                        break;
+
+                    //not authorized to update - you are not the project creator
+                    case ProjectRepository.StatusCodes.NOT_AUTHORIZED:
+                        httpStatusCode = HttpStatusCode.MethodNotAllowed;
+                        break;
+
+                    //project updated ok
+                    case ProjectRepository.StatusCodes.OK:
+                        httpStatusCode = HttpStatusCode.OK;
+                        break;
+                }
+
+                return Request.CreateResponse(httpStatusCode);
             }
         }
 

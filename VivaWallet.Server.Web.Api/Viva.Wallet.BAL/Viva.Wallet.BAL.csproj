@@ -50,14 +50,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\AttachmentSetModel.cs" />
     <Compile Include="Models\FundingPackageModel.cs" />
     <Compile Include="Models\ProjectCategoriesModel.cs" />
     <Compile Include="Models\ProjectCommentModel.cs" />
     <Compile Include="Models\ProjectModel.cs" />
+    <Compile Include="Models\ProjectModelToView.cs" />
     <Compile Include="Models\ProjectStatModel.cs" />
     <Compile Include="Models\ProjectUpdateModel.cs" />
     <Compile Include="Models\UserFundingModel.cs" />
     <Compile Include="Models\UserModel.cs" />
+    <Compile Include="Repository\AttachmentSetRepository.cs" />
     <Compile Include="Repository\FundingPackageRepository.cs" />
     <Compile Include="Repository\ProjectCategoryRepository.cs" />
     <Compile Include="Repository\ProjectCommentRepository.cs" />

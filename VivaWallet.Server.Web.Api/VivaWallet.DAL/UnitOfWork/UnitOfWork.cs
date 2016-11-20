@@ -17,7 +17,8 @@ namespace Viva.Wallet.BAL
         private Repository<ProjectComment> _ProjectCommentreRepository;
         private Repository<ProjectUpdate> _ProjectUpdateRepository;
         private Repository<ProjectStat> _ProjectStatRepository;
-        private Repository<Attachment> _AttachemntRepository;
+        private Repository<Attachment> _AttachmentRepository;
+        private Repository<AttachmentSet> _AttachmentSetRepository;
         private VivaWalletEntities _dbContext;
 
         public UnitOfWork()
@@ -75,7 +76,12 @@ namespace Viva.Wallet.BAL
 
         public Repository<Attachment> AttachemntRepository
         {
-            get { return _AttachemntRepository ?? new Repository<Attachment>(_dbContext); }
+            get { return _AttachmentRepository ?? new Repository<Attachment>(_dbContext); }
+        }
+
+        public Repository<AttachmentSet> AttachmentSetRepository
+        {
+            get { return _AttachmentSetRepository ?? new Repository<AttachmentSet>(_dbContext); }
         }
 
         public void Dispose()
@@ -86,8 +92,11 @@ namespace Viva.Wallet.BAL
             if (_ProjectCategoryRepository != null)
                 _ProjectCategoryRepository.Dispose();
 
-            if (_AttachemntRepository != null)
-                _AttachemntRepository.Dispose();
+            if (_AttachmentRepository != null)
+                _AttachmentRepository.Dispose();
+
+            if (_AttachmentSetRepository != null)
+                _AttachmentSetRepository.Dispose();
 
             if (_ProjectCommentreRepository != null)
                 _ProjectCommentreRepository.Dispose();
