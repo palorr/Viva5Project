@@ -24,6 +24,7 @@ namespace VivaWallet.DAL
         public string Caption { get; set; }
         public string MimeType { get; set; }
         public string HtmlCode { get; set; }
+        public int OrderNo { get; set; }
     
         public virtual AttachmentSet AttachmentSet { get; set; }
     }

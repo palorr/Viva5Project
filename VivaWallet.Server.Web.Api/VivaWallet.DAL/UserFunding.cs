@@ -20,6 +20,7 @@ namespace VivaWallet.DAL
         public long UserId { get; set; }
         public System.DateTime WhenDateTime { get; set; }
         public decimal AmountPaid { get; set; }
+        public string TransactionId { get; set; }
     
         public virtual FundingPackage FundingPackage { get; set; }
         public virtual User User { get; set; }
