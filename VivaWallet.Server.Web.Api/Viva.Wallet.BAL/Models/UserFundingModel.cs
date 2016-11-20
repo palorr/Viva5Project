@@ -19,5 +19,7 @@ namespace Viva.Wallet.BAL.Models
         public DateTime WhenDateTime { get; set; }
 
         public decimal AmountPaid { get; set; }
+
+        public string TransactionId { get; set; }
     }
 }

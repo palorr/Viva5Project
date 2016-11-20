@@ -25,5 +25,7 @@ namespace Viva.Wallet.BAL.Models
         public string ShortBio { get; set; }
 
         public string AvatarImage { get; set; }
+
+        public bool IsAdmin { get; set; }
     }
 }
