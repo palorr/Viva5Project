@@ -80,6 +80,7 @@ namespace Viva.Wallet.BAL.Repository
                           .Select(e => new ProjectModelToView()
                           {
                               Id = e.Id,
+                              AttachmentSetId = e.AttachmentSetId,
                               Title = e.Title,
                               CreatedDate = e.CreatedDate,
                               Description = e.Description,
@@ -127,6 +128,7 @@ namespace Viva.Wallet.BAL.Repository
                       .Select(e => new ProjectModel()
                       {
                             Id = e.Id,
+                            AttachmentSetId = e.AttachmentSetId,
                             Title = e.Title,
                             CreatedDate = e.CreatedDate,
                             Description =e.Description,
@@ -135,8 +137,8 @@ namespace Viva.Wallet.BAL.Repository
                             OwnerId = e.User.Id,
                             OwnerName = e.User.Name,
                             ProjectCategoryDesc = e.ProjectCategory.Name,
-                            ProjectCategoryId =e.ProjectCategoryId,
-                            Status =e.Status,
+                            ProjectCategoryId = e.ProjectCategoryId,
+                            Status = e.Status,
                             UpdatedDate = e.UpdateDate
                       }).OrderByDescending(e => e.CreatedDate).ToList();
 
@@ -219,7 +221,7 @@ namespace Viva.Wallet.BAL.Repository
                     }
 
                     _project.ProjectCategoryId = source.ProjectCategoryId;
-                    _project.AttachmentSetId = source.AttachmentSetId;
+                    //_project.AttachmentSetId = source.AttachmentSetId;
                     _project.Title = source.Title;
                     _project.Description = source.Description;
                     _project.UpdateDate = DateTime.Now;
