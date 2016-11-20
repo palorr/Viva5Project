@@ -18,23 +18,39 @@ namespace Viva.Wallet.BAL.Repository
         {
             uow = new UnitOfWork();
         }
-
+        
         // OK
-        public IList<ProjectUpdateModel> GetAllProjectUpdates(int projectId)
+        public IList<ProjectUpdateModelToView> GetAllProjectUpdates(long projectId, ClaimsIdentity identity = null)
         {
-            return uow.ProjectUpdateRepository
-                      .SearchFor(e => e.ProjectId == projectId)
-                      .Select(e => new ProjectUpdateModel()
-                      {
-                          Id = e.Id,
-                          ProjectId = e.ProjectId,
-                          AttachmentSetId = e.AttachmentSetId,
-                          Title = e.Title,
-                          Description = e.Description,
-                          WhenDateTime = e.WhenDateTime
-                      }).OrderByDescending(e => e.WhenDateTime).ToList();
-        }
+            bool isRequestorProjectCreator = false;
 
+            if (identity != null)
+            {
+                ProjectRepository _prRepo = new ProjectRepository();
+                isRequestorProjectCreator = _prRepo.IsProjectCreator((int)projectId, identity);
+            }
+
+            try
+            {
+                return uow.ProjectUpdateRepository
+                          .SearchFor(e => e.ProjectId == projectId)
+                          .Select(e => new ProjectUpdateModelToView()
+                          {
+                              Id = e.Id,
+                              ProjectId = e.ProjectId,
+                              AttachmentSetId = e.AttachmentSetId,
+                              Title = e.Title,
+                              Description = e.Description,
+                              WhenDateTime = e.WhenDateTime,
+                              IsRequestorProjectCreator = isRequestorProjectCreator
+                          }).OrderByDescending(e => e.WhenDateTime).ToList();
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException("Project lookup for project Id failed", ex);
+            }
+        }
+        
         // OK
         public StatusCodes InsertProjectUpdate(ProjectUpdateModel source, ClaimsIdentity identity, int projectId)
         {

@@ -207,8 +207,8 @@ namespace VivaWallet.Server.Web.Api.Controllers
         // OK
         [AllowAnonymous]
         [HttpGet]
-        [Route("{projectId}/updates")]
-        public HttpResponseMessage GetProjectUpdates(int projectId)
+        [Route("{projectId}/updates/allowAll")]
+        public HttpResponseMessage GetProjectUpdatesForLoggedOutUsers(int projectId)
         {
             if (projectId <= 0)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
@@ -217,6 +217,23 @@ namespace VivaWallet.Server.Web.Api.Controllers
             {
                 var v = s.GetAllProjectUpdates(projectId);
 
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
+        [HttpGet]
+        [Route("{projectId}/updates")]
+        public HttpResponseMessage GetProjectUpdatesForLoggedInUsers(int projectId)
+        {
+            if (projectId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new ProjectUpdateRepository())
+            {
+                var v = s.GetAllProjectUpdates(projectId, identity);
+                
                 return Request.CreateResponse(HttpStatusCode.OK, v);
             }
         }
