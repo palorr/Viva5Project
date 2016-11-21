@@ -494,22 +494,6 @@ namespace VivaWallet.Server.Web.Api.Controllers
          * 
          * */
 
-        // OK
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("{projectId}/fundingPackages")]
-        public HttpResponseMessage GetProjectFundingPackages(int projectId)
-        {
-            if (projectId <= 0)
-                return Request.CreateResponse(HttpStatusCode.BadRequest);
-
-            using (var s = new FundingPackageRepository())
-            {
-                var v = s.GetAllProjectFundingPackages(projectId);
-
-                return Request.CreateResponse(HttpStatusCode.OK, v);
-            }
-        }
 
         // OK
         [AllowAnonymous]
@@ -533,6 +517,61 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+
+
+
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("{projectId}/fundingPackages/allowAll")]
+        public HttpResponseMessage GetProjectFundingPackagesForLoggedOutUsers(int projectId)
+        {
+            if (projectId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            using (var s = new FundingPackageRepository())
+            {
+                var v = s.GetAllProjectFundingPackages(projectId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
+        // OK
+        [HttpGet]
+        [Route("{projectId}/fundingPackages")]
+        public HttpResponseMessage GetProjectFundingPackagesForLoggedInUsers(int projectId)
+        {
+            if (projectId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new FundingPackageRepository())
+            {
+                var v = s.GetAllProjectFundingPackages(projectId, identity);
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
+        [HttpGet]
+        [Route("{projectId}/fundingPackages/{fundingPackageId}")]
+        public HttpResponseMessage GetFundingPackageByIdForLoggedInUsers(int projectId, int fundingPackageId)
+        {
+            if (projectId <= 0 || fundingPackageId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new FundingPackageRepository())
+            {
+                var v = s.GetProjectFundingPackageById(projectId, fundingPackageId, identity);
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+        
         // OK
         [HttpPost]
         [Route("{projectId}/fundingPackages")]

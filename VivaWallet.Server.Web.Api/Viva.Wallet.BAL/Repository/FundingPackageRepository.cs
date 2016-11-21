@@ -25,11 +25,19 @@ namespace Viva.Wallet.BAL.Repository
         }
 
         // OK
-        public IList<FundingPackageModel> GetAllProjectFundingPackages(int projectId)
+        public IList<FundingPackageModelToView> GetAllProjectFundingPackages(long projectId, ClaimsIdentity identity = null)
         {
+            bool isRequestorProjectCreator = false;
+
+            if (identity != null)
+            {
+                ProjectRepository _prRepo = new ProjectRepository();
+                isRequestorProjectCreator = _prRepo.IsProjectCreator((int)projectId, identity);
+            }
+
             return uow.FundingPackageRepository
                       .SearchFor(e => e.ProjectId == projectId)
-                      .Select(e => new FundingPackageModel()
+                      .Select(e => new FundingPackageModelToView()
                       {
                           Id = e.Id,
                           ProjectId = e.ProjectId,
@@ -38,28 +46,35 @@ namespace Viva.Wallet.BAL.Repository
                           PledgeAmount = e.PledgeAmount,
                           Description = e.Description,
                           WhenDateTime = e.WhenDateTime,
-                          EstimatedDeliveryDate = e.EstimatedDeliveryDate
+                          EstimatedDeliveryDate = e.EstimatedDeliveryDate,
+                          IsRequestorProjectCreator = isRequestorProjectCreator
                       }).OrderByDescending(e => e.WhenDateTime).ToList();
         }
 
         // OK
-        public FundingPackageModel GetProjectFundingPackageById(int fundingPackageId)
+        public FundingPackageModelToView GetProjectFundingPackageById(int projectId, int fundingPackageId, ClaimsIdentity identity)
         {
+            bool isRequestorProjectCreator = false;
+
+            ProjectRepository _prRepo = new ProjectRepository();
+            isRequestorProjectCreator = _prRepo.IsProjectCreator(projectId, identity);
+
             try
             {
                 return uow.FundingPackageRepository
-                      .SearchFor(e => e.Id == fundingPackageId)
-                      .Select(e => new FundingPackageModel()
-                      {
-                          Id = e.Id,
-                          ProjectId = e.ProjectId,
-                          AttachmentSetId = e.AttachmentSetId,
-                          Title = e.Title,
-                          PledgeAmount = e.PledgeAmount,
-                          Description = e.Description,
-                          WhenDateTime = e.WhenDateTime,
-                          EstimatedDeliveryDate = e.EstimatedDeliveryDate
-                      }).SingleOrDefault();
+                          .SearchFor(e => (e.ProjectId == projectId && e.Id == fundingPackageId))
+                          .Select(e => new FundingPackageModelToView()
+                          {
+                              Id = e.Id,
+                              ProjectId = e.ProjectId,
+                              AttachmentSetId = e.AttachmentSetId,
+                              Title = e.Title,
+                              PledgeAmount = e.PledgeAmount,
+                              Description = e.Description,
+                              WhenDateTime = e.WhenDateTime,
+                              EstimatedDeliveryDate = e.EstimatedDeliveryDate,
+                              IsRequestorProjectCreator = isRequestorProjectCreator
+                          }).SingleOrDefault();
             }
             catch (InvalidOperationException ex)
             {
