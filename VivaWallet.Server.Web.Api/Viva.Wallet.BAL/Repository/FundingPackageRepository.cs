@@ -114,7 +114,8 @@ namespace Viva.Wallet.BAL.Repository
                         PledgeAmount = (isForDonations ? null : source.PledgeAmount),
                         Description = source.Description,
                         WhenDateTime = DateTime.Now,
-                        EstimatedDeliveryDate = (isForDonations? DateTime.Now : source.EstimatedDeliveryDate)
+                        EstimatedDeliveryDate = DateTime.Now
+                        //EstimatedDeliveryDate = (isForDonations? DateTime.Now : source.EstimatedDeliveryDate)
                     };
 
                     uow.FundingPackageRepository.Insert(_projectFundingPackage, true);
