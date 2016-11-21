@@ -493,34 +493,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
          * PROJECT FUNDING PACKAGES ROUTES
          * 
          * */
-
-
-        // OK
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("{projectId}/fundingPackages/{fundingPackageId}")]
-        public HttpResponseMessage GetSpecificFundingPackageFromProject(int projectId, int fundingPackageId)
-        {
-            if (projectId <= 0 || fundingPackageId <= 0)
-                return Request.CreateResponse(HttpStatusCode.BadRequest);
-
-            using (var s = new FundingPackageRepository())
-            {
-                var v = s.GetProjectFundingPackageById(fundingPackageId);
-
-                if (v == null)
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotFound);
-                }
-
-                return Request.CreateResponse(HttpStatusCode.OK, v);
-            }
-        }
-
-
-
-
-
+         
         [AllowAnonymous]
         [HttpGet]
         [Route("{projectId}/fundingPackages/allowAll")]
