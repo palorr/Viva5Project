@@ -122,6 +122,60 @@ namespace Viva.Wallet.BAL.Repository
         }
 
         // OK
+        public AuthorizationModel IsCurrentUserAuthorized(int targetId, string targetType, ClaimsIdentity identity)
+        {
+            long requestorUserId;
+
+            try
+            {
+                requestorUserId = uow.UserRepository
+                                     .SearchFor(e => e.Username == identity.Name)
+                                     .Select(e => e.Id)
+                                     .SingleOrDefault();
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException("User lookup for requestor Id failed", ex);
+            }
+
+            try
+            {
+                AuthorizationModel _authModel = new AuthorizationModel();
+
+                switch (targetType)
+                {
+                    case "PROJECT":
+                        Project project = uow.ProjectRepository
+                                     .SearchFor(e => e.Id == targetId)
+                                     .SingleOrDefault();
+
+                        
+                        _authModel.RequestorId = requestorUserId;
+                        _authModel.TargetId = targetId;
+                        _authModel.TargetType = "PROJECT";
+
+                        if (project.UserId == requestorUserId)
+                        {
+                            _authModel.isAllowed = true;
+                        } 
+                        else
+                        {
+                            _authModel.isAllowed = false;
+                        }
+
+                        break;
+                }
+                
+                return _authModel;
+
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException("Project lookup for project Id failed", ex);
+            }
+        }
+
+        // OK
         public IList<ProjectModel> GetByCategoryId(long catId)
         {
             return uow.ProjectRepository

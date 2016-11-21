@@ -192,7 +192,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             using (var pr = new ProjectRepository())
             {
-                var v = pr.IsProjectCreator(projectId, identity);
+                var v = pr.IsCurrentUserAuthorized(projectId, "PROJECT", identity);
                 
                 return Request.CreateResponse(HttpStatusCode.OK, v);
             }
