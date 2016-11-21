@@ -37,6 +37,7 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api.Controllers
             {
                 var user = new Viva.Wallet.BAL.Models.UserModel();
                 user.Username = userModel.UserName;
+                //user.Name = userModel.Name;
                 repo.CreateUser(user);
 
             }

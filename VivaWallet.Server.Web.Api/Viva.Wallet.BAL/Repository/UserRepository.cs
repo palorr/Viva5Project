@@ -102,6 +102,7 @@ namespace Viva.Wallet.BAL.Repository
                     //VerificationToken = this.generateVerificationToken(),
                     CreatedDateTime = DateTime.Now,
                     UpdateDateTime = DateTime.Now,
+                    //Name = source.Name,
                     Name = "",
                     ShortBio = "",
                     AvatarImage = ""
