@@ -59,6 +59,7 @@
     <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\ProjectModelToView.cs" />
     <Compile Include="Models\ProjectStatModel.cs" />
+    <Compile Include="Models\ProjectStatModelToView.cs" />
     <Compile Include="Models\ProjectUpdateModel.cs" />
     <Compile Include="Models\ProjectUpdateModelToView.cs" />
     <Compile Include="Models\UserFundingModel.cs" />
