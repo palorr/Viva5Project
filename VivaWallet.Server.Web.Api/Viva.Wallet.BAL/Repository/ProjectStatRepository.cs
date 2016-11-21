@@ -18,21 +18,30 @@ namespace Viva.Wallet.BAL.Repository
         {
             uow = new UnitOfWork();
         }
-
-        public ProjectStatModel GetProjectStats(int projectId)
+        
+        public ProjectStatModelToView GetProjectStats(int projectId, ClaimsIdentity identity = null)
         {
+            bool isRequestorProjectCreator = false;
+
+            if(identity != null)
+            {
+                ProjectRepository _prRepo = new ProjectRepository();
+                isRequestorProjectCreator = _prRepo.IsProjectCreator(projectId, identity);
+            }
+
             try
             {
                 return uow.ProjectStatRepository
                       .SearchFor(e => e.ProjectId == projectId)
-                      .Select(e => new ProjectStatModel()
+                      .Select(e => new ProjectStatModelToView()
                       {
                           Id = e.Id,
                           ProjectId = e.ProjectId,
                           BackersNo = e.BackersNo,
                           MoneyPledged = e.MoneyPledged,
                           SharesNo = e.SharesNo,
-                          CommentsNo = e.CommentsNo
+                          CommentsNo = e.CommentsNo,
+                          IsRequestorProjectCreator = isRequestorProjectCreator
                       }).SingleOrDefault();
             }
             catch (InvalidOperationException ex)

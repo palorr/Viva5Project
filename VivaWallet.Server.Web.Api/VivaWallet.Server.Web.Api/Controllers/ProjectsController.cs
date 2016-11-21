@@ -94,6 +94,49 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("{projectId}/stats/allowAll")]
+        public HttpResponseMessage GetProjectStatsByProjectIdForLoggedOutUsers(int projectId)
+        {
+            if (projectId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+            
+            using (var s = new ProjectStatRepository())
+            {
+                var v = s.GetProjectStats(projectId);
+
+                if (v == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
+        [HttpGet]
+        [Route("{projectId}/stats")]
+        public HttpResponseMessage GetProjectStatsByProjectIdForLoggedInUsers(int projectId)
+        {
+            if (projectId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new ProjectStatRepository())
+            {
+                var v = s.GetProjectStats(projectId, identity);
+
+                if (v == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
         // OK
         [HttpPost]
         [Route("")]
