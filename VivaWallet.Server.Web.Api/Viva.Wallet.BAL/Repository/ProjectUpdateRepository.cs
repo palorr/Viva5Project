@@ -29,11 +29,34 @@ namespace Viva.Wallet.BAL.Repository
                 ProjectRepository _prRepo = new ProjectRepository();
                 isRequestorProjectCreator = _prRepo.IsProjectCreator((int)projectId, identity);
             }
+            
+            return uow.ProjectUpdateRepository
+                        .SearchFor(e => e.ProjectId == projectId)
+                        .Select(e => new ProjectUpdateModelToView()
+                        {
+                            Id = e.Id,
+                            ProjectId = e.ProjectId,
+                            AttachmentSetId = e.AttachmentSetId,
+                            Title = e.Title,
+                            Description = e.Description,
+                            WhenDateTime = e.WhenDateTime,
+                            IsRequestorProjectCreator = isRequestorProjectCreator
+                        }).OrderByDescending(e => e.WhenDateTime).ToList();
+            
+        }
 
+        // OK
+        public ProjectUpdateModelToView GetProjectUpdateById(int projectId, int updateId, ClaimsIdentity identity)
+        {
+            bool isRequestorProjectCreator = false;
+
+            ProjectRepository _prRepo = new ProjectRepository();
+            isRequestorProjectCreator = _prRepo.IsProjectCreator(projectId, identity);
+        
             try
             {
                 return uow.ProjectUpdateRepository
-                          .SearchFor(e => e.ProjectId == projectId)
+                          .SearchFor(e => (e.ProjectId == projectId && e.Id == updateId))
                           .Select(e => new ProjectUpdateModelToView()
                           {
                               Id = e.Id,
@@ -43,14 +66,14 @@ namespace Viva.Wallet.BAL.Repository
                               Description = e.Description,
                               WhenDateTime = e.WhenDateTime,
                               IsRequestorProjectCreator = isRequestorProjectCreator
-                          }).OrderByDescending(e => e.WhenDateTime).ToList();
+                          }).SingleOrDefault();
             }
             catch (InvalidOperationException ex)
             {
-                throw new InvalidOperationException("Project lookup for project Id failed", ex);
+                throw new InvalidOperationException("Project update id lookup failed", ex);
             }
         }
-        
+
         // OK
         public StatusCodes InsertProjectUpdate(ProjectUpdateModel source, ClaimsIdentity identity, int projectId)
         {

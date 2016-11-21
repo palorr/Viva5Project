@@ -156,11 +156,11 @@ namespace Viva.Wallet.BAL.Repository
 
                         if (project.UserId == requestorUserId)
                         {
-                            _authModel.isAllowed = true;
+                            _authModel.IsAllowed = true;
                         } 
                         else
                         {
-                            _authModel.isAllowed = false;
+                            _authModel.IsAllowed = false;
                         }
 
                         break;
