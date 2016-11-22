@@ -198,6 +198,29 @@ namespace Viva.Wallet.BAL.Repository
                       }).OrderByDescending(e => e.CreatedDate).ToList();
 
         }
+        
+        public IList<ProjectModel> GetByName(string searchTerm)
+        {
+            return uow.ProjectRepository
+                      .SearchFor(e => e.Title.Contains(searchTerm))
+                      .Select(e => new ProjectModel()
+                      {
+                          Id = e.Id,
+                          AttachmentSetId = e.AttachmentSetId,
+                          Title = e.Title,
+                          CreatedDate = e.CreatedDate,
+                          Description = e.Description,
+                          FundingEndDate = e.FundingEndDate,
+                          FundingGoal = e.FundingGoal,
+                          OwnerId = e.User.Id,
+                          OwnerName = e.User.Name,
+                          ProjectCategoryDesc = e.ProjectCategory.Name,
+                          ProjectCategoryId = e.ProjectCategoryId,
+                          Status = e.Status,
+                          UpdatedDate = e.UpdateDate
+                      }).OrderByDescending(e => e.CreatedDate).ToList();
+
+        }
 
         // OK
         public long Insert(ProjectModel source, ClaimsIdentity identity)

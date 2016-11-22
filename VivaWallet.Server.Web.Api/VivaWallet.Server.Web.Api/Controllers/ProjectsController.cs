@@ -36,6 +36,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        // OK
         [AllowAnonymous]
         [HttpGet]
         [Route("getAllProjectsByCategory/{categoryId}")]
@@ -44,6 +45,19 @@ namespace VivaWallet.Server.Web.Api.Controllers
             using (var s = new ProjectRepository())
             {
                 var v = s.GetByCategoryId((long)categoryId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("getAllProjectsByName/{searchTerm}")]
+        public HttpResponseMessage GetAllProjectsByName(string searchTerm)
+        {
+            using (var s = new ProjectRepository())
+            {
+                var v = s.GetByName(searchTerm);
 
                 return Request.CreateResponse(HttpStatusCode.OK, v);
             }
