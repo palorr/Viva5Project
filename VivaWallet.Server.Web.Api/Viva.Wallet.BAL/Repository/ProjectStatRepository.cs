@@ -41,7 +41,9 @@ namespace Viva.Wallet.BAL.Repository
                           MoneyPledged = e.MoneyPledged,
                           SharesNo = e.SharesNo,
                           CommentsNo = e.CommentsNo,
-                          IsRequestorProjectCreator = isRequestorProjectCreator
+                          IsRequestorProjectCreator = isRequestorProjectCreator,
+                          FundingGoal = e.Project.FundingGoal,
+                          FundingEndDate = e.Project.FundingEndDate
                       }).SingleOrDefault();
             }
             catch (InvalidOperationException ex)
