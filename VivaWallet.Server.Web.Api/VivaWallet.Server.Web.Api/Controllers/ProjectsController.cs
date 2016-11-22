@@ -77,6 +77,20 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        //OK
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("trending")]
+        public HttpResponseMessage GetTrendingProjects()
+        {
+            using (var s = new ProjectRepository())
+            {
+                var v = s.GetTrendingProjects();
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
         // OK
         [AllowAnonymous]
         [HttpGet]

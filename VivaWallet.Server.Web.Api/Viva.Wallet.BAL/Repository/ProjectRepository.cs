@@ -49,6 +49,43 @@ namespace Viva.Wallet.BAL.Repository
                      ).OrderByDescending(e => e.CreatedDate).ToList();
         }
 
+
+        // OK
+        public IList<ProjectModel> GetTrendingProjects()
+        {
+            using (var ctx = new VivaWalletEntities())
+            {
+                //Get trending projects
+                return ctx.Database.SqlQuery<ProjectModel>(
+                    @" 
+                        SELECT 
+                            TOP 10 
+                            pro.Id Id, pro.Title, Title, pro.CreatedDate CreatedDate, 
+                            pro.Description Description, pro.FundingEndDate FundingEndDate,
+                            pro.FundingGoal FundingGoal, us.Id OwnerId, us.Name OwnerName,
+                            pc.Name ProjectCategoryDesc, pc.Id ProjectCategoryId,
+                            pro.Status Status, pro.UpdateDate UpdateDate
+                        FROM 
+	                        Projects pro
+                        LEFT JOIN
+	                        ProjectStats ps
+                        ON
+	                        ps.ProjectId = pro.Id
+                        LEFT JOIN
+                            Users us
+                        ON
+                            us.Id = pro.UserId
+                        LEFT JOIN
+                            ProjectCategories pc
+                        ON
+                            pro.ProjectCategoryId = pc.Id
+                        ORDER BY
+	                        ps.MoneyPledged DESC, ps.BackersNo DESC, ps.SharesNo DESC, ps.CommentsNo DESC;
+                    "
+                ).ToList();
+            }
+        }
+
         // OK
         public ProjectModelToView GetProjectById(long projectId, ClaimsIdentity identity = null)
         {
