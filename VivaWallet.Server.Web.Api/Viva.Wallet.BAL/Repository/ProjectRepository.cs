@@ -356,6 +356,45 @@ namespace Viva.Wallet.BAL.Repository
             }
         }
 
+        public void CheckForFailedProjects()
+        {
+            IList<Project> _failedProjectsList = new List<Project>();
+
+            //get all projects with expired funding date
+            _failedProjectsList = this.GetAllProjectsWithExpiredFunding();
+
+            foreach(Project _failedProject in _failedProjectsList)
+            {
+                ProjectStat _projectStat;
+                try
+                {
+                    _projectStat = uow.ProjectStatRepository
+                                      .SearchFor(e => e.ProjectId == _failedProject.Id)
+                                      .SingleOrDefault();
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw new InvalidOperationException("Project Stat lookup for failed project Id failed", ex);
+                }
+
+                //if the goal has not reached
+                if (_failedProject.FundingGoal > _projectStat.MoneyPledged)
+                {
+                    _failedProject.Status = "FAI";
+
+                    //update project status to FAI (Failed)
+                    uow.ProjectRepository.Update(_failedProject, true);
+                }
+            }
+        }
+
+        public IList<Project> GetAllProjectsWithExpiredFunding()
+        {
+            return uow.ProjectRepository
+                      .SearchFor(e => e.FundingEndDate < DateTime.Now)
+                      .ToList();
+        }
+
         public enum StatusCodes
         {
             NOT_FOUND = 0,

@@ -192,6 +192,13 @@ namespace Viva.Wallet.BAL.Repository
 
                 uow.ProjectStatRepository.Update(_projectStat, true);
 
+                //The project reached its funding goal update status to COM
+                if (_projectStat.MoneyPledged >= _project.FundingGoal)
+                {
+                    _project.Status = "COM";
+                    uow.ProjectRepository.Update(_project, true);
+                }
+
                 return true;
 
             }
