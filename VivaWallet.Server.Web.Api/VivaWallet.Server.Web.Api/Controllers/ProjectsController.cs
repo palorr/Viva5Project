@@ -21,7 +21,8 @@ namespace VivaWallet.Server.Web.Api.Controllers
          * PROJECT ROUTES
          *
          */
-
+        
+        // OK
         [AllowAnonymous]
         [HttpGet]
         [Route("projectCategories")]
@@ -30,6 +31,19 @@ namespace VivaWallet.Server.Web.Api.Controllers
             using (var s = new ProjectCategoryRepository())
             {
                 var v = s.GetAll();
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("getAllProjectsByCategory/{categoryId}")]
+        public HttpResponseMessage GetAllProjectsByCategory(int categoryId)
+        {
+            using (var s = new ProjectRepository())
+            {
+                var v = s.GetByCategoryId((long)categoryId);
 
                 return Request.CreateResponse(HttpStatusCode.OK, v);
             }
