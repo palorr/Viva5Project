@@ -214,7 +214,8 @@ namespace Viva.Wallet.BAL.Repository
 
             else { 
                 return uow.ProjectRepository
-                          .SearchFor(e => (e.UserId == userId && e.Status != "CRE" && e.Status != "FAI"))
+                          //.SearchFor(e => (e.UserId == userId && e.Status != "CRE" && e.Status != "FAI"))
+                          .SearchFor(e => e.UserId == userId)
                           .Select(e => new ProjectModel()
                             {
                                 Id = e.Id,
