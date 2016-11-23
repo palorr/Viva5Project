@@ -381,6 +381,7 @@ namespace Viva.Wallet.BAL.Repository
                 if (_failedProject.FundingGoal > _projectStat.MoneyPledged)
                 {
                     _failedProject.Status = "FAI";
+                    _failedProject.UpdateDate = DateTime.Now;
 
                     //update project status to FAI (Failed)
                     uow.ProjectRepository.Update(_failedProject, true);
