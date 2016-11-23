@@ -746,5 +746,54 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        /*
+         * 
+         * PROJECT EXTERNAL SHARES ROUTES
+         * 
+         */
+
+        [HttpPost]
+        [Route("{projectId}/externalShares")]
+        public HttpResponseMessage CreateProjectExternalShare(ProjectExternalShareModel projectExternalShare, int projectId)
+        {
+            if (!ModelState.IsValid || projectId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            //STEP 1 - Update the project statistic for external share
+            using (var ps = new ProjectStatRepository())
+            {
+                bool hasUpdatedProjectStat = ps.IncrementProjectStatSharesNo(projectId);
+
+                //project to update stat not found
+                if(!hasUpdatedProjectStat) return Request.CreateResponse(HttpStatusCode.NotFound);
+            }
+            
+            using (var s = new ProjectExternalShareRepository())
+            {
+
+                var httpStatusCode = HttpStatusCode.Created;
+
+                // STEP 2: Create new external share and save it to database table of external shares
+                bool hasInserted = s.CreateExternalShare(projectExternalShare, identity, projectId);
+
+                switch (hasInserted)
+                {
+                    //project for creating external share not found
+                    case false:
+                        httpStatusCode = HttpStatusCode.NotFound;
+                        break;
+                        
+                    //external share inserted ok
+                    case true:
+                        httpStatusCode = HttpStatusCode.Created;
+                        break;
+                }
+                
+                return Request.CreateResponse(httpStatusCode);
+            }
+        }
+        
     }
 }
