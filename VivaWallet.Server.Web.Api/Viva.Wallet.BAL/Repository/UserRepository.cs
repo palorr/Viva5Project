@@ -105,7 +105,7 @@ namespace Viva.Wallet.BAL.Repository
                     //Name = source.Name,
                     Name = "",
                     ShortBio = "",
-                    AvatarImage = ""
+                    AvatarImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSODALYDYo2dqN0DG_kPNi2X7EAy1K8SpRRZQWkNv9alC62IHggOw"
                 };
 
                 uow.UserRepository.Insert(_user, true);
