@@ -331,7 +331,7 @@ namespace Viva.Wallet.BAL.Repository
             }
         }
 
-        public IList<ProjectModel> GetUserFundedCompletedProjects(ClaimsIdentity identity)
+        public IList<ProjectModel> GetUserFundedCompletedProjects(ClaimsIdentity identity, bool showAll)
         {
             long currentUserId;
 
@@ -350,10 +350,16 @@ namespace Viva.Wallet.BAL.Repository
             //get user funded projects that have status = "COM"
             using (var ctx = new VivaWalletEntities())
             {
-                return ctx.UserFundings
+
+                //first return rows as IEnumerable - Reason? A user may have backed this project
+                //that completed multiple times 
+                //as a result we may end have many same rows
+                //create a function distinctBy to remove same entries from the IEnumerable
+
+                IOrderedQueryable<ProjectModel> userFundingsOrderedQueryable = ctx.UserFundings
                     .Join(ctx.FundingPackages, uf => uf.FundingPackageId, fp => fp.Id, (uf, fp) => new { uf, fp })
                     .Join(ctx.Projects, uffp => uffp.fp.ProjectId, pr => pr.Id, (uffp, pr) => new { uffp.fp, uffp.uf, pr })
-                    .Where(uffppr => uffppr.uf.UserId == currentUserId)
+                    .Where(uffppr => (uffppr.uf.UserId == currentUserId && uffppr.pr.Status == "COM"))
                     .Select(uffppr => new ProjectModel()
                     {
                         Id = uffppr.pr.Id,
@@ -368,9 +374,40 @@ namespace Viva.Wallet.BAL.Repository
                         FundingEndDate = uffppr.pr.FundingEndDate,
                         FundingGoal = uffppr.pr.FundingGoal,
                         Status = uffppr.pr.Status
-                    }).OrderByDescending(e => e.UpdatedDate).ToList();
+                    }).OrderByDescending(e => e.UpdatedDate);
+
+                IEnumerable<ProjectModel> userFundings;
+
+                //if showAll true show all completed projects
+                if (showAll)
+                {
+                    userFundings = userFundingsOrderedQueryable.AsEnumerable();
+                }
+
+                //else show top most recent completed
+                else
+                {
+                    userFundings = userFundingsOrderedQueryable.Take(5).AsEnumerable();
+                }
+
+                //return the filtered set of rows as a IList for the view to render
+                return UserRepository.DistinctBy(userFundings, p => p.Id).ToList();
             }
 
+        }
+
+        private static IEnumerable<TSource> 
+            DistinctBy<TSource, TKey>
+            (IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            HashSet<TKey> seenKeys = new HashSet<TKey>();
+            foreach (TSource element in source)
+            {
+                if (seenKeys.Add(keySelector(element)))
+                {
+                    yield return element;
+                }
+            }
         }
 
         public void Dispose()

@@ -229,15 +229,31 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        // OK - Show all in project list view
         [HttpGet]
-        [Route("getUserFundedCompletedProjects")]
-        public HttpResponseMessage GetUserFundedCompletedProjects()
+        [Route("getUserFundedCompletedProjects/showAll")]
+        public HttpResponseMessage GetUserFundedCompletedProjectsShowAll()
         {
             var identity = User.Identity as ClaimsIdentity;
 
             using (var s = new UserRepository())
             {
-                var v = s.GetUserFundedCompletedProjects(identity);
+                var v = s.GetUserFundedCompletedProjects(identity, true);
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
+        // OK - Show first 5
+        [HttpGet]
+        [Route("getUserFundedCompletedProjects")]
+        public HttpResponseMessage GetUserFundedCompletedProjectsShowTop5()
+        {
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new UserRepository())
+            {
+                var v = s.GetUserFundedCompletedProjects(identity, false);
 
                 return Request.CreateResponse(HttpStatusCode.OK, v);
             }
