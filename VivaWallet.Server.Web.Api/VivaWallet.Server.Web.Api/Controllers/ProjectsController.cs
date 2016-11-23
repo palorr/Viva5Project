@@ -806,6 +806,76 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 return Request.CreateResponse(httpStatusCode);
             }
         }
-        
+
+        /*
+         * 
+         * PROJECT FUNDINGS ROUTES 
+         * 
+         */
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("{projectId}/getProjectFundings")]
+        public HttpResponseMessage GetProjectFundings(int projectId)
+        {
+            if (projectId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            using (var s = new UserFundingRepository())
+            {
+                var v = s.GetProjectFundings(projectId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
+        [HttpGet]
+        [Route("getCurrentUserProjectFundings")]
+        public HttpResponseMessage GetCurrentUserProjectFundings(int projectId)
+        {
+            if (projectId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new UserFundingRepository())
+            {
+                var v = s.GetCurrentUserProjectFundings(identity, projectId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
+
+        [HttpPost]
+        [Route("{projectId}/fundings")]
+        public HttpResponseMessage CreateFundingForProject(UserFundingModel funding, int projectId)
+        {
+            if (!ModelState.IsValid)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new UserFundingRepository())
+            {
+                //STEP 1 - Create the Project Funding from UserFundingModel coming from the client
+                long newFundingId = s.Insert(funding, projectId, identity);
+
+                //STEP 2 - Update Project Stats Screen Amount + NoOfBackers
+                using (var sr = new ProjectStatRepository())
+                {
+                    bool statAmountUpdated = sr.IncrementProjectStatMoneyPledged(projectId, funding.AmountPaid);
+                    bool statNoOfBackersUpdated = sr.IncrementProjectStatBackersNo(projectId);
+
+                    if (!statAmountUpdated || !statNoOfBackersUpdated)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound);
+                    }
+                }
+                
+                return Request.CreateResponse(HttpStatusCode.Created, newFundingId);
+            }
+        }
+
     }
 }

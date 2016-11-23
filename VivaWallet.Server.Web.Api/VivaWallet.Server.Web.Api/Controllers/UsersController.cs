@@ -258,14 +258,6 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, v);
             }
         }
-
-        /*
-         * 
-         * USER PROJECT FUNDINGS ROUTES 
-         * 
-         */
-
-        //TODO - Add routes for fundings
-
+        
     }
 }
