@@ -331,6 +331,48 @@ namespace Viva.Wallet.BAL.Repository
             }
         }
 
+        public IList<ProjectModel> GetUserFundedCompletedProjects(ClaimsIdentity identity)
+        {
+            long currentUserId;
+
+            try
+            {
+                currentUserId = uow.UserRepository
+                                 .SearchFor(e => e.Username == identity.Name)
+                                 .Select(e => e.Id)
+                                 .SingleOrDefault();
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException("User lookup for current logged in User Id failed in GetUserFundedProjectsCompletedNotifications", ex);
+            }
+            
+            //get user funded projects that have status = "COM"
+            using (var ctx = new VivaWalletEntities())
+            {
+                return ctx.UserFundings
+                    .Join(ctx.FundingPackages, uf => uf.FundingPackageId, fp => fp.Id, (uf, fp) => new { uf, fp })
+                    .Join(ctx.Projects, uffp => uffp.fp.ProjectId, pr => pr.Id, (uffp, pr) => new { uffp.fp, uffp.uf, pr })
+                    .Where(uffppr => uffppr.uf.UserId == currentUserId)
+                    .Select(uffppr => new ProjectModel()
+                    {
+                        Id = uffppr.pr.Id,
+                        OwnerId = uffppr.pr.UserId,
+                        OwnerName = uffppr.pr.User.Name,
+                        ProjectCategoryId = uffppr.pr.ProjectCategoryId,
+                        ProjectCategoryDesc = uffppr.pr.ProjectCategory.Name,
+                        Title = uffppr.pr.Title,
+                        Description = uffppr.pr.Description,
+                        CreatedDate = uffppr.pr.CreatedDate,
+                        UpdatedDate = uffppr.pr.UpdateDate,
+                        FundingEndDate = uffppr.pr.FundingEndDate,
+                        FundingGoal = uffppr.pr.FundingGoal,
+                        Status = uffppr.pr.Status
+                    }).OrderByDescending(e => e.UpdatedDate).ToList();
+            }
+
+        }
+
         public void Dispose()
         {
             uow.Dispose();

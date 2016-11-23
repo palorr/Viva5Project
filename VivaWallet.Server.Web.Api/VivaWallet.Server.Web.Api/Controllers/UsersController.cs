@@ -229,6 +229,20 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("getUserFundedCompletedProjects")]
+        public HttpResponseMessage GetUserFundedCompletedProjects()
+        {
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new UserRepository())
+            {
+                var v = s.GetUserFundedCompletedProjects(identity);
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
         /*
          * 
          * USER PROJECT FUNDINGS ROUTES 
