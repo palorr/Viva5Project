@@ -44,6 +44,8 @@ namespace VivaWallet.Server.Web.Api.Controllers
         {
             using (var s = new ProjectRepository())
             {
+                s.CheckForFailedProjects();
+
                 var v = s.GetByCategoryId((long)categoryId);
 
                 return Request.CreateResponse(HttpStatusCode.OK, v);
@@ -57,6 +59,8 @@ namespace VivaWallet.Server.Web.Api.Controllers
         {
             using (var s = new ProjectRepository())
             {
+                s.CheckForFailedProjects();
+
                 var v = s.GetByName(searchTerm);
 
                 return Request.CreateResponse(HttpStatusCode.OK, v);
@@ -71,6 +75,8 @@ namespace VivaWallet.Server.Web.Api.Controllers
         {
             using (var s = new ProjectRepository())
             {
+                s.CheckForFailedProjects();
+
                 var v = s.GetAll();
 
                 return Request.CreateResponse(HttpStatusCode.OK, v);
@@ -85,6 +91,8 @@ namespace VivaWallet.Server.Web.Api.Controllers
         {
             using (var s = new ProjectRepository())
             {
+                s.CheckForFailedProjects();
+
                 var v = s.GetTrendingProjects();
 
                 return Request.CreateResponse(HttpStatusCode.OK, v);
@@ -102,6 +110,8 @@ namespace VivaWallet.Server.Web.Api.Controllers
             
             using (var s = new ProjectRepository())
             {
+                s.CheckForFailedProjects();
+
                 var v = s.GetProjectById(projectId);
 
                 if(v == null)
@@ -125,6 +135,8 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             using (var s = new ProjectRepository())
             {
+                s.CheckForFailedProjects();
+
                 var v = s.GetProjectById(projectId, identity);
 
                 if (v == null)
