@@ -258,19 +258,6 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, v);
             }
         }
-
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("getAllUsersByName/{searchTerm}")]
-        public HttpResponseMessage GetAllUsersByName(string searchTerm)
-        {
-            using (var s = new UserRepository())
-            {
-                
-                var v = s.GetByName(searchTerm);
-
-                return Request.CreateResponse(HttpStatusCode.OK, v);
-            }
-        }
+        
     }
 }

@@ -145,6 +145,7 @@ namespace Viva.Wallet.BAL
             }
             catch (Exception ex)
             {
+
                 throw ex;
             }
            
