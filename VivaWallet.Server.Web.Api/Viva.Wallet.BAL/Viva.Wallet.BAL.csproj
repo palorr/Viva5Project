@@ -53,6 +53,7 @@
     <Compile Include="Models\AttachmentSetModel.cs" />
     <Compile Include="Models\AuthorizationModel.cs" />
     <Compile Include="Models\FundingPackageModel.cs" />
+    <Compile Include="Models\FundingPackageModelToPaymentView.cs" />
     <Compile Include="Models\FundingPackageModelToView.cs" />
     <Compile Include="Models\ProjectCategoriesModel.cs" />
     <Compile Include="Models\ProjectCommentModel.cs" />

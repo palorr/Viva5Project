@@ -641,7 +641,22 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, v);
             }
         }
-        
+
+        [HttpGet]
+        [Route("{projectId}/fundingPackages/{fundingPackageId}/forPaymentsView")]
+        public HttpResponseMessage GetFundingPackageByIdForLoggedInUsersForPaymentView(int projectId, int fundingPackageId)
+        {
+            if (projectId <= 0 || fundingPackageId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+            
+            using (var s = new FundingPackageRepository())
+            {
+                var v = s.GetProjectFundingPackageByIdForPaymentView(projectId, fundingPackageId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
         // OK
         [HttpPost]
         [Route("{projectId}/fundingPackages")]

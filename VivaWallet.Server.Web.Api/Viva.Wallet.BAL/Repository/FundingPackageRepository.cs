@@ -83,6 +83,33 @@ namespace Viva.Wallet.BAL.Repository
         }
 
         // OK
+        public FundingPackageModelToPaymentView GetProjectFundingPackageByIdForPaymentView(int projectId, int fundingPackageId)
+        {
+            try
+            {
+                return uow.FundingPackageRepository
+                          .SearchFor(e => (e.ProjectId == projectId && e.Id == fundingPackageId))
+                          .Select(e => new FundingPackageModelToPaymentView()
+                          {
+                              Id = e.Id,
+                              ProjectId = e.ProjectId,
+                              AttachmentSetId = e.AttachmentSetId,
+                              Title = e.Title,
+                              PledgeAmount = e.PledgeAmount,
+                              Description = e.Description,
+                              WhenDateTime = e.WhenDateTime,
+                              EstimatedDeliveryDate = e.EstimatedDeliveryDate,
+                              ProjectTitle = e.Project.Title,
+                              ProjectDescription = e.Project.Description
+                          }).SingleOrDefault();
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException("Funding Package Id lookup for project failed in GetProjectFundingPackageByIdForPaymentView", ex);
+            }
+        }
+
+        // OK
         public StatusCodes CreateFundingPackage(FundingPackageModel source, ClaimsIdentity identity, int projectId, bool isForDonations)
         {
             try
