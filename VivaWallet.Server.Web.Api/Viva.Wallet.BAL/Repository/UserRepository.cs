@@ -152,6 +152,26 @@ namespace Viva.Wallet.BAL.Repository
             }
         }
 
+        public IList<UserModel> GetByName(string searchTerm)
+        {
+            return uow.UserRepository
+                      .SearchFor(e => e.Name.Contains(searchTerm))
+                      .Select(e => new UserModel()
+                      {
+                          Id = e.Id,
+                          Username = e.Username,
+                          IsVerified = e.IsVerified,
+                          CreatedDateTime = e.CreatedDateTime,
+                          UpdatedDateTime = e.UpdateDateTime,
+                          Name = e.Name,
+                          ShortBio = e.ShortBio,
+                          AvatarImage = e.AvatarImage,
+                          IsAdmin = e.IsAdmin
+
+                      }).OrderByDescending(e => e.CreatedDateTime).ToList();
+
+        }
+
         // OK
         public StatusCodes DeactivateUserAccount(ClaimsIdentity identity, int userId)
         {
@@ -395,6 +415,8 @@ namespace Viva.Wallet.BAL.Repository
             }
 
         }
+
+
 
         private static IEnumerable<TSource> 
             DistinctBy<TSource, TKey>
