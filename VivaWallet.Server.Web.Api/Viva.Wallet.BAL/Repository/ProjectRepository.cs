@@ -147,6 +147,8 @@ namespace Viva.Wallet.BAL.Repository
                                      .SearchFor(e => e.Id == projectId)
                                      .SingleOrDefault();
 
+                if (project == null) return false;
+
                 if (project.UserId == requestorUserId) return true;
 
                 return false;

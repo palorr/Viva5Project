@@ -48,7 +48,7 @@ namespace Viva.Wallet.BAL.Repository
                           WhenDateTime = e.WhenDateTime,
                           EstimatedDeliveryDate = e.EstimatedDeliveryDate,
                           IsRequestorProjectCreator = isRequestorProjectCreator
-                      }).OrderByDescending(e => e.WhenDateTime).ToList();
+                      }).OrderBy(e => e.WhenDateTime).ToList();
         }
 
         // OK

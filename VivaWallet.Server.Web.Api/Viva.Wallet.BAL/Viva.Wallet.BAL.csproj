@@ -64,6 +64,7 @@
     <Compile Include="Models\ProjectUpdateModel.cs" />
     <Compile Include="Models\ProjectUpdateModelToView.cs" />
     <Compile Include="Models\UserFundingModel.cs" />
+    <Compile Include="Models\UserFundingModelWithProjectId.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Repository\AttachmentSetRepository.cs" />
     <Compile Include="Repository\FundingPackageRepository.cs" />
