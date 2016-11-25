@@ -1,4 +1,6 @@
-﻿using System;
+﻿using RestSharp;
+using RestSharp.Authenticators;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -13,6 +15,9 @@ namespace Viva.Wallet.BAL.Repository
     public class UserFundingRepository : IDisposable
     {
         protected UnitOfWork uow;
+
+        private const string merchantId = "e8da1677-f9ca-4126-a72c-2b574a291d22";
+        private const string apiKey = "e]CmmG";
 
         public UserFundingRepository()
         {
@@ -104,6 +109,25 @@ namespace Viva.Wallet.BAL.Repository
             {
                 throw;
             }
+        }
+        
+        public async Task<TransactionResult> ChargeAsync(string vivaWalletToken)
+        {
+            var cl = new RestClient("http://demo.vivapayments.com/api/")
+            {
+                Authenticator = new HttpBasicAuthenticator(merchantId, apiKey)
+            };
+            var request = new RestRequest("transactions", Method.POST)
+            {
+                RequestFormat = DataFormat.Json
+            };
+
+            request.AddParameter("PaymentToken", vivaWalletToken);
+
+            var response = await cl.ExecuteTaskAsync<TransactionResult>(request);
+
+            return response.ResponseStatus == ResponseStatus.Completed &&
+                response.StatusCode == System.Net.HttpStatusCode.OK ? response.Data : null;
         }
 
         public void Dispose()

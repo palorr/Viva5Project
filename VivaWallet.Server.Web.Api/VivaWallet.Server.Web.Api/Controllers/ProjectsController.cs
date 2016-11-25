@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using System.Web.Http;
 using Viva.Wallet.BAL;
 using Viva.Wallet.BAL.Models;
@@ -889,6 +890,26 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 }
                 
                 return Request.CreateResponse(HttpStatusCode.Created, newFundingId);
+            }
+        }
+
+        [HttpPost]
+        [Route("fundingPackages/{fundingPackageId}/checkout")]
+        public async Task<IHttpActionResult> CheckoutToViva(VivaWalletTokenModel vivaWalletModel, int fundingPackageId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            
+            using (var s = new UserFundingRepository())
+            {
+                TransactionResult task = await s.ChargeAsync(vivaWalletModel.vivaWalletToken);
+
+                if(task == null)
+                {
+                    return BadRequest();
+                }
+
+                return Ok(task);
             }
         }
 

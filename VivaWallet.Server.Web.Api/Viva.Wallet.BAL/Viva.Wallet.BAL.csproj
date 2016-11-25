@@ -38,6 +38,10 @@
       <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net452\RestSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -64,9 +68,11 @@
     <Compile Include="Models\ProjectStatModelToView.cs" />
     <Compile Include="Models\ProjectUpdateModel.cs" />
     <Compile Include="Models\ProjectUpdateModelToView.cs" />
+    <Compile Include="Models\TransactionResult.cs" />
     <Compile Include="Models\UserFundingModel.cs" />
     <Compile Include="Models\UserFundingModelWithProjectId.cs" />
     <Compile Include="Models\UserModel.cs" />
+    <Compile Include="Models\VivaWalletTokenModel.cs" />
     <Compile Include="Repository\AttachmentSetRepository.cs" />
     <Compile Include="Repository\FundingPackageRepository.cs" />
     <Compile Include="Repository\ProjectCategoryRepository.cs" />
