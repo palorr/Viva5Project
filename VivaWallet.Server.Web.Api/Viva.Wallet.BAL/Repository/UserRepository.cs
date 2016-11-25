@@ -304,49 +304,39 @@ namespace Viva.Wallet.BAL.Repository
 
             else
             {
+                //get user funded projects that have status = "COM"
                 using (var ctx = new VivaWalletEntities())
                 {
-                    //Get user funded projects
-                    return ctx.Database.SqlQuery<ProjectModel>(
-                        @" 
-                            SELECT 
-                                p.Id Id,
-	                            pc.Id ProjectCategoryId, 
-	                            pc.Name ProjectCategoryDesc,
-	                            p.AttachmentSetId AttachmentSetId,
-	                            p.Title Title,
-	                            p.Description Description,
-	                            p.CreatedDate CreatedDate,
-	                            p.UpdateDate UpdateDate,
-	                            p.FundingEndDate FundingEndDate,
-	                            p.FundingGoal FundingGoal,
-	                            p.Status Status,
-	                            p.UserId OwnerId,
-	                            u.Name OwnerName
-                            FROM 
-	                            UserFundings uf
-                            LEFT JOIN
-	                            FundingPackages fp
-                            ON 
-	                            uf.FundingPackageId = fp.Id
-                            LEFT JOIN 
-	                            Projects p
-                            ON 
-	                            fp.ProjectId = p.Id
-                            LEFT JOIN
-                                ProjectCategories pc
-                            ON 
-                                p.ProjectCategoryId = pc.Id
-                            LEFT JOIN
-	                            Users u
-                            ON
-	                            p.UserId = u.Id
-                            WHERE
-	                            uf.UserId = {0}
-                            ORDER BY
-	                            uf.WhenDateTime DESC
-                        ", userId
-                    ).ToList<ProjectModel>();
+
+                    //first return rows as IEnumerable - Reason? A user may have backed this project
+                    //that completed multiple times 
+                    //as a result we may end have many same rows
+                    //create a function distinctBy to remove same entries from the IEnumerable
+
+                    IOrderedQueryable<ProjectModel> userFundingsOrderedQueryable = ctx.UserFundings
+                        .Join(ctx.FundingPackages, uf => uf.FundingPackageId, fp => fp.Id, (uf, fp) => new { uf, fp })
+                        .Join(ctx.Projects, uffp => uffp.fp.ProjectId, pr => pr.Id, (uffp, pr) => new { uffp.fp, uffp.uf, pr })
+                        .Where(uffppr => (uffppr.uf.UserId == userId))
+                        .Select(uffppr => new ProjectModel()
+                        {
+                            Id = uffppr.pr.Id,
+                            OwnerId = uffppr.pr.UserId,
+                            OwnerName = uffppr.pr.User.Name,
+                            ProjectCategoryId = uffppr.pr.ProjectCategoryId,
+                            ProjectCategoryDesc = uffppr.pr.ProjectCategory.Name,
+                            Title = uffppr.pr.Title,
+                            Description = uffppr.pr.Description,
+                            CreatedDate = uffppr.pr.CreatedDate,
+                            UpdatedDate = uffppr.pr.UpdateDate,
+                            FundingEndDate = uffppr.pr.FundingEndDate,
+                            FundingGoal = uffppr.pr.FundingGoal,
+                            Status = uffppr.pr.Status
+                        }).OrderByDescending(e => e.UpdatedDate);
+
+                    IEnumerable<ProjectModel> userFundings = userFundingsOrderedQueryable.AsEnumerable();
+                    
+                    //return the filtered set of rows as a IList for the view to render
+                    return UserRepository.DistinctBy(userFundings, p => p.Id).ToList();
                 }
             }
         }
