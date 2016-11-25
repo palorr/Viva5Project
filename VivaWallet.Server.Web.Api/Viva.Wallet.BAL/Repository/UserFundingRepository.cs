@@ -16,8 +16,13 @@ namespace Viva.Wallet.BAL.Repository
     {
         protected UnitOfWork uow;
 
-        private const string merchantId = "e8da1677-f9ca-4126-a72c-2b574a291d22";
-        private const string apiKey = "e]CmmG";
+        //Orestis Meikopoulos VIVA
+        //private const string merchantId = "e8da1677-f9ca-4126-a72c-2b574a291d22";
+        //private const string apiKey = "e]CmmG";
+
+        //Viva Team 5 
+        private const string merchantId = "22413f73-97d5-4040-a57b-44c7979f0731";
+        private const string apiKey = "=Npy2s";
 
         public UserFundingRepository()
         {
