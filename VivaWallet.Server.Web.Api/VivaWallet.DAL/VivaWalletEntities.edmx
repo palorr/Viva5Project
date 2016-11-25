@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="TestDb_thModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="TestDb_thModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Attachments">
           <Key>
             <PropertyRef Name="Id" />
@@ -19,6 +19,7 @@
           <Property Name="Caption" Type="nvarchar" MaxLength="255" />
           <Property Name="MimeType" Type="nvarchar" MaxLength="255" />
           <Property Name="HtmlCode" Type="nvarchar" MaxLength="1000" />
+          <Property Name="OrderNo" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="AttachmentSets">
           <Key>
@@ -126,6 +127,7 @@
           <Property Name="UserId" Type="bigint" Nullable="false" />
           <Property Name="WhenDateTime" Type="datetime" Nullable="false" />
           <Property Name="AmountPaid" Type="decimal" Precision="18" Scale="3" Nullable="false" />
+          <Property Name="TransactionId" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -141,8 +143,9 @@
           <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="ShortBio" Type="nvarchar" MaxLength="1000" />
           <Property Name="AvatarImage" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsAdmin" Type="bit" Nullable="false" />
         </EntityType>
-        <Association Name="FK__Attachmen__Attac__7C4F7684">
+        <Association Name="FK__Attachmen__Attac__656C112C">
           <End Role="AttachmentSets" Type="Self.AttachmentSets" Multiplicity="1" />
           <End Role="Attachments" Type="Self.Attachments" Multiplicity="*" />
           <ReferentialConstraint>
@@ -154,7 +157,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__FundingPa__Attac__71D1E811">
+        <Association Name="FK__FundingPa__Attac__5AEE82B9">
           <End Role="AttachmentSets" Type="Self.AttachmentSets" Multiplicity="0..1" />
           <End Role="FundingPackages" Type="Self.FundingPackages" Multiplicity="*" />
           <ReferentialConstraint>
@@ -166,7 +169,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__FundingPa__Proje__70DDC3D8">
+        <Association Name="FK__FundingPa__Proje__59FA5E80">
           <End Role="Projects" Type="Self.Projects" Multiplicity="1" />
           <End Role="FundingPackages" Type="Self.FundingPackages" Multiplicity="*" />
           <ReferentialConstraint>
@@ -178,7 +181,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ProjectCo__Attac__114A936A">
+        <Association Name="FK__ProjectCo__Attac__7A672E12">
           <End Role="AttachmentSets" Type="Self.AttachmentSets" Multiplicity="0..1" />
           <End Role="ProjectComments" Type="Self.ProjectComments" Multiplicity="*" />
           <ReferentialConstraint>
@@ -190,7 +193,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ProjectCo__Proje__0F624AF8">
+        <Association Name="FK__ProjectCo__Proje__787EE5A0">
           <End Role="Projects" Type="Self.Projects" Multiplicity="1" />
           <End Role="ProjectComments" Type="Self.ProjectComments" Multiplicity="*" />
           <ReferentialConstraint>
@@ -202,7 +205,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ProjectCo__UserI__10566F31">
+        <Association Name="FK__ProjectCo__UserI__797309D9">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
           <End Role="ProjectComments" Type="Self.ProjectComments" Multiplicity="*" />
           <ReferentialConstraint>
@@ -214,7 +217,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ProjectEx__Proje__160F4887">
+        <Association Name="FK__ProjectEx__Proje__7F2BE32F">
           <End Role="Projects" Type="Self.Projects" Multiplicity="1" />
           <End Role="ProjectExternalShares" Type="Self.ProjectExternalShares" Multiplicity="*" />
           <ReferentialConstraint>
@@ -226,7 +229,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ProjectEx__UserI__17036CC0">
+        <Association Name="FK__ProjectEx__UserI__00200768">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
           <End Role="ProjectExternalShares" Type="Self.ProjectExternalShares" Multiplicity="*" />
           <ReferentialConstraint>
@@ -238,7 +241,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Projects__Attach__5070F446">
+        <Association Name="FK__Projects__Attach__398D8EEE">
           <End Role="AttachmentSets" Type="Self.AttachmentSets" Multiplicity="0..1" />
           <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
           <ReferentialConstraint>
@@ -250,7 +253,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Projects__Projec__4F7CD00D">
+        <Association Name="FK__Projects__Projec__38996AB5">
           <End Role="ProjectCategories" Type="Self.ProjectCategories" Multiplicity="1" />
           <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
           <ReferentialConstraint>
@@ -262,7 +265,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Projects__UserId__4E88ABD4">
+        <Association Name="FK__Projects__UserId__37A5467C">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
           <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
           <ReferentialConstraint>
@@ -274,7 +277,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ProjectSt__Proje__0A9D95DB">
+        <Association Name="FK__ProjectSt__Proje__73BA3083">
           <End Role="Projects" Type="Self.Projects" Multiplicity="1" />
           <End Role="ProjectStats" Type="Self.ProjectStats" Multiplicity="*" />
           <ReferentialConstraint>
@@ -286,7 +289,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ProjectUp__Attac__02084FDA">
+        <Association Name="FK__ProjectUp__Attac__6B24EA82">
           <End Role="AttachmentSets" Type="Self.AttachmentSets" Multiplicity="0..1" />
           <End Role="ProjectUpdates" Type="Self.ProjectUpdates" Multiplicity="*" />
           <ReferentialConstraint>
@@ -298,7 +301,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ProjectUp__Proje__01142BA1">
+        <Association Name="FK__ProjectUp__Proje__6A30C649">
           <End Role="Projects" Type="Self.Projects" Multiplicity="1" />
           <End Role="ProjectUpdates" Type="Self.ProjectUpdates" Multiplicity="*" />
           <ReferentialConstraint>
@@ -310,7 +313,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserFundi__Fundi__1BC821DD">
+        <Association Name="FK__UserFundi__Fundi__04E4BC85">
           <End Role="FundingPackages" Type="Self.FundingPackages" Multiplicity="1" />
           <End Role="UserFundings" Type="Self.UserFundings" Multiplicity="*" />
           <ReferentialConstraint>
@@ -322,7 +325,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__UserFundi__UserI__1CBC4616">
+        <Association Name="FK__UserFundi__UserI__05D8E0BE">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
           <End Role="UserFundings" Type="Self.UserFundings" Multiplicity="*" />
           <ReferentialConstraint>
@@ -346,73 +349,72 @@
           <EntitySet Name="ProjectUpdates" EntityType="Self.ProjectUpdates" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserFundings" EntityType="Self.UserFundings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Attachmen__Attac__7C4F7684" Association="Self.FK__Attachmen__Attac__7C4F7684">
+          <AssociationSet Name="FK__Attachmen__Attac__656C112C" Association="Self.FK__Attachmen__Attac__656C112C">
             <End Role="AttachmentSets" EntitySet="AttachmentSets" />
             <End Role="Attachments" EntitySet="Attachments" />
           </AssociationSet>
-          <AssociationSet Name="FK__FundingPa__Attac__71D1E811" Association="Self.FK__FundingPa__Attac__71D1E811">
+          <AssociationSet Name="FK__FundingPa__Attac__5AEE82B9" Association="Self.FK__FundingPa__Attac__5AEE82B9">
             <End Role="AttachmentSets" EntitySet="AttachmentSets" />
             <End Role="FundingPackages" EntitySet="FundingPackages" />
           </AssociationSet>
-          <AssociationSet Name="FK__FundingPa__Proje__70DDC3D8" Association="Self.FK__FundingPa__Proje__70DDC3D8">
+          <AssociationSet Name="FK__FundingPa__Proje__59FA5E80" Association="Self.FK__FundingPa__Proje__59FA5E80">
             <End Role="Projects" EntitySet="Projects" />
             <End Role="FundingPackages" EntitySet="FundingPackages" />
           </AssociationSet>
-          <AssociationSet Name="FK__ProjectCo__Attac__114A936A" Association="Self.FK__ProjectCo__Attac__114A936A">
+          <AssociationSet Name="FK__ProjectCo__Attac__7A672E12" Association="Self.FK__ProjectCo__Attac__7A672E12">
             <End Role="AttachmentSets" EntitySet="AttachmentSets" />
             <End Role="ProjectComments" EntitySet="ProjectComments" />
           </AssociationSet>
-          <AssociationSet Name="FK__ProjectCo__Proje__0F624AF8" Association="Self.FK__ProjectCo__Proje__0F624AF8">
+          <AssociationSet Name="FK__ProjectCo__Proje__787EE5A0" Association="Self.FK__ProjectCo__Proje__787EE5A0">
             <End Role="Projects" EntitySet="Projects" />
             <End Role="ProjectComments" EntitySet="ProjectComments" />
           </AssociationSet>
-          <AssociationSet Name="FK__ProjectCo__UserI__10566F31" Association="Self.FK__ProjectCo__UserI__10566F31">
+          <AssociationSet Name="FK__ProjectCo__UserI__797309D9" Association="Self.FK__ProjectCo__UserI__797309D9">
             <End Role="Users" EntitySet="Users" />
             <End Role="ProjectComments" EntitySet="ProjectComments" />
           </AssociationSet>
-          <AssociationSet Name="FK__ProjectEx__Proje__160F4887" Association="Self.FK__ProjectEx__Proje__160F4887">
+          <AssociationSet Name="FK__ProjectEx__Proje__7F2BE32F" Association="Self.FK__ProjectEx__Proje__7F2BE32F">
             <End Role="Projects" EntitySet="Projects" />
             <End Role="ProjectExternalShares" EntitySet="ProjectExternalShares" />
           </AssociationSet>
-          <AssociationSet Name="FK__ProjectEx__UserI__17036CC0" Association="Self.FK__ProjectEx__UserI__17036CC0">
+          <AssociationSet Name="FK__ProjectEx__UserI__00200768" Association="Self.FK__ProjectEx__UserI__00200768">
             <End Role="Users" EntitySet="Users" />
             <End Role="ProjectExternalShares" EntitySet="ProjectExternalShares" />
           </AssociationSet>
-          <AssociationSet Name="FK__Projects__Attach__5070F446" Association="Self.FK__Projects__Attach__5070F446">
+          <AssociationSet Name="FK__Projects__Attach__398D8EEE" Association="Self.FK__Projects__Attach__398D8EEE">
             <End Role="AttachmentSets" EntitySet="AttachmentSets" />
             <End Role="Projects" EntitySet="Projects" />
           </AssociationSet>
-          <AssociationSet Name="FK__Projects__Projec__4F7CD00D" Association="Self.FK__Projects__Projec__4F7CD00D">
+          <AssociationSet Name="FK__Projects__Projec__38996AB5" Association="Self.FK__Projects__Projec__38996AB5">
             <End Role="ProjectCategories" EntitySet="ProjectCategories" />
             <End Role="Projects" EntitySet="Projects" />
           </AssociationSet>
-          <AssociationSet Name="FK__Projects__UserId__4E88ABD4" Association="Self.FK__Projects__UserId__4E88ABD4">
+          <AssociationSet Name="FK__Projects__UserId__37A5467C" Association="Self.FK__Projects__UserId__37A5467C">
             <End Role="Users" EntitySet="Users" />
             <End Role="Projects" EntitySet="Projects" />
           </AssociationSet>
-          <AssociationSet Name="FK__ProjectSt__Proje__0A9D95DB" Association="Self.FK__ProjectSt__Proje__0A9D95DB">
+          <AssociationSet Name="FK__ProjectSt__Proje__73BA3083" Association="Self.FK__ProjectSt__Proje__73BA3083">
             <End Role="Projects" EntitySet="Projects" />
             <End Role="ProjectStats" EntitySet="ProjectStats" />
           </AssociationSet>
-          <AssociationSet Name="FK__ProjectUp__Attac__02084FDA" Association="Self.FK__ProjectUp__Attac__02084FDA">
+          <AssociationSet Name="FK__ProjectUp__Attac__6B24EA82" Association="Self.FK__ProjectUp__Attac__6B24EA82">
             <End Role="AttachmentSets" EntitySet="AttachmentSets" />
             <End Role="ProjectUpdates" EntitySet="ProjectUpdates" />
           </AssociationSet>
-          <AssociationSet Name="FK__ProjectUp__Proje__01142BA1" Association="Self.FK__ProjectUp__Proje__01142BA1">
+          <AssociationSet Name="FK__ProjectUp__Proje__6A30C649" Association="Self.FK__ProjectUp__Proje__6A30C649">
             <End Role="Projects" EntitySet="Projects" />
             <End Role="ProjectUpdates" EntitySet="ProjectUpdates" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserFundi__Fundi__1BC821DD" Association="Self.FK__UserFundi__Fundi__1BC821DD">
+          <AssociationSet Name="FK__UserFundi__Fundi__04E4BC85" Association="Self.FK__UserFundi__Fundi__04E4BC85">
             <End Role="FundingPackages" EntitySet="FundingPackages" />
             <End Role="UserFundings" EntitySet="UserFundings" />
           </AssociationSet>
-          <AssociationSet Name="FK__UserFundi__UserI__1CBC4616" Association="Self.FK__UserFundi__UserI__1CBC4616">
+          <AssociationSet Name="FK__UserFundi__UserI__05D8E0BE" Association="Self.FK__UserFundi__UserI__05D8E0BE">
             <End Role="Users" EntitySet="Users" />
             <End Role="UserFundings" EntitySet="UserFundings" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="TestDb_thModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -431,6 +433,7 @@
           <Property Name="MimeType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="HtmlCode" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AttachmentSet" Relationship="Self.FK__Attachmen__Attac__7C4F7684" FromRole="Attachments" ToRole="AttachmentSets" />
+          <Property Name="OrderNo" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="AttachmentSet">
           <Key>
@@ -565,6 +568,7 @@
           <Property Name="AmountPaid" Type="Decimal" Precision="18" Scale="3" Nullable="false" />
           <NavigationProperty Name="FundingPackage" Relationship="Self.FK__UserFundi__Fundi__1BC821DD" FromRole="UserFundings" ToRole="FundingPackages" />
           <NavigationProperty Name="User" Relationship="Self.FK__UserFundi__UserI__1CBC4616" FromRole="UserFundings" ToRole="Users" />
+          <Property Name="TransactionId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -584,6 +588,7 @@
           <NavigationProperty Name="ProjectExternalShares" Relationship="Self.FK__ProjectEx__UserI__17036CC0" FromRole="Users" ToRole="ProjectExternalShares" />
           <NavigationProperty Name="Projects" Relationship="Self.FK__Projects__UserId__4E88ABD4" FromRole="Users" ToRole="Projects" />
           <NavigationProperty Name="UserFundings" Relationship="Self.FK__UserFundi__UserI__1CBC4616" FromRole="Users" ToRole="UserFundings" />
+          <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="FK__Attachmen__Attac__7C4F7684">
           <End Role="AttachmentSets" Type="Self.AttachmentSet" Multiplicity="1" />
@@ -863,6 +868,7 @@
           <EntitySetMapping Name="Attachments">
             <EntityTypeMapping TypeName="TestDb_thModel.Attachment">
               <MappingFragment StoreEntitySet="Attachments">
+                <ScalarProperty Name="OrderNo" ColumnName="OrderNo" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="AttachementSetId" ColumnName="AttachementSetId" />
@@ -983,6 +989,7 @@
           <EntitySetMapping Name="UserFundings">
             <EntityTypeMapping TypeName="TestDb_thModel.UserFunding">
               <MappingFragment StoreEntitySet="UserFundings">
+                <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="FundingPackageId" ColumnName="FundingPackageId" />
@@ -995,6 +1002,7 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="TestDb_thModel.User">
               <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="Username" ColumnName="Username" />

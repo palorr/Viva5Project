@@ -33,6 +33,7 @@ namespace VivaWallet.DAL
         public string Name { get; set; }
         public string ShortBio { get; set; }
         public string AvatarImage { get; set; }
+        public bool IsAdmin { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProjectComment> ProjectComments { get; set; }
