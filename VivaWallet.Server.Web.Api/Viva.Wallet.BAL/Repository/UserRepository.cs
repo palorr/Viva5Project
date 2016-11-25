@@ -341,6 +341,71 @@ namespace Viva.Wallet.BAL.Repository
             }
         }
 
+        /*
+         
+        // OK
+        public IList<ProjectModel> GetUserAllFundings(int userId)
+        {
+            var _user = uow.UserRepository.FindById(userId);
+
+            //user not found
+            if (_user == null)
+            {
+                return new List<ProjectModel>() { };
+            }
+
+            else
+            {
+                using (var ctx = new VivaWalletEntities())
+                {
+                    //Get user funded projects
+                    return ctx.Database.SqlQuery<ProjectModel>(
+                        @" 
+                            SELECT 
+                                p.Id Id,
+	                            pc.Id ProjectCategoryId, 
+	                            pc.Name ProjectCategoryDesc,
+	                            p.AttachmentSetId AttachmentSetId,
+	                            p.Title Title,
+	                            p.Description Description,
+	                            p.CreatedDate CreatedDate,
+	                            p.UpdateDate UpdateDate,
+	                            p.FundingEndDate FundingEndDate,
+	                            p.FundingGoal FundingGoal,
+	                            p.Status Status,
+	                            p.UserId OwnerId,
+	                            u.Name OwnerName
+                            FROM 
+	                            UserFundings uf
+                            LEFT JOIN
+	                            FundingPackages fp
+                            ON 
+	                            uf.FundingPackageId = fp.Id
+                            LEFT JOIN 
+	                            Projects p
+                            ON 
+	                            fp.ProjectId = p.Id
+                            LEFT JOIN
+                                ProjectCategories pc
+                            ON 
+                                p.ProjectCategoryId = pc.Id
+                            LEFT JOIN
+	                            Users u
+                            ON
+	                            p.UserId = u.Id
+                            WHERE
+	                            uf.UserId = {0}
+                            ORDER BY
+	                            uf.WhenDateTime DESC
+                        ", userId
+                    ).ToList<ProjectModel>();
+                }
+            }
+        }     
+             
+        
+        */
+
         public IList<ProjectModel> GetUserFundedCompletedProjects(ClaimsIdentity identity, bool showAll)
         {
             long currentUserId;
