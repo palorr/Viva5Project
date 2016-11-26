@@ -291,56 +291,6 @@ namespace Viva.Wallet.BAL.Repository
 
         }
 
-        // OK
-        public IList<ProjectModel> GetUserFundedProjects(int userId)
-        {
-            var _user = uow.UserRepository.FindById(userId);
-
-            //user not found
-            if (_user == null)
-            {
-                return new List<ProjectModel>() { };
-            }
-
-            else
-            {
-                //get user funded projects that have status = "COM"
-                using (var ctx = new VivaWalletEntities())
-                {
-
-                    //first return rows as IEnumerable - Reason? A user may have backed this project
-                    //that completed multiple times 
-                    //as a result we may end have many same rows
-                    //create a function distinctBy to remove same entries from the IEnumerable
-
-                    IOrderedQueryable<ProjectModel> userFundingsOrderedQueryable = ctx.UserFundings
-                        .Join(ctx.FundingPackages, uf => uf.FundingPackageId, fp => fp.Id, (uf, fp) => new { uf, fp })
-                        .Join(ctx.Projects, uffp => uffp.fp.ProjectId, pr => pr.Id, (uffp, pr) => new { uffp.fp, uffp.uf, pr })
-                        .Where(uffppr => (uffppr.uf.UserId == userId))
-                        .Select(uffppr => new ProjectModel()
-                        {
-                            Id = uffppr.pr.Id,
-                            OwnerId = uffppr.pr.UserId,
-                            OwnerName = uffppr.pr.User.Name,
-                            ProjectCategoryId = uffppr.pr.ProjectCategoryId,
-                            ProjectCategoryDesc = uffppr.pr.ProjectCategory.Name,
-                            Title = uffppr.pr.Title,
-                            Description = uffppr.pr.Description,
-                            CreatedDate = uffppr.pr.CreatedDate,
-                            UpdatedDate = uffppr.pr.UpdateDate,
-                            FundingEndDate = uffppr.pr.FundingEndDate,
-                            FundingGoal = uffppr.pr.FundingGoal,
-                            Status = uffppr.pr.Status
-                        }).OrderByDescending(e => e.UpdatedDate);
-
-                    IEnumerable<ProjectModel> userFundings = userFundingsOrderedQueryable.AsEnumerable();
-                    
-                    //return the filtered set of rows as a IList for the view to render
-                    return UserRepository.DistinctBy(userFundings, p => p.Id).ToList();
-                }
-            }
-        }
-
         /*
          
         // OK
@@ -406,6 +356,104 @@ namespace Viva.Wallet.BAL.Repository
         
         */
 
+        // OK
+        public IList<ProjectModel> GetUserFundedProjects(int userId)
+        {
+            var _user = uow.UserRepository.FindById(userId);
+
+            //user not found
+            if (_user == null)
+            {
+                return new List<ProjectModel>() { };
+            }
+
+            else
+            {
+                //get user funded projects that have status = "COM"
+                using (var ctx = new VivaWalletEntities())
+                {
+
+                    //first return rows as IEnumerable - Reason? A user may have backed this project
+                    //that completed multiple times 
+                    //as a result we may end have many same rows
+                    //create a function distinctBy to remove same entries from the IEnumerable
+
+                    IOrderedQueryable<ProjectModel> userFundingsOrderedQueryable = ctx.UserFundings
+                        .Join(ctx.FundingPackages, uf => uf.FundingPackageId, fp => fp.Id, (uf, fp) => new { uf, fp })
+                        .Join(ctx.Projects, uffp => uffp.fp.ProjectId, pr => pr.Id, (uffp, pr) => new { uffp.fp, uffp.uf, pr })
+                        .Where(uffppr => (uffppr.uf.UserId == userId))
+                        .Select(uffppr => new ProjectModel()
+                        {
+                            Id = uffppr.pr.Id,
+                            OwnerId = uffppr.pr.UserId,
+                            OwnerName = uffppr.pr.User.Name,
+                            ProjectCategoryId = uffppr.pr.ProjectCategoryId,
+                            ProjectCategoryDesc = uffppr.pr.ProjectCategory.Name,
+                            Title = uffppr.pr.Title,
+                            Description = uffppr.pr.Description,
+                            CreatedDate = uffppr.pr.CreatedDate,
+                            UpdatedDate = uffppr.pr.UpdateDate,
+                            FundingEndDate = uffppr.pr.FundingEndDate,
+                            FundingGoal = uffppr.pr.FundingGoal,
+                            Status = uffppr.pr.Status
+                        }).OrderByDescending(e => e.UpdatedDate);
+
+                    IEnumerable<ProjectModel> userFundings = userFundingsOrderedQueryable.AsEnumerable();
+                    
+                    //return the filtered set of rows as a IList for the view to render
+                    return UserRepository.DistinctBy(userFundings, p => p.Id).ToList();
+                }
+            }
+        }
+
+        public IList<ProjectUpdateModel> GetCurrentUserFundedProjectsLatestUpdates(ClaimsIdentity identity)
+        {
+            long currentUserId;
+
+            try
+            {
+                currentUserId = uow.UserRepository
+                                 .SearchFor(e => e.Username == identity.Name)
+                                 .Select(e => e.Id)
+                                 .SingleOrDefault();
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException("User lookup for current logged in User Id failed in GetUserFundedProjectsCompletedNotifications", ex);
+            }
+            
+            //get user funded projects updates
+            using (var ctx = new VivaWalletEntities())
+            {
+
+                //first return rows as IEnumerable - Reason? A user may have backed this project
+                //that completed multiple times 
+                //as a result we may end have many same rows
+                //create a function distinctBy to remove same entries from the IEnumerable
+
+                IOrderedQueryable<ProjectUpdateModel> userFundingsOrderedQueryable = ctx.UserFundings
+                    .Join(ctx.FundingPackages, uf => uf.FundingPackageId, fp => fp.Id, (uf, fp) => new { uf, fp })
+                    .Join(ctx.Projects, uffp => uffp.fp.ProjectId, pr => pr.Id, (uffp, pr) => new { uffp.fp, uffp.uf, pr })
+                    .Join(ctx.ProjectUpdates, uffppr => uffppr.pr.Id, pu => pu.ProjectId, (uffppr, pu) => new { uffppr.pr, uffppr.fp, uffppr.uf, pu })
+                    .Where(uffpprpu => (uffpprpu.uf.UserId == currentUserId) && (uffpprpu.pr.Id == uffpprpu.pu.ProjectId))
+                    .Select(uffpprpu => new ProjectUpdateModel()
+                    {
+                        Id = uffpprpu.pr.Id,
+                        ProjectId = uffpprpu.pr.Id,
+                        AttachmentSetId = uffpprpu.pr.AttachmentSetId,
+                        Title = uffpprpu.pu.Title,
+                        Description = uffpprpu.pu.Description,
+                        WhenDateTime = uffpprpu.pu.WhenDateTime
+                    }).OrderByDescending(e => e.WhenDateTime);
+
+                IEnumerable<ProjectUpdateModel> userFundings = userFundingsOrderedQueryable.AsEnumerable();
+
+                //return the filtered set of rows as a IList for the view to render
+                return UserRepository.DistinctBy(userFundings, p => p.Id).ToList();
+            }
+            
+        }
+        
         public IList<ProjectModel> GetUserFundedCompletedProjects(ClaimsIdentity identity, bool showAll)
         {
             long currentUserId;

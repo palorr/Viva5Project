@@ -248,5 +248,19 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, v);
             }
         }
+
+        [HttpGet]
+        [Route("getAllMyFundedProjectsLatestUpdates")]
+        public HttpResponseMessage GetCurrentUserFundedProjectsUpdates()
+        {
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new UserRepository())
+            {
+                var v = s.GetCurrentUserFundedProjectsLatestUpdates(identity);
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
     }
 }
