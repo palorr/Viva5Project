@@ -154,6 +154,7 @@ namespace Viva.Wallet.BAL.Repository
                         Description = pcprus.pc.Description,
                         WhenDateTime = pcprus.pc.WhenDateTime,
                         ProjectTitle = pcprus.pr.Title,
+                        AvatarImage = pcprus.us.AvatarImage,
                         IsRequestorProjectCommentCreator = false //all false because I want this for a list view in home page - every user can edit their comments in the project profile page in comments tab
                     }).OrderByDescending(e => e.WhenDateTime);
 

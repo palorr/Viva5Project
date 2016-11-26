@@ -10,5 +10,6 @@ namespace Viva.Wallet.BAL.Models
     {
         public bool IsRequestorProjectCommentCreator { get; set; }
         public string ProjectTitle { get; set; }
+        public string AvatarImage { get; set; }
     }
 }
