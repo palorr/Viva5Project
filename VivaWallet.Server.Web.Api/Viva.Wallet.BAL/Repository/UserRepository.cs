@@ -518,10 +518,8 @@ namespace Viva.Wallet.BAL.Repository
             }
 
         }
-
-
-
-        private static IEnumerable<TSource> 
+        
+        public static IEnumerable<TSource> 
             DistinctBy<TSource, TKey>
             (IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {

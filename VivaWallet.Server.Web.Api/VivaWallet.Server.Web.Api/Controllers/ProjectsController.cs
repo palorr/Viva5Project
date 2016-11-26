@@ -519,6 +519,20 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("getAllCurrentUserCreatedProjectComments")]
+        public HttpResponseMessage GetAllCurrentUserCreatedProjectComments()
+        {
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new ProjectCommentRepository())
+            {
+                var v = s.GetAllCurrentUserCreatedProjectComments(identity);
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
         // OK
         [HttpPost]
         [Route("{projectId}/comments/{commentId?}")]

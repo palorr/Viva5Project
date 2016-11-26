@@ -118,20 +118,50 @@ namespace Viva.Wallet.BAL.Repository
         }
 
         // OK
-        public IList<ProjectCommentModel> GetAllProjectComments(int projectId)
+        public IList<ProjectCommentModelToView> GetAllCurrentUserCreatedProjectComments(ClaimsIdentity identity)
         {
-            return uow.ProjectCommentreRepository
-                      .SearchFor(e => e.ProjectId == projectId)
-                      .Select(e => new ProjectCommentModel()
-                      {
-                          Id = e.Id,
-                          ProjectId = e.ProjectId,
-                          UserId = e.UserId,
-                          Name = e.User.Name,
-                          AttachmentSetId = e.AttachmentSetId,
-                          WhenDateTime = e.WhenDateTime,
-                          Description = e.Description
-                      }).OrderByDescending(e => e.WhenDateTime).ToList();
+            long requestorUserId;
+
+            try
+            {
+                requestorUserId = uow.UserRepository
+                                        .SearchFor(e => e.Username == identity.Name)
+                                        .Select(e => e.Id)
+                                        .SingleOrDefault();
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException("User lookup for requestor Id for get all project comments failed", ex);
+            }
+
+            //get current user created projects comments
+            using (var ctx = new VivaWalletEntities())
+            {
+
+                IOrderedQueryable<ProjectCommentModelToView> tmp = 
+                    ctx
+                    .ProjectComments
+                    .Join(ctx.Projects, pc => pc.ProjectId, pr => pr.Id, (pc, pr) => new { pc, pr })
+                    .Join(ctx.Users, pcpr => pcpr.pc.UserId, us => us.Id, (pcpr, us) => new { pcpr.pc, pcpr.pr, us })
+                    .Where(pcprus => (pcprus.pr.UserId == requestorUserId))
+                    .Select(pcprus => new ProjectCommentModelToView()
+                    {
+                        Id = pcprus.pc.Id,
+                        ProjectId = pcprus.pc.ProjectId,
+                        Name = pcprus.us.Name,
+                        UserId = pcprus.pc.UserId,
+                        AttachmentSetId = pcprus.pc.AttachmentSetId,
+                        Description = pcprus.pc.Description,
+                        WhenDateTime = pcprus.pc.WhenDateTime,
+                        ProjectTitle = pcprus.pr.Title,
+                        IsRequestorProjectCommentCreator = false //all false because I want this for a list view in home page - every user can edit their comments in the project profile page in comments tab
+                    }).OrderByDescending(e => e.WhenDateTime);
+
+                IEnumerable<ProjectCommentModelToView> currentUserCreatedProjectComments = tmp.AsEnumerable();
+
+                return currentUserCreatedProjectComments.ToList();
+            }
+
         }
 
         // OK
