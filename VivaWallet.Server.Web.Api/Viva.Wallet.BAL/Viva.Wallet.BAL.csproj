@@ -61,6 +61,7 @@
     <Compile Include="Models\FundingPackageModelToView.cs" />
     <Compile Include="Models\ProjectCategoriesModel.cs" />
     <Compile Include="Models\ProjectCommentModel.cs" />
+    <Compile Include="Models\ProjectCommentModelToView.cs" />
     <Compile Include="Models\ProjectExternalShareModel.cs" />
     <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\ProjectModelToView.cs" />

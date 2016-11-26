@@ -470,7 +470,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
         // OK
         [AllowAnonymous]
         [HttpGet]
-        [Route("{projectId}/comments")]
+        [Route("{projectId}/comments/allowAll")]
         public HttpResponseMessage GetProjectComments(int projectId)
         {
             if (projectId <= 0)
@@ -479,6 +479,41 @@ namespace VivaWallet.Server.Web.Api.Controllers
             using (var s = new ProjectCommentRepository())
             {
                 var v = s.GetAllProjectComments(projectId);
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
+        // OK
+        [HttpGet]
+        [Route("{projectId}/comments")]
+        public HttpResponseMessage GetProjectCommentsForLoggedInUsers(int projectId)
+        {
+            if (projectId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new ProjectCommentRepository())
+            {
+                var v = s.GetAllProjectComments(projectId, identity);
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
+        [HttpGet]
+        [Route("{projectId}/comments/{commentId}")]
+        public HttpResponseMessage GetProjectCommentByIdForLoggedInUsers(int projectId, int commentId)
+        {
+            if (projectId <= 0 || commentId <= 0)
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new ProjectCommentRepository())
+            {
+                var v = s.GetProjectCommentById(projectId, commentId, identity);
 
                 return Request.CreateResponse(HttpStatusCode.OK, v);
             }

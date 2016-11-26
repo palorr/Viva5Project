@@ -18,7 +18,105 @@ namespace Viva.Wallet.BAL.Repository
         {
             uow = new UnitOfWork();
         }
-        
+
+        private bool IsRequestorProjectCommentCreator(long commentId, long requestorId)
+        {
+            //represent logged out users with 0
+            if (requestorId == 0)
+                return false;
+
+            //find project comment and check if the current user is the creator or not
+            var _comment = uow.ProjectCommentreRepository.FindById(commentId);
+
+            if (_comment.UserId == requestorId)
+                return true;
+
+            return false;
+        }
+
+        // OK
+        public ProjectCommentModelToView GetProjectCommentById(int projectId, int commentId, ClaimsIdentity identity)
+        {
+            bool isRequestorProjectCommentCreator = false;
+
+            long requestorUserId;
+
+            try
+            {
+                requestorUserId = uow.UserRepository
+                                     .SearchFor(e => e.Username == identity.Name)
+                                     .Select(e => e.Id)
+                                     .SingleOrDefault();
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException("User lookup for requestor Id for get all project comments failed", ex);
+            }
+
+            isRequestorProjectCommentCreator = this.IsRequestorProjectCommentCreator((long)commentId, requestorUserId);
+
+            try
+            {
+                return uow.ProjectCommentreRepository
+                          .SearchFor(e => (e.ProjectId == projectId && e.Id == commentId))
+                          .Select(e => new ProjectCommentModelToView()
+                          {
+                              Id = e.Id,
+                              ProjectId = e.ProjectId,
+                              Name = e.User.Name,
+                              UserId = e.UserId,
+                              AttachmentSetId = e.AttachmentSetId,
+                              Description = e.Description,
+                              WhenDateTime = e.WhenDateTime,
+                              ProjectTitle = e.Project.Title,
+                              IsRequestorProjectCommentCreator = isRequestorProjectCommentCreator
+                          }).SingleOrDefault();
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException("Project comment id lookup failed", ex);
+            }
+        }
+
+        // OK
+        public IList<ProjectCommentModelToView> GetAllProjectComments(long projectId, ClaimsIdentity identity = null)
+        {
+            //represent logged out users with 0
+            long requestorUserId = 0;
+
+            if (identity != null)
+            {
+                try
+                {
+                    requestorUserId = uow.UserRepository
+                                         .SearchFor(e => e.Username == identity.Name)
+                                         .Select(e => e.Id)
+                                         .SingleOrDefault();
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw new InvalidOperationException("User lookup for requestor Id for get all project comments failed", ex);
+                }
+                
+            }
+
+            return uow.ProjectCommentreRepository
+                        .SearchFor(e => e.ProjectId == projectId)
+                        .Select(e => new ProjectCommentModelToView()
+                        {
+                            Id = e.Id,
+                            ProjectId = e.ProjectId,
+                            Name = e.User.Name,
+                            UserId = e.UserId,
+                            AttachmentSetId = e.AttachmentSetId,
+                            Description = e.Description,
+                            WhenDateTime = e.WhenDateTime,
+                            ProjectTitle = e.Project.Title,
+                            IsRequestorProjectCommentCreator = this.IsRequestorProjectCommentCreator(e.Id, requestorUserId)
+                        }).OrderByDescending(e => e.WhenDateTime).ToList();
+
+        }
+
         // OK
         public IList<ProjectCommentModel> GetAllProjectComments(int projectId)
         {
