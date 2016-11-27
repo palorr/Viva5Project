@@ -103,7 +103,7 @@ namespace Viva.Wallet.BAL.Repository
                     CreatedDateTime = DateTime.Now,
                     UpdateDateTime = DateTime.Now,
                     //Name = source.Name,
-                    Name = "",
+                    Name = "Anonymous User",
                     ShortBio = "",
                     AvatarImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSODALYDYo2dqN0DG_kPNi2X7EAy1K8SpRRZQWkNv9alC62IHggOw"
                 };
