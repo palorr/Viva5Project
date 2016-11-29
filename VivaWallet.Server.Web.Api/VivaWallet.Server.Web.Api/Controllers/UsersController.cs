@@ -34,7 +34,19 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, v);
             }
         }
+        //ok
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("lastTen")]
+        public HttpResponseMessage GetLastTenRegisteredUsers()
+        {
+            using (var s = new UserRepository())
+            {
+                var v = s.GetLastTenRegisteredUsers();
 
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
         // OK
         [AllowAnonymous]
         [HttpGet]

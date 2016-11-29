@@ -38,6 +38,25 @@ namespace Viva.Wallet.BAL.Repository
         }
 
         // OK
+        public IList<UserModel> GetLastTenRegisteredUsers()
+        {
+            
+            return uow.UserRepository.All()?
+                    .Select(e => new UserModel()
+                    {
+                        Id = e.Id,
+                        Username = e.Username,
+                        IsVerified = e.IsVerified,
+                        VerificationToken = e.VerificationToken,
+                        CreatedDateTime = e.CreatedDateTime,
+                        UpdatedDateTime = e.UpdateDateTime,
+                        Name = e.Name,
+                        ShortBio = e.ShortBio,
+                        AvatarImage = e.AvatarImage
+                    }).OrderByDescending(e => e.CreatedDateTime).Take(10).ToList();
+        }
+
+        // OK
         public UserModel GetUser(int userId)
         {
             try
