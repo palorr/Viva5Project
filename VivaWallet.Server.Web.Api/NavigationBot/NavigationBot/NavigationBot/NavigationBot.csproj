@@ -135,7 +135,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Viva5Project\VivaWallet.Server.Web.Api\Viva.Wallet.BAL\Viva.Wallet.BAL.csproj">
+    <ProjectReference Include="..\..\..\Viva.Wallet.BAL\Viva.Wallet.BAL.csproj">
       <Project>{8265a147-c808-458c-933c-fe80304c4a31}</Project>
       <Name>Viva.Wallet.BAL</Name>
     </ProjectReference>
