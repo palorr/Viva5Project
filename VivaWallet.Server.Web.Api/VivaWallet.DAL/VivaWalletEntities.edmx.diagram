@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="931bd01755294a6ca42f10a7e5c196d6" Name="Diagram1">
+        <EntityTypeShape EntityType="TestDb_thModel.Attachment" Width="1.5" PointX="3" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="TestDb_thModel.AttachmentSet" Width="1.5" PointX="0.75" PointY="11.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="TestDb_thModel.FundingPackage" Width="1.5" PointX="6" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="TestDb_thModel.ProjectCategory" Width="1.5" PointX="0.75" PointY="15.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="TestDb_thModel.ProjectComment" Width="1.5" PointX="3" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="TestDb_thModel.ProjectExternalShare" Width="1.5" PointX="5.25" PointY="16.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="TestDb_thModel.Project" Width="1.5" PointX="3" PointY="15" IsExpanded="true" />
+        <EntityTypeShape EntityType="TestDb_thModel.ProjectStat" Width="1.5" PointX="5.25" PointY="19.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TestDb_thModel.ProjectUpdate" Width="1.5" PointX="8.25" PointY="15.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="TestDb_thModel.UserFunding" Width="1.5" PointX="8.25" PointY="11.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="TestDb_thModel.User" Width="1.5" PointX="0.75" PointY="17.875" IsExpanded="true" />
+        <AssociationConnector Association="TestDb_thModel.FK__Attachmen__Attac__7C4F7684" ManuallyRouted="false" />
+        <AssociationConnector Association="TestDb_thModel.FK__FundingPa__Attac__71D1E811" ManuallyRouted="false" />
+        <AssociationConnector Association="TestDb_thModel.FK__ProjectCo__Attac__114A936A" ManuallyRouted="false" />
+        <AssociationConnector Association="TestDb_thModel.FK__Projects__Attach__5070F446" ManuallyRouted="false" />
+        <AssociationConnector Association="TestDb_thModel.FK__ProjectUp__Attac__02084FDA" ManuallyRouted="false" />
+        <AssociationConnector Association="TestDb_thModel.FK__FundingPa__Proje__70DDC3D8" ManuallyRouted="false" />
+        <AssociationConnector Association="TestDb_thModel.FK__UserFundi__Fundi__1BC821DD" ManuallyRouted="false" />
+        <AssociationConnector Association="TestDb_thModel.FK__Projects__Projec__4F7CD00D" ManuallyRouted="false" />
+        <AssociationConnector Association="TestDb_thModel.FK__ProjectCo__Proje__0F624AF8" ManuallyRouted="false" />
+        <AssociationConnector Association="TestDb_thModel.FK__ProjectCo__UserI__10566F31" ManuallyRouted="false" />
+        <AssociationConnector Association="TestDb_thModel.FK__ProjectEx__Proje__160F4887" ManuallyRouted="false" />
+        <AssociationConnector Association="TestDb_thModel.FK__ProjectEx__UserI__17036CC0" ManuallyRouted="false" />
+        <AssociationConnector Association="TestDb_thModel.FK__Projects__UserId__4E88ABD4" ManuallyRouted="false" />
+        <AssociationConnector Association="TestDb_thModel.FK__ProjectSt__Proje__0A9D95DB" ManuallyRouted="false" />
+        <AssociationConnector Association="TestDb_thModel.FK__ProjectUp__Proje__01142BA1" ManuallyRouted="false" />
+        <AssociationConnector Association="TestDb_thModel.FK__UserFundi__UserI__1CBC4616" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

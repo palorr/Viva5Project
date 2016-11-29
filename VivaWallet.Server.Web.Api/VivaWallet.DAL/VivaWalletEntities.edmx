@@ -1,0 +1,1042 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="TestDb_thModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="AttachementSetId" Type="bigint" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="CreatedDateTime" Type="datetime" Nullable="false" />
+          <Property Name="FilePath" Type="nvarchar" MaxLength="255" />
+          <Property Name="Url" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Caption" Type="nvarchar" MaxLength="255" />
+          <Property Name="MimeType" Type="nvarchar" MaxLength="255" />
+          <Property Name="HtmlCode" Type="nvarchar" MaxLength="1000" />
+          <Property Name="OrderNo" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AttachmentSets">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="CreatedDateTime" Type="datetime" Nullable="false" />
+          <Property Name="IsUsed" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FundingPackages">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="ProjectId" Type="bigint" Nullable="false" />
+          <Property Name="AttachmentSetId" Type="bigint" />
+          <Property Name="Title" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="PledgeAmount" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="Description" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="WhenDateTime" Type="datetime" Nullable="false" />
+          <Property Name="EstimatedDeliveryDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProjectCategories">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProjectComments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="ProjectId" Type="bigint" Nullable="false" />
+          <Property Name="UserId" Type="bigint" Nullable="false" />
+          <Property Name="AttachmentSetId" Type="bigint" />
+          <Property Name="WhenDateTime" Type="datetime" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="1000" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProjectExternalShares">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="ProjectId" Type="bigint" Nullable="false" />
+          <Property Name="UserId" Type="bigint" Nullable="false" />
+          <Property Name="Target" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="Source" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="WhenDateTime" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Projects">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="UserId" Type="bigint" Nullable="false" />
+          <Property Name="ProjectCategoryId" Type="bigint" Nullable="false" />
+          <Property Name="AttachmentSetId" Type="bigint" />
+          <Property Name="Title" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Description" Type="text" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdateDate" Type="datetime" Nullable="false" />
+          <Property Name="FundingEndDate" Type="datetime" Nullable="false" />
+          <Property Name="FundingGoal" Type="decimal" Precision="18" Scale="3" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="4" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProjectStats">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="ProjectId" Type="bigint" Nullable="false" />
+          <Property Name="BackersNo" Type="bigint" Nullable="false" />
+          <Property Name="MoneyPledged" Type="decimal" Precision="18" Scale="3" Nullable="false" />
+          <Property Name="SharesNo" Type="int" Nullable="false" />
+          <Property Name="CommentsNo" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProjectUpdates">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="ProjectId" Type="bigint" Nullable="false" />
+          <Property Name="AttachmentSetId" Type="bigint" />
+          <Property Name="Title" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="WhenDateTime" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserFundings">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="FundingPackageId" Type="bigint" Nullable="false" />
+          <Property Name="UserId" Type="bigint" Nullable="false" />
+          <Property Name="WhenDateTime" Type="datetime" Nullable="false" />
+          <Property Name="AmountPaid" Type="decimal" Precision="18" Scale="3" Nullable="false" />
+          <Property Name="TransactionId" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="IsVerified" Type="bit" Nullable="false" />
+          <Property Name="VerificationToken" Type="nvarchar" MaxLength="255" />
+          <Property Name="CreatedDateTime" Type="datetime" Nullable="false" />
+          <Property Name="UpdateDateTime" Type="datetime" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="ShortBio" Type="nvarchar" MaxLength="1000" />
+          <Property Name="AvatarImage" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsAdmin" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__Attachmen__Attac__656C112C">
+          <End Role="AttachmentSets" Type="Self.AttachmentSets" Multiplicity="1" />
+          <End Role="Attachments" Type="Self.Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttachmentSets">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Attachments">
+              <PropertyRef Name="AttachementSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__FundingPa__Attac__5AEE82B9">
+          <End Role="AttachmentSets" Type="Self.AttachmentSets" Multiplicity="0..1" />
+          <End Role="FundingPackages" Type="Self.FundingPackages" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttachmentSets">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FundingPackages">
+              <PropertyRef Name="AttachmentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__FundingPa__Proje__59FA5E80">
+          <End Role="Projects" Type="Self.Projects" Multiplicity="1" />
+          <End Role="FundingPackages" Type="Self.FundingPackages" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Projects">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FundingPackages">
+              <PropertyRef Name="ProjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ProjectCo__Attac__7A672E12">
+          <End Role="AttachmentSets" Type="Self.AttachmentSets" Multiplicity="0..1" />
+          <End Role="ProjectComments" Type="Self.ProjectComments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttachmentSets">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProjectComments">
+              <PropertyRef Name="AttachmentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ProjectCo__Proje__787EE5A0">
+          <End Role="Projects" Type="Self.Projects" Multiplicity="1" />
+          <End Role="ProjectComments" Type="Self.ProjectComments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Projects">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProjectComments">
+              <PropertyRef Name="ProjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ProjectCo__UserI__797309D9">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="ProjectComments" Type="Self.ProjectComments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProjectComments">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ProjectEx__Proje__7F2BE32F">
+          <End Role="Projects" Type="Self.Projects" Multiplicity="1" />
+          <End Role="ProjectExternalShares" Type="Self.ProjectExternalShares" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Projects">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProjectExternalShares">
+              <PropertyRef Name="ProjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ProjectEx__UserI__00200768">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="ProjectExternalShares" Type="Self.ProjectExternalShares" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProjectExternalShares">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Projects__Attach__398D8EEE">
+          <End Role="AttachmentSets" Type="Self.AttachmentSets" Multiplicity="0..1" />
+          <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttachmentSets">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Projects">
+              <PropertyRef Name="AttachmentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Projects__Projec__38996AB5">
+          <End Role="ProjectCategories" Type="Self.ProjectCategories" Multiplicity="1" />
+          <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProjectCategories">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Projects">
+              <PropertyRef Name="ProjectCategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Projects__UserId__37A5467C">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Projects">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ProjectSt__Proje__73BA3083">
+          <End Role="Projects" Type="Self.Projects" Multiplicity="1" />
+          <End Role="ProjectStats" Type="Self.ProjectStats" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Projects">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProjectStats">
+              <PropertyRef Name="ProjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ProjectUp__Attac__6B24EA82">
+          <End Role="AttachmentSets" Type="Self.AttachmentSets" Multiplicity="0..1" />
+          <End Role="ProjectUpdates" Type="Self.ProjectUpdates" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttachmentSets">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProjectUpdates">
+              <PropertyRef Name="AttachmentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ProjectUp__Proje__6A30C649">
+          <End Role="Projects" Type="Self.Projects" Multiplicity="1" />
+          <End Role="ProjectUpdates" Type="Self.ProjectUpdates" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Projects">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProjectUpdates">
+              <PropertyRef Name="ProjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserFundi__Fundi__04E4BC85">
+          <End Role="FundingPackages" Type="Self.FundingPackages" Multiplicity="1" />
+          <End Role="UserFundings" Type="Self.UserFundings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FundingPackages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserFundings">
+              <PropertyRef Name="FundingPackageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserFundi__UserI__05D8E0BE">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="UserFundings" Type="Self.UserFundings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserFundings">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TestDb_thModelStoreContainer">
+          <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AttachmentSets" EntityType="Self.AttachmentSets" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FundingPackages" EntityType="Self.FundingPackages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProjectCategories" EntityType="Self.ProjectCategories" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProjectComments" EntityType="Self.ProjectComments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProjectExternalShares" EntityType="Self.ProjectExternalShares" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Projects" EntityType="Self.Projects" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProjectStats" EntityType="Self.ProjectStats" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProjectUpdates" EntityType="Self.ProjectUpdates" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserFundings" EntityType="Self.UserFundings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Attachmen__Attac__656C112C" Association="Self.FK__Attachmen__Attac__656C112C">
+            <End Role="AttachmentSets" EntitySet="AttachmentSets" />
+            <End Role="Attachments" EntitySet="Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK__FundingPa__Attac__5AEE82B9" Association="Self.FK__FundingPa__Attac__5AEE82B9">
+            <End Role="AttachmentSets" EntitySet="AttachmentSets" />
+            <End Role="FundingPackages" EntitySet="FundingPackages" />
+          </AssociationSet>
+          <AssociationSet Name="FK__FundingPa__Proje__59FA5E80" Association="Self.FK__FundingPa__Proje__59FA5E80">
+            <End Role="Projects" EntitySet="Projects" />
+            <End Role="FundingPackages" EntitySet="FundingPackages" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ProjectCo__Attac__7A672E12" Association="Self.FK__ProjectCo__Attac__7A672E12">
+            <End Role="AttachmentSets" EntitySet="AttachmentSets" />
+            <End Role="ProjectComments" EntitySet="ProjectComments" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ProjectCo__Proje__787EE5A0" Association="Self.FK__ProjectCo__Proje__787EE5A0">
+            <End Role="Projects" EntitySet="Projects" />
+            <End Role="ProjectComments" EntitySet="ProjectComments" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ProjectCo__UserI__797309D9" Association="Self.FK__ProjectCo__UserI__797309D9">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="ProjectComments" EntitySet="ProjectComments" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ProjectEx__Proje__7F2BE32F" Association="Self.FK__ProjectEx__Proje__7F2BE32F">
+            <End Role="Projects" EntitySet="Projects" />
+            <End Role="ProjectExternalShares" EntitySet="ProjectExternalShares" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ProjectEx__UserI__00200768" Association="Self.FK__ProjectEx__UserI__00200768">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="ProjectExternalShares" EntitySet="ProjectExternalShares" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Projects__Attach__398D8EEE" Association="Self.FK__Projects__Attach__398D8EEE">
+            <End Role="AttachmentSets" EntitySet="AttachmentSets" />
+            <End Role="Projects" EntitySet="Projects" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Projects__Projec__38996AB5" Association="Self.FK__Projects__Projec__38996AB5">
+            <End Role="ProjectCategories" EntitySet="ProjectCategories" />
+            <End Role="Projects" EntitySet="Projects" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Projects__UserId__37A5467C" Association="Self.FK__Projects__UserId__37A5467C">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Projects" EntitySet="Projects" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ProjectSt__Proje__73BA3083" Association="Self.FK__ProjectSt__Proje__73BA3083">
+            <End Role="Projects" EntitySet="Projects" />
+            <End Role="ProjectStats" EntitySet="ProjectStats" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ProjectUp__Attac__6B24EA82" Association="Self.FK__ProjectUp__Attac__6B24EA82">
+            <End Role="AttachmentSets" EntitySet="AttachmentSets" />
+            <End Role="ProjectUpdates" EntitySet="ProjectUpdates" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ProjectUp__Proje__6A30C649" Association="Self.FK__ProjectUp__Proje__6A30C649">
+            <End Role="Projects" EntitySet="Projects" />
+            <End Role="ProjectUpdates" EntitySet="ProjectUpdates" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserFundi__Fundi__04E4BC85" Association="Self.FK__UserFundi__Fundi__04E4BC85">
+            <End Role="FundingPackages" EntitySet="FundingPackages" />
+            <End Role="UserFundings" EntitySet="UserFundings" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserFundi__UserI__05D8E0BE" Association="Self.FK__UserFundi__UserI__05D8E0BE">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UserFundings" EntitySet="UserFundings" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="TestDb_thModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Attachment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="AttachementSetId" Type="Int64" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="FilePath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Url" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Caption" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="MimeType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="HtmlCode" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AttachmentSet" Relationship="Self.FK__Attachmen__Attac__7C4F7684" FromRole="Attachments" ToRole="AttachmentSets" />
+          <Property Name="OrderNo" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AttachmentSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsUsed" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Attachments" Relationship="Self.FK__Attachmen__Attac__7C4F7684" FromRole="AttachmentSets" ToRole="Attachments" />
+          <NavigationProperty Name="FundingPackages" Relationship="Self.FK__FundingPa__Attac__71D1E811" FromRole="AttachmentSets" ToRole="FundingPackages" />
+          <NavigationProperty Name="ProjectComments" Relationship="Self.FK__ProjectCo__Attac__114A936A" FromRole="AttachmentSets" ToRole="ProjectComments" />
+          <NavigationProperty Name="Projects" Relationship="Self.FK__Projects__Attach__5070F446" FromRole="AttachmentSets" ToRole="Projects" />
+          <NavigationProperty Name="ProjectUpdates" Relationship="Self.FK__ProjectUp__Attac__02084FDA" FromRole="AttachmentSets" ToRole="ProjectUpdates" />
+        </EntityType>
+        <EntityType Name="FundingPackage">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="ProjectId" Type="Int64" Nullable="false" />
+          <Property Name="AttachmentSetId" Type="Int64" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PledgeAmount" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="Description" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="WhenDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EstimatedDeliveryDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="AttachmentSet" Relationship="Self.FK__FundingPa__Attac__71D1E811" FromRole="FundingPackages" ToRole="AttachmentSets" />
+          <NavigationProperty Name="Project" Relationship="Self.FK__FundingPa__Proje__70DDC3D8" FromRole="FundingPackages" ToRole="Projects" />
+          <NavigationProperty Name="UserFundings" Relationship="Self.FK__UserFundi__Fundi__1BC821DD" FromRole="FundingPackages" ToRole="UserFundings" />
+        </EntityType>
+        <EntityType Name="ProjectCategory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Projects" Relationship="Self.FK__Projects__Projec__4F7CD00D" FromRole="ProjectCategories" ToRole="Projects" />
+        </EntityType>
+        <EntityType Name="ProjectComment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="ProjectId" Type="Int64" Nullable="false" />
+          <Property Name="UserId" Type="Int64" Nullable="false" />
+          <Property Name="AttachmentSetId" Type="Int64" />
+          <Property Name="WhenDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Description" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="AttachmentSet" Relationship="Self.FK__ProjectCo__Attac__114A936A" FromRole="ProjectComments" ToRole="AttachmentSets" />
+          <NavigationProperty Name="Project" Relationship="Self.FK__ProjectCo__Proje__0F624AF8" FromRole="ProjectComments" ToRole="Projects" />
+          <NavigationProperty Name="User" Relationship="Self.FK__ProjectCo__UserI__10566F31" FromRole="ProjectComments" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="ProjectExternalShare">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="ProjectId" Type="Int64" Nullable="false" />
+          <Property Name="UserId" Type="Int64" Nullable="false" />
+          <Property Name="Target" Type="String" MaxLength="4" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Source" Type="String" MaxLength="4" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="WhenDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Project" Relationship="Self.FK__ProjectEx__Proje__160F4887" FromRole="ProjectExternalShares" ToRole="Projects" />
+          <NavigationProperty Name="User" Relationship="Self.FK__ProjectEx__UserI__17036CC0" FromRole="ProjectExternalShares" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Project">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="UserId" Type="Int64" Nullable="false" />
+          <Property Name="ProjectCategoryId" Type="Int64" Nullable="false" />
+          <Property Name="AttachmentSetId" Type="Int64" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdateDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="FundingEndDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="FundingGoal" Type="Decimal" Precision="18" Scale="3" Nullable="false" />
+          <Property Name="Status" Type="String" MaxLength="4" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="AttachmentSet" Relationship="Self.FK__Projects__Attach__5070F446" FromRole="Projects" ToRole="AttachmentSets" />
+          <NavigationProperty Name="FundingPackages" Relationship="Self.FK__FundingPa__Proje__70DDC3D8" FromRole="Projects" ToRole="FundingPackages" />
+          <NavigationProperty Name="ProjectCategory" Relationship="Self.FK__Projects__Projec__4F7CD00D" FromRole="Projects" ToRole="ProjectCategories" />
+          <NavigationProperty Name="ProjectComments" Relationship="Self.FK__ProjectCo__Proje__0F624AF8" FromRole="Projects" ToRole="ProjectComments" />
+          <NavigationProperty Name="ProjectExternalShares" Relationship="Self.FK__ProjectEx__Proje__160F4887" FromRole="Projects" ToRole="ProjectExternalShares" />
+          <NavigationProperty Name="User" Relationship="Self.FK__Projects__UserId__4E88ABD4" FromRole="Projects" ToRole="Users" />
+          <NavigationProperty Name="ProjectStats" Relationship="Self.FK__ProjectSt__Proje__0A9D95DB" FromRole="Projects" ToRole="ProjectStats" />
+          <NavigationProperty Name="ProjectUpdates" Relationship="Self.FK__ProjectUp__Proje__01142BA1" FromRole="Projects" ToRole="ProjectUpdates" />
+        </EntityType>
+        <EntityType Name="ProjectStat">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="ProjectId" Type="Int64" Nullable="false" />
+          <Property Name="BackersNo" Type="Int64" Nullable="false" />
+          <Property Name="MoneyPledged" Type="Decimal" Precision="18" Scale="3" Nullable="false" />
+          <Property Name="SharesNo" Type="Int32" Nullable="false" />
+          <Property Name="CommentsNo" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Project" Relationship="Self.FK__ProjectSt__Proje__0A9D95DB" FromRole="ProjectStats" ToRole="Projects" />
+        </EntityType>
+        <EntityType Name="ProjectUpdate">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="ProjectId" Type="Int64" Nullable="false" />
+          <Property Name="AttachmentSetId" Type="Int64" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="WhenDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="AttachmentSet" Relationship="Self.FK__ProjectUp__Attac__02084FDA" FromRole="ProjectUpdates" ToRole="AttachmentSets" />
+          <NavigationProperty Name="Project" Relationship="Self.FK__ProjectUp__Proje__01142BA1" FromRole="ProjectUpdates" ToRole="Projects" />
+        </EntityType>
+        <EntityType Name="UserFunding">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="FundingPackageId" Type="Int64" Nullable="false" />
+          <Property Name="UserId" Type="Int64" Nullable="false" />
+          <Property Name="WhenDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="AmountPaid" Type="Decimal" Precision="18" Scale="3" Nullable="false" />
+          <NavigationProperty Name="FundingPackage" Relationship="Self.FK__UserFundi__Fundi__1BC821DD" FromRole="UserFundings" ToRole="FundingPackages" />
+          <NavigationProperty Name="User" Relationship="Self.FK__UserFundi__UserI__1CBC4616" FromRole="UserFundings" ToRole="Users" />
+          <Property Name="TransactionId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="Username" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IsVerified" Type="Boolean" Nullable="false" />
+          <Property Name="VerificationToken" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdateDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ShortBio" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="AvatarImage" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ProjectComments" Relationship="Self.FK__ProjectCo__UserI__10566F31" FromRole="Users" ToRole="ProjectComments" />
+          <NavigationProperty Name="ProjectExternalShares" Relationship="Self.FK__ProjectEx__UserI__17036CC0" FromRole="Users" ToRole="ProjectExternalShares" />
+          <NavigationProperty Name="Projects" Relationship="Self.FK__Projects__UserId__4E88ABD4" FromRole="Users" ToRole="Projects" />
+          <NavigationProperty Name="UserFundings" Relationship="Self.FK__UserFundi__UserI__1CBC4616" FromRole="Users" ToRole="UserFundings" />
+          <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__Attachmen__Attac__7C4F7684">
+          <End Role="AttachmentSets" Type="Self.AttachmentSet" Multiplicity="1" />
+          <End Role="Attachments" Type="Self.Attachment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttachmentSets">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Attachments">
+              <PropertyRef Name="AttachementSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__FundingPa__Attac__71D1E811">
+          <End Role="AttachmentSets" Type="Self.AttachmentSet" Multiplicity="0..1" />
+          <End Role="FundingPackages" Type="Self.FundingPackage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttachmentSets">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FundingPackages">
+              <PropertyRef Name="AttachmentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ProjectCo__Attac__114A936A">
+          <End Role="AttachmentSets" Type="Self.AttachmentSet" Multiplicity="0..1" />
+          <End Role="ProjectComments" Type="Self.ProjectComment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttachmentSets">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProjectComments">
+              <PropertyRef Name="AttachmentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Projects__Attach__5070F446">
+          <End Role="AttachmentSets" Type="Self.AttachmentSet" Multiplicity="0..1" />
+          <End Role="Projects" Type="Self.Project" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttachmentSets">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Projects">
+              <PropertyRef Name="AttachmentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ProjectUp__Attac__02084FDA">
+          <End Role="AttachmentSets" Type="Self.AttachmentSet" Multiplicity="0..1" />
+          <End Role="ProjectUpdates" Type="Self.ProjectUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttachmentSets">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProjectUpdates">
+              <PropertyRef Name="AttachmentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__FundingPa__Proje__70DDC3D8">
+          <End Role="Projects" Type="Self.Project" Multiplicity="1" />
+          <End Role="FundingPackages" Type="Self.FundingPackage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Projects">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FundingPackages">
+              <PropertyRef Name="ProjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserFundi__Fundi__1BC821DD">
+          <End Role="FundingPackages" Type="Self.FundingPackage" Multiplicity="1" />
+          <End Role="UserFundings" Type="Self.UserFunding" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FundingPackages">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserFundings">
+              <PropertyRef Name="FundingPackageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Projects__Projec__4F7CD00D">
+          <End Role="ProjectCategories" Type="Self.ProjectCategory" Multiplicity="1" />
+          <End Role="Projects" Type="Self.Project" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProjectCategories">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Projects">
+              <PropertyRef Name="ProjectCategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ProjectCo__Proje__0F624AF8">
+          <End Role="Projects" Type="Self.Project" Multiplicity="1" />
+          <End Role="ProjectComments" Type="Self.ProjectComment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Projects">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProjectComments">
+              <PropertyRef Name="ProjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ProjectCo__UserI__10566F31">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="ProjectComments" Type="Self.ProjectComment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProjectComments">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ProjectEx__Proje__160F4887">
+          <End Role="Projects" Type="Self.Project" Multiplicity="1" />
+          <End Role="ProjectExternalShares" Type="Self.ProjectExternalShare" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Projects">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProjectExternalShares">
+              <PropertyRef Name="ProjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ProjectEx__UserI__17036CC0">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="ProjectExternalShares" Type="Self.ProjectExternalShare" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProjectExternalShares">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Projects__UserId__4E88ABD4">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="Projects" Type="Self.Project" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Projects">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ProjectSt__Proje__0A9D95DB">
+          <End Role="Projects" Type="Self.Project" Multiplicity="1" />
+          <End Role="ProjectStats" Type="Self.ProjectStat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Projects">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProjectStats">
+              <PropertyRef Name="ProjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ProjectUp__Proje__01142BA1">
+          <End Role="Projects" Type="Self.Project" Multiplicity="1" />
+          <End Role="ProjectUpdates" Type="Self.ProjectUpdate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Projects">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProjectUpdates">
+              <PropertyRef Name="ProjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserFundi__UserI__1CBC4616">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="UserFundings" Type="Self.UserFunding" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserFundings">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="VivaWalletEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Attachments" EntityType="Self.Attachment" />
+          <EntitySet Name="AttachmentSets" EntityType="Self.AttachmentSet" />
+          <EntitySet Name="FundingPackages" EntityType="Self.FundingPackage" />
+          <EntitySet Name="ProjectCategories" EntityType="Self.ProjectCategory" />
+          <EntitySet Name="ProjectComments" EntityType="Self.ProjectComment" />
+          <EntitySet Name="ProjectExternalShares" EntityType="Self.ProjectExternalShare" />
+          <EntitySet Name="Projects" EntityType="Self.Project" />
+          <EntitySet Name="ProjectStats" EntityType="Self.ProjectStat" />
+          <EntitySet Name="ProjectUpdates" EntityType="Self.ProjectUpdate" />
+          <EntitySet Name="UserFundings" EntityType="Self.UserFunding" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <AssociationSet Name="FK__Attachmen__Attac__7C4F7684" Association="Self.FK__Attachmen__Attac__7C4F7684">
+            <End Role="AttachmentSets" EntitySet="AttachmentSets" />
+            <End Role="Attachments" EntitySet="Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK__FundingPa__Attac__71D1E811" Association="Self.FK__FundingPa__Attac__71D1E811">
+            <End Role="AttachmentSets" EntitySet="AttachmentSets" />
+            <End Role="FundingPackages" EntitySet="FundingPackages" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ProjectCo__Attac__114A936A" Association="Self.FK__ProjectCo__Attac__114A936A">
+            <End Role="AttachmentSets" EntitySet="AttachmentSets" />
+            <End Role="ProjectComments" EntitySet="ProjectComments" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Projects__Attach__5070F446" Association="Self.FK__Projects__Attach__5070F446">
+            <End Role="AttachmentSets" EntitySet="AttachmentSets" />
+            <End Role="Projects" EntitySet="Projects" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ProjectUp__Attac__02084FDA" Association="Self.FK__ProjectUp__Attac__02084FDA">
+            <End Role="AttachmentSets" EntitySet="AttachmentSets" />
+            <End Role="ProjectUpdates" EntitySet="ProjectUpdates" />
+          </AssociationSet>
+          <AssociationSet Name="FK__FundingPa__Proje__70DDC3D8" Association="Self.FK__FundingPa__Proje__70DDC3D8">
+            <End Role="Projects" EntitySet="Projects" />
+            <End Role="FundingPackages" EntitySet="FundingPackages" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserFundi__Fundi__1BC821DD" Association="Self.FK__UserFundi__Fundi__1BC821DD">
+            <End Role="FundingPackages" EntitySet="FundingPackages" />
+            <End Role="UserFundings" EntitySet="UserFundings" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Projects__Projec__4F7CD00D" Association="Self.FK__Projects__Projec__4F7CD00D">
+            <End Role="ProjectCategories" EntitySet="ProjectCategories" />
+            <End Role="Projects" EntitySet="Projects" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ProjectCo__Proje__0F624AF8" Association="Self.FK__ProjectCo__Proje__0F624AF8">
+            <End Role="Projects" EntitySet="Projects" />
+            <End Role="ProjectComments" EntitySet="ProjectComments" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ProjectCo__UserI__10566F31" Association="Self.FK__ProjectCo__UserI__10566F31">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="ProjectComments" EntitySet="ProjectComments" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ProjectEx__Proje__160F4887" Association="Self.FK__ProjectEx__Proje__160F4887">
+            <End Role="Projects" EntitySet="Projects" />
+            <End Role="ProjectExternalShares" EntitySet="ProjectExternalShares" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ProjectEx__UserI__17036CC0" Association="Self.FK__ProjectEx__UserI__17036CC0">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="ProjectExternalShares" EntitySet="ProjectExternalShares" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Projects__UserId__4E88ABD4" Association="Self.FK__Projects__UserId__4E88ABD4">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Projects" EntitySet="Projects" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ProjectSt__Proje__0A9D95DB" Association="Self.FK__ProjectSt__Proje__0A9D95DB">
+            <End Role="Projects" EntitySet="Projects" />
+            <End Role="ProjectStats" EntitySet="ProjectStats" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ProjectUp__Proje__01142BA1" Association="Self.FK__ProjectUp__Proje__01142BA1">
+            <End Role="Projects" EntitySet="Projects" />
+            <End Role="ProjectUpdates" EntitySet="ProjectUpdates" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserFundi__UserI__1CBC4616" Association="Self.FK__UserFundi__UserI__1CBC4616">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UserFundings" EntitySet="UserFundings" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="TestDb_thModelStoreContainer" CdmEntityContainer="VivaWalletEntities">
+          <EntitySetMapping Name="Attachments">
+            <EntityTypeMapping TypeName="TestDb_thModel.Attachment">
+              <MappingFragment StoreEntitySet="Attachments">
+                <ScalarProperty Name="OrderNo" ColumnName="OrderNo" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="AttachementSetId" ColumnName="AttachementSetId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CreatedDateTime" ColumnName="CreatedDateTime" />
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="Caption" ColumnName="Caption" />
+                <ScalarProperty Name="MimeType" ColumnName="MimeType" />
+                <ScalarProperty Name="HtmlCode" ColumnName="HtmlCode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AttachmentSets">
+            <EntityTypeMapping TypeName="TestDb_thModel.AttachmentSet">
+              <MappingFragment StoreEntitySet="AttachmentSets">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="CreatedDateTime" ColumnName="CreatedDateTime" />
+                <ScalarProperty Name="IsUsed" ColumnName="IsUsed" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FundingPackages">
+            <EntityTypeMapping TypeName="TestDb_thModel.FundingPackage">
+              <MappingFragment StoreEntitySet="FundingPackages">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ProjectId" ColumnName="ProjectId" />
+                <ScalarProperty Name="AttachmentSetId" ColumnName="AttachmentSetId" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="PledgeAmount" ColumnName="PledgeAmount" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="WhenDateTime" ColumnName="WhenDateTime" />
+                <ScalarProperty Name="EstimatedDeliveryDate" ColumnName="EstimatedDeliveryDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProjectCategories">
+            <EntityTypeMapping TypeName="TestDb_thModel.ProjectCategory">
+              <MappingFragment StoreEntitySet="ProjectCategories">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProjectComments">
+            <EntityTypeMapping TypeName="TestDb_thModel.ProjectComment">
+              <MappingFragment StoreEntitySet="ProjectComments">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ProjectId" ColumnName="ProjectId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="AttachmentSetId" ColumnName="AttachmentSetId" />
+                <ScalarProperty Name="WhenDateTime" ColumnName="WhenDateTime" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProjectExternalShares">
+            <EntityTypeMapping TypeName="TestDb_thModel.ProjectExternalShare">
+              <MappingFragment StoreEntitySet="ProjectExternalShares">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ProjectId" ColumnName="ProjectId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Target" ColumnName="Target" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="WhenDateTime" ColumnName="WhenDateTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Projects">
+            <EntityTypeMapping TypeName="TestDb_thModel.Project">
+              <MappingFragment StoreEntitySet="Projects">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ProjectCategoryId" ColumnName="ProjectCategoryId" />
+                <ScalarProperty Name="AttachmentSetId" ColumnName="AttachmentSetId" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="FundingEndDate" ColumnName="FundingEndDate" />
+                <ScalarProperty Name="FundingGoal" ColumnName="FundingGoal" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProjectStats">
+            <EntityTypeMapping TypeName="TestDb_thModel.ProjectStat">
+              <MappingFragment StoreEntitySet="ProjectStats">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ProjectId" ColumnName="ProjectId" />
+                <ScalarProperty Name="BackersNo" ColumnName="BackersNo" />
+                <ScalarProperty Name="MoneyPledged" ColumnName="MoneyPledged" />
+                <ScalarProperty Name="SharesNo" ColumnName="SharesNo" />
+                <ScalarProperty Name="CommentsNo" ColumnName="CommentsNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProjectUpdates">
+            <EntityTypeMapping TypeName="TestDb_thModel.ProjectUpdate">
+              <MappingFragment StoreEntitySet="ProjectUpdates">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ProjectId" ColumnName="ProjectId" />
+                <ScalarProperty Name="AttachmentSetId" ColumnName="AttachmentSetId" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="WhenDateTime" ColumnName="WhenDateTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserFundings">
+            <EntityTypeMapping TypeName="TestDb_thModel.UserFunding">
+              <MappingFragment StoreEntitySet="UserFundings">
+                <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="FundingPackageId" ColumnName="FundingPackageId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="WhenDateTime" ColumnName="WhenDateTime" />
+                <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="TestDb_thModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="IsVerified" ColumnName="IsVerified" />
+                <ScalarProperty Name="VerificationToken" ColumnName="VerificationToken" />
+                <ScalarProperty Name="CreatedDateTime" ColumnName="CreatedDateTime" />
+                <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ShortBio" ColumnName="ShortBio" />
+                <ScalarProperty Name="AvatarImage" ColumnName="AvatarImage" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
