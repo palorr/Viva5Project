@@ -7,12 +7,30 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Microsoft.Bot.Connector;
 using Newtonsoft.Json;
+using Viva.Wallet.BAL.Repository;
+using System.Collections.Generic;
 
 namespace NavigationBot
 {
     [BotAuthentication]
+    [RoutePrefix("api/messages")]
     public class MessagesController : ApiController
     {
+        // OK
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("getAvailableOptions")]
+        public HttpResponseMessage GetAvailableOptions()
+        {
+            IList<string> availableOptions = new List<string>();
+            availableOptions.Add("1. Get Number of Projects Created");
+            availableOptions.Add("2. Get Number of Users Registered");
+            availableOptions.Add("3. Navigate to Project Create Page");
+
+            var response = Request.CreateResponse(HttpStatusCode.OK, availableOptions);
+            return response;
+        }
+
         /// <summary>
         /// POST: api/Messages
         /// Receive a message from a user and reply to it
@@ -26,8 +44,19 @@ namespace NavigationBot
                 // calculate something for us to return
                 int length = (activity.Text ?? string.Empty).Length;
 
+                IList<string> availableOptions = new List<string>();
+                availableOptions.Add("1. Get Number of Projects Created");
+                availableOptions.Add("2. Get Number of Users Registered");
+                availableOptions.Add("3. Navigate to Project Create Page");
+
                 // return our reply to the user
-                Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
+                //Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
+                string str = "Available Options: ";
+                for (int i=0; i<availableOptions.Count; i++)
+                {
+                    str += availableOptions[i];
+                }
+                Activity reply = activity.CreateReply(str);
                 await connector.Conversations.ReplyToActivityAsync(reply);
             }
 
