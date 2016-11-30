@@ -8,18 +8,18 @@ namespace Viva.Wallet.BAL.Models
 {
     public class LastBackedProjectsModel
     {
-        public long fundingId { get; set; }
+        public long FundingId { get; set; }
 
-        public long projectId { get; set; }
+        public long ProjectId { get; set; }
 
-        public long userId { get; set; }
+        public long UserId { get; set; }
 
         public decimal? AmountPaid { get; set; }
 
         public DateTime WhenDateTime { get; set; }
 
-        public string userName { get; set; }
+        public string UserName { get; set; }
 
-        public string projectTitle { get; set; }
+        public string ProjectTitle { get; set; }
     }
 }

@@ -403,12 +403,12 @@ namespace Viva.Wallet.BAL.Repository
         {
             using (var ctx = new VivaWalletEntities())
             {
-                //Get trending projects
+                //Get last ten backed projects
                 return ctx.Database.SqlQuery<LastBackedProjectsModel>(
                     @" SELECT 
                             TOP 10 
-                            uf.Id fundingId, pro.Id  projectId, us.Id userId , uf.AmountPaid AmountPaid , uf.WhenDateTime WhenDateTime , 
-							us.Name userName ,  pro.Title projectTitle
+                            uf.Id FundingId, pro.Id  ProjectId, us.Id UserId , uf.AmountPaid AmountPaid , uf.WhenDateTime WhenDateTime , 
+							us.Name UserName ,  pro.Title ProjectTitle
                         FROM 
 	                        UserFundings uf
                         LEFT JOIN
