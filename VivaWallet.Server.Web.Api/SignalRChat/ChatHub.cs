@@ -17,6 +17,11 @@ namespace SignalRChat
             Clients.All.SendMessage(chatMessage);
         }
 
+        public void TypeMessage(TypingMessage typeMessage)
+        {
+            Clients.All.TypeMessage(typeMessage);
+        }
+
         public override Task OnConnected()
         {
             return base.OnConnected();
@@ -28,5 +33,5 @@ namespace SignalRChat
             return base.OnDisconnected(stopCalled);
         }
     }
- 
+
 }
