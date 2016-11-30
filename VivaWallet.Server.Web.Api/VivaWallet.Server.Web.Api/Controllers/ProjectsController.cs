@@ -100,6 +100,22 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        //OK
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("lastTenBackedProjects")]
+        public HttpResponseMessage GetLastTenBackedProjects()
+        {
+            using (var s = new ProjectRepository())
+            {
+                s.CheckForFailedProjects();
+
+                var v = s.GetLastTenBackedProjects();
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
+
         // OK
         [AllowAnonymous]
         [HttpGet]

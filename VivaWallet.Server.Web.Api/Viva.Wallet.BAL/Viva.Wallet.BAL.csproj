@@ -59,6 +59,7 @@
     <Compile Include="Models\FundingPackageModel.cs" />
     <Compile Include="Models\FundingPackageModelToPaymentView.cs" />
     <Compile Include="Models\FundingPackageModelToView.cs" />
+    <Compile Include="Models\LastBackedProjectsModel.cs" />
     <Compile Include="Models\ProjectCategoriesModel.cs" />
     <Compile Include="Models\ProjectCommentModel.cs" />
     <Compile Include="Models\ProjectCommentModelToView.cs" />

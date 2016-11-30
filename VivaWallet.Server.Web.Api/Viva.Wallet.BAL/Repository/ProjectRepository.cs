@@ -398,6 +398,38 @@ namespace Viva.Wallet.BAL.Repository
                       .ToList();
         }
 
+        // OK
+        public IList<LastBackedProjectsModel> GetLastTenBackedProjects()
+        {
+            using (var ctx = new VivaWalletEntities())
+            {
+                //Get trending projects
+                return ctx.Database.SqlQuery<LastBackedProjectsModel>(
+                    @" SELECT 
+                            TOP 10 
+                            uf.Id fundingId, pro.Id  projectId, us.Id userId , uf.AmountPaid AmountPaid , uf.WhenDateTime WhenDateTime , 
+							us.Name userName ,  pro.Title projectTitle
+                        FROM 
+	                        UserFundings uf
+                        LEFT JOIN
+	                        FundingPackages fp
+                        ON
+	                        fp.Id = uf.FundingPackageId
+                        LEFT JOIN
+                            Projects pro
+                        ON
+                            pro.Id = fp.ProjectId
+                        LEFT JOIN
+                            Users us
+                        ON
+                            pro.UserId = us.Id
+                        ORDER BY
+	                        uf.WhenDateTime DESC
+                        
+                    "
+                ).ToList();
+            }
+        }
         public enum StatusCodes
         {
             NOT_FOUND = 0,
