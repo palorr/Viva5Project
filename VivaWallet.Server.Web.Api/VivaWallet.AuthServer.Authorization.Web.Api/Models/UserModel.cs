@@ -12,9 +12,9 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api.Models
         [Display(Name = "UserName")]
         public String UserName { get; set; }
 
-        //[Required]
-        //[Display(Name = "Name")]
-        //public String Name { get; set; }
+        [Required]
+        [Display(Name = "Name")]
+        public String Name { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
