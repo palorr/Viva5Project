@@ -99,7 +99,8 @@ namespace Viva.Wallet.BAL.Repository
                                 UpdatedDateTime = e.UpdateDateTime,
                                 Name = e.Name,
                                 ShortBio = e.ShortBio,
-                                AvatarImage = e.AvatarImage
+                                AvatarImage = e.AvatarImage,
+                                IsAdmin = e.IsAdmin
                             }).SingleOrDefault();
             }
             catch (InvalidOperationException ex)
