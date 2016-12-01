@@ -274,5 +274,24 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, v);
             }
         }
+
+        [HttpGet]
+        [Route("getAdminPanelInfo")]
+        public HttpResponseMessage GetAdminPanelInfo()
+        {
+            var identity = User.Identity as ClaimsIdentity;
+
+            using (var s = new UserRepository())
+            {
+                var v = s.GetAdminPanelInfo(identity);
+
+                if(v == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.MethodNotAllowed, "I am sorry, you do not have permission to view this page. You are not a CrowdVoice admin.");
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, v);
+            }
+        }
     }
 }

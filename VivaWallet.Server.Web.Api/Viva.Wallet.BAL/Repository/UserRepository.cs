@@ -552,6 +552,123 @@ namespace Viva.Wallet.BAL.Repository
             }
         }
 
+        // OK
+        public AdminPanelViewModel GetAdminPanelInfo(ClaimsIdentity identity)
+        {
+            try
+            {
+                long requestorUserId;
+
+                try
+                {
+                    requestorUserId = uow.UserRepository
+                                            .SearchFor(e => e.Username == identity.Name)
+                                            .Select(e => e.Id)
+                                            .SingleOrDefault();
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw new InvalidOperationException("User lookup for requestor Id failed", ex);
+                }
+
+                var _adminUser = uow.UserRepository.FindById(requestorUserId);
+
+                //user not found
+                if (_adminUser == null)
+                {
+                    return null;
+                }
+
+                //user not admin
+                if (_adminUser.IsAdmin == false)
+                {
+                    return null;
+                }
+
+                //COLLECT ADMIN PANEL DATA
+                AdminPanelViewModel adminPanelView = new AdminPanelViewModel();
+                adminPanelView.NoOfTotalUsers = this.GetNoOfTotalUsersRegistered();
+                adminPanelView.NoOfTotalProjectUpdates = this.GetNoOfTotalProjectUpdates();
+                adminPanelView.NoOfProjectsPerCategory = this.GetNoOfProjectsPerCategory();
+                adminPanelView.NoOfProjectsPerStatus = this.GetNoOfProjectsPerStatus();
+                adminPanelView.GlobalProjectStats = this.GetGlobalProjectStats();
+
+                return adminPanelView;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private int GetNoOfTotalUsersRegistered()
+        {
+            return uow.UserRepository.All().Count();
+        }
+
+        private int GetNoOfTotalProjectUpdates()
+        {
+            return uow.ProjectUpdateRepository.All().Count();
+        }
+
+        private IList<ProjectCountByCategoryModel> GetNoOfProjectsPerCategory()
+        {
+            using (var ctx = new VivaWalletEntities())
+            {
+                return ctx.Database.SqlQuery<ProjectCountByCategoryModel>(
+                        @" 
+                            SELECT 
+	                            pc.Name CategoryName,
+	                            COUNT(pc.Id) NoOfProjects
+                            FROM 
+	                            Projects pr
+                            LEFT JOIN
+	                            ProjectCategories pc
+                            ON 
+	                            pr.ProjectCategoryId = pc.Id
+                            GROUP BY 
+	                            pc.Name
+                        "
+                    ).ToList<ProjectCountByCategoryModel>();
+            }
+        }
+
+        private IList<ProjectCountByStatusModel> GetNoOfProjectsPerStatus()
+        {
+            using (var ctx = new VivaWalletEntities())
+            {
+                return ctx.Database.SqlQuery<ProjectCountByStatusModel>(
+                        @" 
+                            SELECT 
+	                            pr.Status ProjectStatus,
+                                COUNT(pr.Id) NoOfProjects
+                            FROM 
+	                            Projects pr
+                            GROUP BY
+	                            pr.Status
+                        "
+                    ).ToList<ProjectCountByStatusModel>();
+            }
+        }
+
+        private GlobalProjectStatsModel GetGlobalProjectStats()
+        {
+            using (var ctx = new VivaWalletEntities())
+            {
+                return ctx.Database.SqlQuery<GlobalProjectStatsModel>(
+                        @" 
+                            SELECT 
+	                            SUM(ps.BackersNo) NoOfTotalBackings,
+	                            SUM(ps.MoneyPledged) NoOfTotalMoneyPledged,
+	                            SUM(ps.SharesNo) NoOfTotalExternalShares,
+	                            SUM(ps.CommentsNo) NoOfTotalProjectComments
+                            FROM 
+	                            ProjectStats ps
+                        "
+                    ).FirstOrDefault();
+            }
+        }
+
         public void Dispose()
         {
             uow.Dispose();
