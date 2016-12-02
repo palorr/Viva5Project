@@ -13,9 +13,7 @@ namespace SignalRChat
     [HubName("chat")]
     public class ChatHub : Hub
     {
-        //NOT USED
-        private readonly static IList<ChatUser> listOfChatUsers = new List<ChatUser>();
-
+        
         public void SendMessage(ChatMessage chatMessage)
         {
             Clients.All.SendMessage(chatMessage);
@@ -24,14 +22,6 @@ namespace SignalRChat
         public void TypeMessage(TypingMessage typeMessage)
         {
             Clients.All.TypeMessage(typeMessage);
-        }
-
-        //NOT USED
-        public void NewChatUserAdded(ChatUser chatUser)
-        {
-            ChatHub.listOfChatUsers.Add(chatUser);
-
-            Clients.All.NewChatUserAdded(listOfChatUsers);
         }
 
         public override Task OnConnected()
