@@ -55,6 +55,8 @@ namespace Viva.Wallet.BAL.Repository
         {
             try
             {
+                 var s = System.Web.HttpContext.Current.Request.Url;
+                var publicurl = s.OriginalString.Replace(s.AbsolutePath, "/");
                 var user = uow.UserRepository.SearchFor(e => e.Username == username).FirstOrDefault();
 
                 var userProject = uow.ProjectRepository.SearchFor(e => e.Id == projectId && e.UserId == user.Id).FirstOrDefault();
@@ -67,7 +69,7 @@ namespace Viva.Wallet.BAL.Repository
                     {
                         Id = e.Id,
                         CreatedAt = e.CreatedDateTime,
-                        FilePath = e.FilePath,
+                        FilePath = e.FilePath != null ? e.FilePath.Replace("D:\\home\\site\\wwwroot\\" , publicurl) : null,
                         HtmlCode = e.HtmlCode,
                         Name = e.Name,
                         OrderNo = e.OrderNo

@@ -1000,24 +1000,25 @@ namespace VivaWallet.Server.Web.Api.Controllers
         [Route("{projectId}/image")]
         public async Task<HttpResponseMessage> SaveImage(long projectId, AttachmentModel source)
         {
-            var mappedPath = System.Web.Hosting.HostingEnvironment.MapPath("~/attachmentPath");
+            var mappedPath = System.Web.Hosting.HostingEnvironment.MapPath("~/attachmentPath/");
             var path = mappedPath + Helpers.HelperMethods.getImagePhotoName(null);
 
             try
             {
                 var identity = User.Identity as ClaimsIdentity;
                 var image = source.FilePath;
-
-                var imageData = Helpers.HelperMethods.FixBase64ForImage(image);
-                var bytes = Convert.FromBase64String(imageData);
-               
-                using (Image imageToSave = Image.FromStream(new MemoryStream(bytes)))
+                if (image != null)
                 {
-                    imageToSave.Save(path, ImageFormat.Jpeg);  
-                }
+                    var imageData = Helpers.HelperMethods.FixBase64ForImage(image);
+                    var bytes = Convert.FromBase64String(imageData);
 
-                source.FilePath = path;
-                
+                    using (Image imageToSave = Image.FromStream(new MemoryStream(bytes)))
+                    {
+                        imageToSave.Save(path, ImageFormat.Jpeg);
+                    }
+
+                    source.FilePath = path;
+                }
                 using (var repo = new AttachmentRepository())
                 {
                     await repo.saveAttachment(identity.Name, projectId, source);
@@ -1077,6 +1078,14 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("lll")]
+        public string ggg()
+        {
+            var s = System.Web.HttpContext.Current.Request.Url;
+            return s.OriginalString.Replace(s.AbsolutePath ,"");
+        }
 
     }
 }
