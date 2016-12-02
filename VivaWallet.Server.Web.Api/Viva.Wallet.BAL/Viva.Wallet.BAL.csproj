@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\AdminPanelViewModel.cs" />
+    <Compile Include="Models\AttachmentModel.cs" />
     <Compile Include="Models\AttachmentSetModel.cs" />
     <Compile Include="Models\AuthorizationModel.cs" />
     <Compile Include="Models\FundingPackageModel.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="Models\UserFundingModelWithProjectId.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Models\VivaWalletTokenModel.cs" />
+    <Compile Include="Repository\AttachmentRepository.cs" />
     <Compile Include="Repository\AttachmentSetRepository.cs" />
     <Compile Include="Repository\FundingPackageRepository.cs" />
     <Compile Include="Repository\ProjectCategoryRepository.cs" />

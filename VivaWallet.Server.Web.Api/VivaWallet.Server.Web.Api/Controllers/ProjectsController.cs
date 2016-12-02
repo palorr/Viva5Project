@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -992,6 +995,88 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 return Ok(task);
             }
         }
+
+        [HttpPost]
+        [Route("{projectId}/image")]
+        public async Task<HttpResponseMessage> SaveImage(long projectId, AttachmentModel source)
+        {
+            var mappedPath = System.Web.Hosting.HostingEnvironment.MapPath("~/attachmentPath");
+            var path = mappedPath + Helpers.HelperMethods.getImagePhotoName(null);
+
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                var image = source.FilePath;
+
+                var imageData = Helpers.HelperMethods.FixBase64ForImage(image);
+                var bytes = Convert.FromBase64String(imageData);
+               
+                using (Image imageToSave = Image.FromStream(new MemoryStream(bytes)))
+                {
+                    imageToSave.Save(path, ImageFormat.Jpeg);  
+                }
+
+                source.FilePath = path;
+                
+                using (var repo = new AttachmentRepository())
+                {
+                    await repo.saveAttachment(identity.Name, projectId, source);
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                File.Delete(path);
+
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+            return Request.CreateResponse(HttpStatusCode.Created);
+        }
+
+        [HttpGet]
+        [Route("{projectId}/attachmets")]
+        public HttpResponseMessage GetAttachments(long projectId)
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+                    
+                using (var repo = new AttachmentRepository())
+                {
+                    var res = repo.GetProjectAttachmets(identity.Name, projectId);
+
+                    return Request.CreateResponse(HttpStatusCode.OK, res);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        [Route("{attachmentId}/delete")]
+        [HttpPost] 
+        public async Task<HttpResponseMessage> DeleteAttachment(long attachmentId)
+        {
+            try
+            {
+                var identity = User.Identity as ClaimsIdentity;
+
+                using (var repo = new AttachmentRepository())
+                {
+                    await repo.DeleteAttachment(identity.Name, attachmentId);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError , ex.Message);
+            }
+        }
+
 
     }
 }

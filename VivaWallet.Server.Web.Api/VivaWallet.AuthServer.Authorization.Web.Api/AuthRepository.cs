@@ -58,7 +58,7 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api
 
                 return result;
             }
-            catch(Exception)
+            catch(Exception )
             {
                 throw;
             }
