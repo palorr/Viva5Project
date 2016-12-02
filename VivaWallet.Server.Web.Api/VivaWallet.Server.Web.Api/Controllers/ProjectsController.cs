@@ -23,7 +23,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
          *
          */
         
-        // OK
+        // GET ALL PROJECT CATEGORIES - OK
         [AllowAnonymous]
         [HttpGet]
         [Route("projectCategories")]
@@ -37,7 +37,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        // RETURN ALL PROJECTS BY CATEGORY - OK
         [AllowAnonymous]
         [HttpGet]
         [Route("getAllProjectsByCategory/{categoryId}")]
@@ -53,6 +53,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        //RETURN ALL PROJECTS BY SEARCH TERM NAME - OK
         [AllowAnonymous]
         [HttpGet]
         [Route("getAllProjectsByName/{searchTerm}")]
@@ -68,7 +69,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        //OK
+        //RETURN ALL PROJECTS - OK
         [AllowAnonymous]
         [HttpGet]
         [Route("")]
@@ -84,7 +85,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        //OK
+        //RETURN TOP 10 TRENDING PROJECTS - OK
         [AllowAnonymous]
         [HttpGet]
         [Route("trending")]
@@ -100,7 +101,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        //OK
+        //RETURN LAST TEN BACKED PROJECTS - OK
         [AllowAnonymous]
         [HttpGet]
         [Route("lastTenBackedProjects")]
@@ -116,7 +117,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        // GET PROJECT BY ID FOR LOGGED OUT USERS - OK
         [AllowAnonymous]
         [HttpGet]
         [Route("{projectId}/allowAll")]
@@ -140,7 +141,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        // GET PROJECT BY ID FOR LOGGED IN USERS - OK
         [HttpGet]
         [Route("{projectId}")]
         public HttpResponseMessage GetProjectByIdForLoggedInUsers(int projectId)
@@ -165,6 +166,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        //GET PROJECT STATS BY ID FOR LOGGED OUT USERS - OK
         [AllowAnonymous]
         [HttpGet]
         [Route("{projectId}/stats/allowAll")]
@@ -186,6 +188,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        //GET PROJECT STATS BY ID FOR LOGGED IN USERS
         [HttpGet]
         [Route("{projectId}/stats")]
         public HttpResponseMessage GetProjectStatsByProjectIdForLoggedInUsers(int projectId)
@@ -208,12 +211,12 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        // HERE WE MAY NEED REFACTOR AGAIN
+        //CREATE NEW PROJECT - OK
         [HttpPost]
         [Route("")]
         public HttpResponseMessage CreateProject(ProjectModel project)
         {
-            //STEP 1 - Create the Project from Project Model coming from the client
             if (!ModelState.IsValid)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
 
@@ -256,7 +259,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        //UPDATE PROJECT - OK
         [HttpPut]
         [Route("{projectId}")]
         public HttpResponseMessage EditProject(ProjectModel project, int projectId)
@@ -294,7 +297,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        //CHECK IF CURRENT LOGGED IN USER IS PROJECT CREATOR - OK
         [HttpGet]
         [Route("{projectId}/isCurrentUserProjectCreator")]
         public HttpResponseMessage IsRequestorUserProjectCreator(int projectId)
@@ -318,7 +321,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
          *
          */
 
-        // OK
+        //GET A PROJECT'S UPDATES FOR LOGGED OUT USERS - OK
         [AllowAnonymous]
         [HttpGet]
         [Route("{projectId}/updates/allowAll")]
@@ -335,7 +338,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        //GET A PROJECT'S UPDATES FOR LOGGED IN USERS - OK
         [HttpGet]
         [Route("{projectId}/updates")]
         public HttpResponseMessage GetProjectUpdatesForLoggedInUsers(int projectId)
@@ -353,6 +356,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        //GET SINGLE PROJECT UPDATE BY ID FOR A PROJECT FOR LOGGED IN USERS - OK
         [HttpGet]
         [Route("{projectId}/updates/{updateId}")]
         public HttpResponseMessage GetProjectUpdateByIdForLoggedInUsers(int projectId, int updateId)
@@ -370,7 +374,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        //INSERT OR UPDATE PROJECT UPDATE - OK
         [HttpPost]
         [Route("{projectId}/updates/{updateId?}")]
         public HttpResponseMessage InsertOrEditProjectUpdate(ProjectUpdateModel projectUpdate, int projectId, int updateId = 0)
@@ -422,7 +426,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
                             httpStatusCode = HttpStatusCode.NotFound;
                             break;
 
-                        //not authorized to update this project update
+                        //not authorized to update this project update - not the project creator
                         case ProjectUpdateRepository.StatusCodes.NOT_AUTHORIZED:
                             httpStatusCode = HttpStatusCode.MethodNotAllowed;
                             break;
@@ -438,7 +442,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        //DELETE PROJECT UPDATE BY ID - OK
         [HttpDelete]
         [Route("{projectId}/updates/{updateId}")]
         public HttpResponseMessage DeleteProjectUpdate(int projectId, int updateId)
@@ -462,7 +466,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
                         httpStatusCode = HttpStatusCode.NotFound;
                         break;
 
-                    //not authorized to delete this project update
+                    //not authorized to delete this project update - not project creator
                     case ProjectUpdateRepository.StatusCodes.NOT_AUTHORIZED:
                         httpStatusCode = HttpStatusCode.MethodNotAllowed;
                         break;
@@ -483,11 +487,11 @@ namespace VivaWallet.Server.Web.Api.Controllers
          *
          */
 
-        // OK
+        //GET A PROJECT'S COMMENTS FOR LOGGED OUT USERS - OK
         [AllowAnonymous]
         [HttpGet]
         [Route("{projectId}/comments/allowAll")]
-        public HttpResponseMessage GetProjectComments(int projectId)
+        public HttpResponseMessage GetProjectCommentsForLoggedOutUsers(int projectId)
         {
             if (projectId <= 0)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
@@ -500,7 +504,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        //GET A PROJECT'S COMMENTS FOR LOGGED IN USERS - OK
         [HttpGet]
         [Route("{projectId}/comments")]
         public HttpResponseMessage GetProjectCommentsForLoggedInUsers(int projectId)
@@ -518,6 +522,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        //GET A PROJECT'S SPECIFIC COMMENT BY ID FOR LOGGED IN USERS - OK
         [HttpGet]
         [Route("{projectId}/comments/{commentId}")]
         public HttpResponseMessage GetProjectCommentByIdForLoggedInUsers(int projectId, int commentId)
@@ -535,6 +540,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        //GET ALL CURRENT LOGGED IN USER'S CREATED PROJECT COMMENTS - OK
         [HttpGet]
         [Route("getAllCurrentUserCreatedProjectComments")]
         public HttpResponseMessage GetAllCurrentUserCreatedProjectComments()
@@ -549,7 +555,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        //INSERT OR UPDATE COMMENT - OK
         [HttpPost]
         [Route("{projectId}/comments/{commentId?}")]
         public HttpResponseMessage InsertOrUpdateComment(ProjectCommentModel projectComment, int projectId, int commentId = 0)
@@ -596,7 +602,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
                             httpStatusCode = HttpStatusCode.NotFound;
                             break;
 
-                        //not authorized to update this comment
+                        //not authorized to update this comment - requestor not the comment creator
                         case ProjectCommentRepository.StatusCodes.NOT_AUTHORIZED:
                             httpStatusCode = HttpStatusCode.MethodNotAllowed;
                             break;
@@ -612,7 +618,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        //DELETE SPECIFIC COMMENT - OK
         [HttpDelete]
         [Route("{projectId}/comments/{commentId}")]
         public HttpResponseMessage DeleteComment(int projectId, int commentId)
@@ -636,7 +642,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
                         httpStatusCode = HttpStatusCode.NotFound;
                         break;
 
-                    //not authorized to delete this comment
+                    //not authorized to delete this comment - requestor not comment creator
                     case ProjectCommentRepository.StatusCodes.NOT_AUTHORIZED:
                         httpStatusCode = HttpStatusCode.MethodNotAllowed;
                         break;
@@ -656,7 +662,8 @@ namespace VivaWallet.Server.Web.Api.Controllers
          * PROJECT FUNDING PACKAGES ROUTES
          * 
          * */
-         
+        
+        //GET PROJECT FUNDING PACKAGES FOR LOGGED OUT USERS - OK 
         [AllowAnonymous]
         [HttpGet]
         [Route("{projectId}/fundingPackages/allowAll")]
@@ -673,7 +680,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        // GET PROJECT FUNDING PACKAGES FOR LOGGED IN USERS - OK
         [HttpGet]
         [Route("{projectId}/fundingPackages")]
         public HttpResponseMessage GetProjectFundingPackagesForLoggedInUsers(int projectId)
@@ -691,6 +698,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        //GET SPECIFIC PROJECT FUNDING PACKAGE FOR LOGGED IN USERS - OK
         [HttpGet]
         [Route("{projectId}/fundingPackages/{fundingPackageId}")]
         public HttpResponseMessage GetFundingPackageByIdForLoggedInUsers(int projectId, int fundingPackageId)
@@ -708,6 +716,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        //GET SPECIFIC PROJECT FUNDING PACKAGE FOR LOGGED IN USERS FOR PAYMENTS VIEW - OK
         [HttpGet]
         [Route("{projectId}/fundingPackages/{fundingPackageId}/forPaymentsView")]
         public HttpResponseMessage GetFundingPackageByIdForLoggedInUsersForPaymentView(int projectId, int fundingPackageId)
@@ -723,7 +732,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        //CREATE NEW PROJECT FUNDING PACKAGE - OK
         [HttpPost]
         [Route("{projectId}/fundingPackages")]
         public HttpResponseMessage CreateFundingPackage(FundingPackageModel fundingPackage, int projectId)
@@ -747,7 +756,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
                         httpStatusCode = HttpStatusCode.NotFound;
                         break;
 
-                    //not authorized to add this funding package to this specific project
+                    //not authorized to add this funding package to this specific project - requestor not the project creator
                     case FundingPackageRepository.StatusCodes.NOT_AUTHORIZED:
                         httpStatusCode = HttpStatusCode.MethodNotAllowed;
                         break;
@@ -762,7 +771,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        //UPDATE EXISTING PROJECT FUNDING PACKAGE - OK
         [HttpPut]
         [Route("{projectId}/fundingPackages/{fundingPackageId}")]
         public HttpResponseMessage UpdateFundingPackage(FundingPackageModel fundingPackage, int projectId, int fundingPackageId)
@@ -800,7 +809,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        //DELETE SPECIFIC PROJECT FUNDING PACKAGE - OK
         [HttpDelete]
         [Route("{projectId}/fundingPackages/{fundingPackageId}")]
         public HttpResponseMessage DeleteFundingPackage(int projectId, int fundingPackageId)
@@ -845,6 +854,8 @@ namespace VivaWallet.Server.Web.Api.Controllers
          * 
          */
 
+        //POSSIBLE REFACTOR HERE PUT BUSINESS LOGIC TO BAL
+        //CREATE EXTERNAL SHARE FOR A PROJECT - OK
         [HttpPost]
         [Route("{projectId}/externalShares")]
         public HttpResponseMessage CreateProjectExternalShare(ProjectExternalShareModel projectExternalShare, int projectId)
@@ -894,6 +905,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
          * 
          */
 
+        //GET A PROJECTS FUNDINGS - OK
         [AllowAnonymous]
         [HttpGet]
         [Route("{projectId}/getProjectFundings")]
@@ -910,6 +922,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        //GET CURRENT LOGGED IN USER ALL PROJECT FUNDINGS - OK
         [HttpGet]
         [Route("getCurrentUserProjectFundings")]
         public HttpResponseMessage GetCurrentUserProjectFundings(int projectId)
@@ -926,8 +939,9 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, v);
             }
         }
-
-
+        
+        //POSSIBLE REFACTOR HERE - PUT BUSINESS LOGIC TO BAL
+        //CREATE PROJECT FUNDING - OK
         [HttpPost]
         [Route("{projectId}/fundings")]
         public HttpResponseMessage CreateFundingForProject(UserFundingModel funding, int projectId)
@@ -958,6 +972,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        //CHECKOUT TO VIVA PAYMENTS - OK
         [HttpPost]
         [Route("fundingPackages/{fundingPackageId}/checkout")]
         public async Task<IHttpActionResult> CheckoutToViva(VivaWalletTokenModel vivaWalletModel, int fundingPackageId)

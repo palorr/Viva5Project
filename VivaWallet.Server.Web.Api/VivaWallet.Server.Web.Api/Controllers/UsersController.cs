@@ -21,7 +21,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
          *
          */
 
-        // OK
+        //GET ALL REGISTERED USERS - OK
         [AllowAnonymous]
         [HttpGet]
         [Route("")]
@@ -34,7 +34,8 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, v);
             }
         }
-        //ok
+
+        //GET LAST 10 REGISTERED USERS - OK
         [AllowAnonymous]
         [HttpGet]
         [Route("lastTen")]
@@ -47,7 +48,8 @@ namespace VivaWallet.Server.Web.Api.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, v);
             }
         }
-        // OK
+
+        //GET SPECIFIC USER BY ID - OK
         [AllowAnonymous]
         [HttpGet]
         [Route("{userId}")]
@@ -69,7 +71,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        //GET SPECIFIC USER BY USERNAME - OK
         [HttpPost]
         [Route("findByUsername")]
         public HttpResponseMessage GetUserByUsername(UserModel user)
@@ -90,7 +92,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        //UPDATE USER MAIN INFO - OK
         [HttpPut]
         [Route("")]
         public HttpResponseMessage UpdateUserMainInfo(UserModel user)
@@ -123,7 +125,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        //DEACTIVATE USER ACCOUNT - OK
         [HttpDelete]
         [Route("{userId}")]
         public HttpResponseMessage DeactivateUserAccount(int userId)
@@ -147,7 +149,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
                         httpStatusCode = HttpStatusCode.NotFound;
                         break;
 
-                    //not authorized to delete this user
+                    //not authorized to delete this user - requestor not this user
                     case UserRepository.StatusCodes.NOT_AUTHORIZED:
                         httpStatusCode = HttpStatusCode.MethodNotAllowed;
                         break;
@@ -168,7 +170,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
          * 
          */
 
-        // OK
+        //GET CURRENT LOGGED IN USER CREATED PROJECTS - OK
         [HttpGet]
         [Route("myCreatedProjects")]
         public HttpResponseMessage GetCurrentLoggedInUserCreatedProjects()
@@ -183,7 +185,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK
+        //GET SPECIFIC USER'S CREATED PROJECTS - OK
         [AllowAnonymous]
         [HttpGet]
         [Route("{userId}/userCreatedProjects")]
@@ -200,7 +202,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
         
-        // OK
+        //GET SPECIFIC USER'S BACKED PROJECTS - OK
         [AllowAnonymous]
         [HttpGet]
         [Route("{userId}/userBackedProjects")]
@@ -217,7 +219,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK - Show all in project list view
+        //GET ALL CURRENT LOGGED IN USER FUNDED COMPLETED PROJECTS - OK - Show all in project list view
         [HttpGet]
         [Route("getUserFundedCompletedProjects/showAll")]
         public HttpResponseMessage GetUserFundedCompletedProjectsShowAll()
@@ -232,7 +234,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // OK - Show first 5
+        //GET LAST RECENT 5 LOGGED IN USER FUNDED PROJECTS - OK - Show first 5
         [HttpGet]
         [Route("getUserFundedCompletedProjects")]
         public HttpResponseMessage GetUserFundedCompletedProjectsShowTop5()
@@ -247,6 +249,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        //GET ALL USERS BY NAME - OK
         [AllowAnonymous]
         [HttpGet]
         [Route("getAllUsersByName/{searchTerm}")]
@@ -261,6 +264,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        //GET ALL CURRENT LOGGED IN USER'S FUNDED PROJECTS LATEST UPDATES - OK
         [HttpGet]
         [Route("getAllMyFundedProjectsLatestUpdates")]
         public HttpResponseMessage GetCurrentUserFundedProjectsUpdates()
@@ -275,6 +279,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
+        //GET ADMIN PANEL INFORMATION FOR ADMIN USERS ONLY - OK
         [HttpGet]
         [Route("getAdminPanelInfo")]
         public HttpResponseMessage GetAdminPanelInfo()

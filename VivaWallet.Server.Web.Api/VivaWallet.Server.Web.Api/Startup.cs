@@ -15,8 +15,6 @@ namespace VivaWallet.Server.Web.Api
     {
         public void Configuration(IAppBuilder app)
         {
-            // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=316888
-
             ConfigureOAuth(app);
 
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
@@ -24,9 +22,6 @@ namespace VivaWallet.Server.Web.Api
 
         public void ConfigureOAuth(IAppBuilder app)
         {
-           
-           
-            
             var  OAuthBearerOptions = new OAuthBearerAuthenticationOptions();
 
             app.UseOAuthBearerAuthentication(OAuthBearerOptions);
@@ -35,8 +30,7 @@ namespace VivaWallet.Server.Web.Api
             var issuer = "8737e3f7a7984167b4d09f658a76bf32";
             var audience = "8737e3f7a7984167b4d09f658a76bf32";
             var secret = TextEncodings.Base64Url.Decode("Lo7zvQVYx2erstPrS27DrV0DQ8XzL_0unfiut8SVBP4");
-
-
+            
             // Api controllers with an [Authorize] attribute will be validated with JWT
             app.UseJwtBearerAuthentication(
                 new JwtBearerAuthenticationOptions
@@ -56,9 +50,9 @@ namespace VivaWallet.Server.Web.Api
                         }
                     }
                      
-                });
-             
-
+                }
+            );
+            
         }
     }
 }
