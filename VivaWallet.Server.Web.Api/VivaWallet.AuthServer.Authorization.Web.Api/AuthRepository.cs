@@ -37,7 +37,7 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api
             {
                 return await _userManager.FindAsync(username, password);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -45,16 +45,24 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api
 
         public async Task<IdentityResult> RegisterUser(UserModel userModel)
         {
-            IdentityUser user = new IdentityUser
+            try
             {
-                UserName = userModel.UserName
-            };
+                IdentityUser user = new IdentityUser
+                {
+                    UserName = userModel.UserName
+                };
+            
+                var result = await _userManager.CreateAsync(user, userModel.Password);
 
-            var result = await _userManager.CreateAsync(user, userModel.Password);
+                if (result.Succeeded) { }
 
-            if(result.Succeeded) {}
-
-            return result;
+                return result;
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+            
         }
 
         public async Task<IdentityUser> FindUserById(int id)

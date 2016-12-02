@@ -35,17 +35,29 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api.Controllers
                 var user = new Viva.Wallet.BAL.Models.UserModel();
                 user.Username = userModel.UserName;
                 user.Name = userModel.Name;
-                repo.CreateUser(user);
+                try { 
+                    repo.CreateUser(user);
+                } 
+                catch(Exception e)
+                {
+                    throw e;
+                }
             }
 
             using (var _repo = new AuthRepository())
             {
-                IdentityResult result = await _repo.RegisterUser(userModel);
-                IHttpActionResult errorResult = GetErrorResult(result);
+                try { 
+                    IdentityResult result = await _repo.RegisterUser(userModel);
+                    IHttpActionResult errorResult = GetErrorResult(result);
 
-                if (errorResult != null)
+                    if (errorResult != null)
+                    {
+                        return errorResult;
+                    }
+                }
+                catch(Exception e)
                 {
-                    return errorResult;
+                    throw e;
                 }
             }
 
