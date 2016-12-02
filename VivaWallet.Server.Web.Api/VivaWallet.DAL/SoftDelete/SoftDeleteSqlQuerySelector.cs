@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 
 namespace VivaWallet.DAL
 {
-    
-
     public class SoftDeleteQueryVisitor : DefaultExpressionVisitor
     {
         public const string IsDeletedColumnName = "IsDeleted";
@@ -18,17 +16,21 @@ namespace VivaWallet.DAL
         public override DbExpression Visit(DbScanExpression expression)
         {
             var table = (EntityType)expression.Target.ElementType;
+
             if (table.Properties.All(p => p.Name != IsDeletedColumnName))
             {
                 return base.Visit(expression);
             }
 
             var binding = expression.Bind();
+
             return binding.Filter(
-                binding.VariableType
+                binding
+                    .VariableType
                     .Variable(binding.VariableName)
                     .Property(IsDeletedColumnName)
-                    .NotEqual(DbExpression.FromBoolean(true)));
+                    .NotEqual(DbExpression.FromBoolean(true))
+            );
         }
     }
 }

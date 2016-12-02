@@ -27,7 +27,6 @@ namespace Viva.Wallet.BAL
             _dbContext = new VivaWalletEntities();
         }
         
-
         public Repository<Project> ProjectRepository
         {
             get {
@@ -139,7 +138,5 @@ namespace Viva.Wallet.BAL
             if (save)
                 await _dbContext.SaveChangesAsync();
         }
-
-        
     }
 }

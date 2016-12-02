@@ -26,11 +26,9 @@ namespace Viva.Wallet.BAL
             try
             {
                 return context.Set<TEntity>().ToList();
-
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -60,7 +58,6 @@ namespace Viva.Wallet.BAL
             }
             catch (Exception)
             {
-
                 throw;
             }
             
@@ -69,6 +66,7 @@ namespace Viva.Wallet.BAL
         public async Task DeleteAsync(TEntity entity, bool save = true)
         {
             context.Set<TEntity>().Remove(entity);
+
             if (save)
               await  context.SaveChangesAsync();
         }
@@ -86,7 +84,6 @@ namespace Viva.Wallet.BAL
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -99,7 +96,6 @@ namespace Viva.Wallet.BAL
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -109,12 +105,12 @@ namespace Viva.Wallet.BAL
             try
             {
                 context.Set<TEntity>().Add(entity);
+
                 if (save)
                     context.SaveChanges();
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
             
@@ -125,12 +121,12 @@ namespace Viva.Wallet.BAL
             try
             {
                 context.Set<TEntity>().Add(entity);
+
                 if (save)
                    await context.SaveChangesAsync();
             }
             catch (Exception)
             {
-
                 throw;
             }
             
@@ -141,7 +137,6 @@ namespace Viva.Wallet.BAL
             try
             {
                 return context.Set<TEntity>().Where(predicate).ToList();
-
             }
             catch (Exception ex)
             {
@@ -158,7 +153,6 @@ namespace Viva.Wallet.BAL
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -166,12 +160,11 @@ namespace Viva.Wallet.BAL
         public void Update(TEntity entity, bool save = true)
         {
             dbSet.Attach(entity);
+
             context.Entry<TEntity>(entity).State = EntityState.Modified;
 
             if (save)
                 context.SaveChanges();
-
-
         }
     }
 }

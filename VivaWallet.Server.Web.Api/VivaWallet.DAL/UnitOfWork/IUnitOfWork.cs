@@ -8,9 +8,7 @@ namespace VivaWallet.DAL
 {
     interface IUnitOfWork
     {
-
         void SaveChanges(bool save = true);
         Task  SaveChangesAsync(bool save = true);
-
     }
 }

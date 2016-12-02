@@ -13,9 +13,11 @@ namespace VivaWallet.DAL
     public class SoftDeleteInterceptor : IDbCommandTreeInterceptor
     {
         public const string IsDeletedColumnName = "IsDeleted";
+
         private static DbCommandTree HandleQueryCommand(DbQueryCommandTree queryCommand)
         {
             var newQuery = queryCommand.Query.Accept(new SoftDeleteQueryVisitor());
+
             return new DbQueryCommandTree(
                 queryCommand.MetadataWorkspace,
                 queryCommand.DataSpace,
@@ -24,40 +26,45 @@ namespace VivaWallet.DAL
 
         public void TreeCreated(DbCommandTreeInterceptionContext interceptionContext)
         {
-            if (interceptionContext.OriginalResult.DataSpace ==
-          DataSpace.SSpace)
+            if (interceptionContext.OriginalResult.DataSpace == DataSpace.SSpace)
             {
-                var queryCommand = interceptionContext.Result as
-                   DbQueryCommandTree;
+                var queryCommand = interceptionContext.Result as DbQueryCommandTree;
+
                 if (queryCommand != null)
                 {
-                    var newQuery = queryCommand.Query.Accept(new
-                       SoftDeleteQueryVisitor());
+                    var newQuery = queryCommand.Query.Accept(new SoftDeleteQueryVisitor());
+
                     interceptionContext.Result = new DbQueryCommandTree(
                        queryCommand.MetadataWorkspace,
                        queryCommand.DataSpace,
                        newQuery);
                 }
 
-                var deleteCommand = interceptionContext.OriginalResult
-                   as DbDeleteCommandTree;
+                var deleteCommand = interceptionContext.OriginalResult as DbDeleteCommandTree;
+
                 if (deleteCommand != null)
                 {
                     var column = IsDeletedColumnName;
+
                     if (column != null)
                     {
                         var setClauses = new List<DbModificationClause>();
-                        var table = (EntityType)deleteCommand.Target.
-                           VariableType.EdmType;
+                        var table = (EntityType)deleteCommand.Target.VariableType.EdmType;
+
                         if (table.Properties.Any(p => p.Name == column))
                         {
-                            setClauses.Add(DbExpressionBuilder.SetClause(
-                               DbExpressionBuilder.Property(
-                                  DbExpressionBuilder.Variable(deleteCommand.
-                                     Target.VariableType,
-                                     deleteCommand.Target.VariableName),
-                                     column),
-                                  DbExpression.FromBoolean(true)));
+                            setClauses.Add(
+                                DbExpressionBuilder.SetClause(
+                                    DbExpressionBuilder.Property(
+                                        DbExpressionBuilder.Variable(
+                                            deleteCommand.Target.VariableType,
+                                            deleteCommand.Target.VariableName
+                                        ),
+                                        column
+                                    ),
+                                    DbExpression.FromBoolean(true)
+                                )
+                            );
                         }
 
                         var update = new DbUpdateCommandTree(
@@ -65,7 +72,9 @@ namespace VivaWallet.DAL
                            deleteCommand.DataSpace,
                            deleteCommand.Target,
                            deleteCommand.Predicate,
-                           setClauses.AsReadOnly(), null);
+                           setClauses.AsReadOnly(), 
+                           null
+                        );
 
                         interceptionContext.Result = update;
                     }
