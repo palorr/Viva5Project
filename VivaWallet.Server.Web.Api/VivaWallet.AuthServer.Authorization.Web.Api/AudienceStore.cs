@@ -13,21 +13,14 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api
 
             static AudiencesStore()
             {
-                /*
-                AudiencesList.TryAdd(AquaTrackerApiInfo.ClientID,
-                                    new Audience
-                                    {
-                                        ClientId = AquaTrackerApiInfo.ClientID,
-                                        Base64Secret = AquaTrackerApiInfo.Secret, 
-                                                    Name = "AquaTracker Resource Server" });
-                 */
                 AudiencesList.TryAdd("8737e3f7a7984167b4d09f658a76bf32",
-                                    new Audience
-                                    {
-                                        ClientId = "8737e3f7a7984167b4d09f658a76bf32",
-                                        Base64Secret = "Lo7zvQVYx2erstPrS27DrV0DQ8XzL_0unfiut8SVBP4",
-                                        Name = "8737e3f7a7984167b4d09f658a76bf32"
-                                    });
+                    new Audience
+                    {
+                        ClientId = "8737e3f7a7984167b4d09f658a76bf32",
+                        Base64Secret = "Lo7zvQVYx2erstPrS27DrV0DQ8XzL_0unfiut8SVBP4",
+                        Name = "8737e3f7a7984167b4d09f658a76bf32"
+                    }
+                );
             }
 
             public static Audience AddAudience(string name)

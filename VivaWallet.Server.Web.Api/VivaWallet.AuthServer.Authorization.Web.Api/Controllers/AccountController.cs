@@ -17,10 +17,7 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api.Controllers
     {
         private AuthRepository _repo = null;
 
-        public AccountController()
-        {
-            //         _repo = new AuthRepository();
-        }
+        public AccountController() {}
 
         // POST api/Account/Register
         [AllowAnonymous]
@@ -39,8 +36,8 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api.Controllers
                 user.Username = userModel.UserName;
                 user.Name = userModel.Name;
                 repo.CreateUser(user);
-
             }
+
             using (var _repo = new AuthRepository())
             {
                 IdentityResult result = await _repo.RegisterUser(userModel);
@@ -51,47 +48,48 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api.Controllers
                     return errorResult;
                 }
             }
-                return Ok();
-}
 
-protected override void Dispose(bool disposing)
-{
-    if (disposing)
-    {
-        _repo?.Dispose();
-    }
+            return Ok();
+        }
 
-    base.Dispose(disposing);
-}
-
-private IHttpActionResult GetErrorResult(IdentityResult result)
-{
-    if (result == null)
-    {
-        return InternalServerError();
-    }
-
-    if (!result.Succeeded)
-    {
-        if (result.Errors != null)
+        protected override void Dispose(bool disposing)
         {
-            foreach (string error in result.Errors)
+            if (disposing)
             {
-                ModelState.AddModelError("", error);
+                _repo?.Dispose();
             }
+
+            base.Dispose(disposing);
         }
 
-        if (ModelState.IsValid)
+        private IHttpActionResult GetErrorResult(IdentityResult result)
         {
-            // No ModelState errors are available to send, so just return an empty BadRequest.
-            return BadRequest();
+            if (result == null)
+            {
+                return InternalServerError();
+            }
+
+            if (!result.Succeeded)
+            {
+                if (result.Errors != null)
+                {
+                    foreach (string error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error);
+                    }
+                }
+
+                if (ModelState.IsValid)
+                {
+                    // No ModelState errors are available to send, so just return an empty BadRequest.
+                    return BadRequest();
+                }
+
+                return BadRequest(ModelState);
+            }
+
+            return null;
         }
-
-        return BadRequest(ModelState);
-    }
-
-    return null;
-}
     }
 
 }

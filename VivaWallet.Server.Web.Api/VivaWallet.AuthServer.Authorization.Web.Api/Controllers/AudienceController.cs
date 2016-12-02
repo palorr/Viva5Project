@@ -14,19 +14,20 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api.Controllers
     public class AudienceController : ApiController
     {
       
-            [Route("")]
-            public IHttpActionResult Post(AudienceModel audienceModel)
+        [Route("")]
+        public IHttpActionResult Post(AudienceModel audienceModel)
+        {
+            if (!ModelState.IsValid)
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-
-                Audience newAudience = AudiencesStore.AddAudience(audienceModel.Name);
-
-                return Ok<Audience>(newAudience);
-
+                return BadRequest(ModelState);
             }
+
+            Audience newAudience = AudiencesStore.AddAudience(audienceModel.Name);
+
+            return Ok<Audience>(newAudience);
+
+        }
+
         [HttpGet]
         [Route("all")]
         public Object Get()
@@ -39,5 +40,5 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api.Controllers
 
         }
     }
-    }
+}
 

@@ -7,10 +7,10 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api.Models
 {
    
     public enum ApplicationTypes
-        {
-            JavaScript = 0,
-            NativeConfidential = 1,
-            AdminPanel = 2
-        };
+    {
+        JavaScript = 0,
+        NativeConfidential = 1,
+        AdminPanel = 2
+    };
     
 }

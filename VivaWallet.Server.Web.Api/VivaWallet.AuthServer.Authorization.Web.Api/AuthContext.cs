@@ -9,9 +9,8 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api
 {
     public class AuthContext : IdentityDbContext<IdentityUser>
     {
-        public AuthContext() : base("AuthContext")
-        {
-        }
+
+        public AuthContext() : base("AuthContext") {}
 
         public DbSet<Client> Clients { get; set; }
        

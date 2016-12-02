@@ -39,30 +39,9 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api
             }
             catch (Exception ex)
             {
-
                 throw;
             }
         }
-
-        /*
-        public async Task RegisterUser(string username , string password)
-        {
-            try
-            {
-                var newUser = new IdentityUser()
-                {
-                    UserName = username
-
-                };
-                await _userManager.CreateAsync(newUser, password);
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-        }
-        */
 
         public async Task<IdentityResult> RegisterUser(UserModel userModel)
         {
@@ -72,10 +51,9 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api
             };
 
             var result = await _userManager.CreateAsync(user, userModel.Password);
-            if(result.Succeeded)
-            {
- 
-            }
+
+            if(result.Succeeded) {}
+
             return result;
         }
 
@@ -88,7 +66,6 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api
             }
             catch (Exception ex)
             {
-
                 throw;
             }
         }
@@ -103,7 +80,6 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api
             }
             catch (Exception ex)
             {
-
                 throw;
             }
            

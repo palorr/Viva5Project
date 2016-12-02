@@ -15,28 +15,23 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api
     {
         public void Configuration(IAppBuilder app)
         {
-            // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=316888
 
             HttpConfiguration config = new HttpConfiguration();
-
-
+            
             config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
            
-
             ConfigureOAuth(app);
 
             WebApiConfig.Register(config);
 
-           app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
+            app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
 
-            //app.UseWebApi(config);
         }
 
         private void ConfigureOAuth(IAppBuilder app)
         {
 
-         //   app.UseExternalSignInCookie(Microsoft.AspNet.Identity.DefaultAuthenticationTypes.ExternalCookie); //not sure if we want this yet
-           var  OAuthBearerOptions = new OAuthBearerAuthenticationOptions();
+            var  OAuthBearerOptions = new OAuthBearerAuthenticationOptions();
 
             OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions()
             {
@@ -48,7 +43,6 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api
                 Provider = new CustomOAuthProvider(),
                 // RefreshTokenProvider = new CustomRefreshTokenProvider()
                 AccessTokenFormat = new JwtFormatter("8737e3f7a7984167b4d09f658a76bf32")
-
             };
 
             // OAuth 2.0 Bearer Access Token Generation
