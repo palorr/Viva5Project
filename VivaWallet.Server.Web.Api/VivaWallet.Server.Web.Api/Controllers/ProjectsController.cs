@@ -1000,7 +1000,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
         [Route("{projectId}/image")]
         public async Task<HttpResponseMessage> SaveImage(long projectId, AttachmentModel source)
         {
-            var mappedPath = System.Web.Hosting.HostingEnvironment.MapPath("~/attachmentPath/");
+            var mappedPath = System.Web.Hosting.HostingEnvironment.MapPath("~/");
             var path = mappedPath + Helpers.HelperMethods.getImagePhotoName(null);
 
             try
