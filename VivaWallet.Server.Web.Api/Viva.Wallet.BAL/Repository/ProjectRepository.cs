@@ -98,6 +98,8 @@ namespace Viva.Wallet.BAL.Repository
 
             try
             {
+                var s = System.Web.HttpContext.Current.Request.Url;
+                var publicurl = s.OriginalString.Replace(s.AbsolutePath, "/");
                 return uow.ProjectRepository
                           .SearchFor(e => e.Id == projectId)
                           .Select(e => new ProjectModelToView()
@@ -115,7 +117,10 @@ namespace Viva.Wallet.BAL.Repository
                               ProjectCategoryId = e.ProjectCategoryId,
                               Status = e.Status,
                               UpdatedDate = e.UpdateDate,
-                              IsRequestorProjectCreator = isRequestorProjectCreator
+                              IsRequestorProjectCreator = isRequestorProjectCreator,
+                              MainPhoto = e.AttachmentSet.Attachments.Where(f => f.FilePath != null)
+                            .Select(g => g.FilePath)
+                            .FirstOrDefault()?.Replace("D:\\home\\site\\wwwroot\\", publicurl)
                           }).SingleOrDefault();
             }
             catch (InvalidOperationException ex)
@@ -217,6 +222,8 @@ namespace Viva.Wallet.BAL.Repository
         // OK
         public IList<ProjectModel> GetByCategoryId(long catId)
         {
+            var s = System.Web.HttpContext.Current.Request.Url;
+            var publicurl = s.OriginalString.Replace(s.AbsolutePath, "/");
             return uow.ProjectRepository
                       .SearchFor(e => e.ProjectCategoryId == catId)
                       .Select(e => new ProjectModel()
@@ -233,7 +240,10 @@ namespace Viva.Wallet.BAL.Repository
                             ProjectCategoryDesc = e.ProjectCategory.Name,
                             ProjectCategoryId = e.ProjectCategoryId,
                             Status = e.Status,
-                            UpdatedDate = e.UpdateDate
+                            UpdatedDate = e.UpdateDate,
+                            MainPhoto = e.AttachmentSet.Attachments.Where(f=>f.FilePath != null)
+                            .Select(g=>g.FilePath)
+                            .FirstOrDefault()?.Replace("D:\\home\\site\\wwwroot\\", publicurl)
                       }).OrderByDescending(e => e.CreatedDate).ToList();
 
         }

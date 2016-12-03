@@ -35,6 +35,8 @@ namespace Viva.Wallet.BAL.Models
 
         public long? OwnerId { get; set; }
 
+        public string MainPhoto { get; set; }
+
 
     }
 }
