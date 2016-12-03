@@ -51,15 +51,15 @@ namespace Viva.Wallet.BAL.Repository
 
         }
 
-        public IList<AttachmentModel> GetProjectAttachmets(string username, long projectId)
+        public IList<AttachmentModel> GetProjectAttachmets(long projectId)
         {
             try
             {
                  var s = System.Web.HttpContext.Current.Request.Url;
                 var publicurl = s.OriginalString.Replace(s.AbsolutePath, "/");
-                var user = uow.UserRepository.SearchFor(e => e.Username == username).FirstOrDefault();
+                
 
-                var userProject = uow.ProjectRepository.SearchFor(e => e.Id == projectId && e.UserId == user.Id).FirstOrDefault();
+                var userProject = uow.ProjectRepository.SearchFor(e => e.Id == projectId ).FirstOrDefault();
 
                 if (userProject == null)
                     throw new InvalidOperationException();

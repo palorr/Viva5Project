@@ -1034,17 +1034,17 @@ namespace VivaWallet.Server.Web.Api.Controllers
             return Request.CreateResponse(HttpStatusCode.Created);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("{projectId}/attachmets")]
         public HttpResponseMessage GetAttachments(long projectId)
         {
             try
             {
-                var identity = User.Identity as ClaimsIdentity;
                     
                 using (var repo = new AttachmentRepository())
                 {
-                    var res = repo.GetProjectAttachmets(identity.Name, projectId);
+                    var res = repo.GetProjectAttachmets( projectId);
 
                     return Request.CreateResponse(HttpStatusCode.OK, res);
                 }
