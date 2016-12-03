@@ -97,6 +97,7 @@ namespace Viva.Wallet.BAL.Repository
 
             try
             {
+                //STEP 1 - Create the Project Funding from UserFundingModel coming from the client
                 var _userFunding = new UserFunding()
                 {
                     FundingPackageId = source.FundingPackageId,
@@ -107,6 +108,13 @@ namespace Viva.Wallet.BAL.Repository
                 };
 
                 uow.UserFundingRepository.Insert(_userFunding, true);
+
+                //STEP 2 - Update Project Stats Screen Amount + NoOfBackings
+                using (var sr = new ProjectStatRepository())
+                {
+                    bool statAmountUpdated = sr.IncrementProjectStatMoneyPledged(projectId, source.AmountPaid);
+                    bool statNoOfBackersUpdated = sr.IncrementProjectStatBackersNo(projectId);
+                }
 
                 return _userFunding.Id;
             }

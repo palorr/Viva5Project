@@ -246,6 +246,9 @@ namespace Viva.Wallet.BAL.Repository
         {
             var _user = uow.UserRepository.FindById(userId);
 
+            var s = System.Web.HttpContext.Current.Request.Url;
+            var publicurl = s.OriginalString.Replace(s.AbsolutePath, "/");
+
             //user not found
             if (_user == null)
             {
@@ -269,8 +272,14 @@ namespace Viva.Wallet.BAL.Repository
                                 UpdatedDate = e.UpdateDate,
                                 FundingEndDate = e.FundingEndDate,
                                 FundingGoal = e.FundingGoal,
-                                Status = e.Status
-                            }).OrderByDescending(e => e.UpdatedDate).ToList();
+                                Status = e.Status,
+                                MainPhoto = e
+                                            .AttachmentSet
+                                            .Attachments
+                                            .Where(f => f.FilePath != null)
+                                            .OrderBy(o => o.OrderNo).Select(g => g.FilePath)
+                                            .FirstOrDefault()?.Replace("D:\\home\\site\\wwwroot\\", publicurl)
+                          }).OrderByDescending(e => e.UpdatedDate).ToList();
             }
         }
 

@@ -857,7 +857,6 @@ namespace VivaWallet.Server.Web.Api.Controllers
          * 
          */
 
-        //POSSIBLE REFACTOR HERE PUT BUSINESS LOGIC TO BAL
         //CREATE EXTERNAL SHARE FOR A PROJECT - OK
         [HttpPost]
         [Route("{projectId}/externalShares")]
@@ -868,21 +867,11 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            //STEP 1 - Update the project statistic for external share
-            using (var ps = new ProjectStatRepository())
-            {
-                bool hasUpdatedProjectStat = ps.IncrementProjectStatSharesNo(projectId);
-
-                //project to update stat not found
-                if(!hasUpdatedProjectStat) return Request.CreateResponse(HttpStatusCode.NotFound);
-            }
-            
             using (var s = new ProjectExternalShareRepository())
             {
 
                 var httpStatusCode = HttpStatusCode.Created;
 
-                // STEP 2: Create new external share and save it to database table of external shares
                 bool hasInserted = s.CreateExternalShare(projectExternalShare, identity, projectId);
 
                 switch (hasInserted)
@@ -943,7 +932,6 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
         
-        //POSSIBLE REFACTOR HERE - PUT BUSINESS LOGIC TO BAL
         //CREATE PROJECT FUNDING - OK
         [HttpPost]
         [Route("{projectId}/fundings")]
@@ -956,20 +944,8 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             using (var s = new UserFundingRepository())
             {
-                //STEP 1 - Create the Project Funding from UserFundingModel coming from the client
+                
                 long newFundingId = s.Insert(funding, projectId, identity);
-
-                //STEP 2 - Update Project Stats Screen Amount + NoOfBackers
-                using (var sr = new ProjectStatRepository())
-                {
-                    bool statAmountUpdated = sr.IncrementProjectStatMoneyPledged(projectId, funding.AmountPaid);
-                    bool statNoOfBackersUpdated = sr.IncrementProjectStatBackersNo(projectId);
-
-                    if (!statAmountUpdated || !statNoOfBackersUpdated)
-                    {
-                        return Request.CreateResponse(HttpStatusCode.NotFound);
-                    }
-                }
                 
                 return Request.CreateResponse(HttpStatusCode.Created, newFundingId);
             }

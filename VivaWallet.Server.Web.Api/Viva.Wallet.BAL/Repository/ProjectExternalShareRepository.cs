@@ -40,6 +40,7 @@ namespace Viva.Wallet.BAL.Repository
 
             try
             {
+                // STEP 1: Create new external share and save it to database table of external shares
                 var _projectExternalShare = new ProjectExternalShare()
                 {
                     ProjectId = source.ProjectId,
@@ -50,6 +51,15 @@ namespace Viva.Wallet.BAL.Repository
                 };
 
                 uow.ProjectExternalShareRepository.Insert(_projectExternalShare, true);
+
+                //STEP 2 - Update the project statistic for external share
+                using (var ps = new ProjectStatRepository())
+                {
+                    bool hasUpdatedProjectStat = ps.IncrementProjectStatSharesNo(projectId);
+
+                    //project to update stat not found
+                    if (!hasUpdatedProjectStat) return false;
+                }
 
                 return true;
             }
