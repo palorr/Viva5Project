@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Viva.Wallet.BAL.Helpers;
 using Viva.Wallet.BAL.Models;
 using VivaWallet.DAL;
 
@@ -244,11 +245,10 @@ namespace Viva.Wallet.BAL.Repository
         // OK
         public IList<ProjectModel> GetUserCreatedProjects(int userId)
         {
+            var publicurl = UtilMethods.GetHostUrl();
+
             var _user = uow.UserRepository.FindById(userId);
-
-            var s = System.Web.HttpContext.Current.Request.Url;
-            var publicurl = s.OriginalString.Replace(s.AbsolutePath, "/");
-
+            
             //user not found
             if (_user == null)
             {
@@ -286,8 +286,10 @@ namespace Viva.Wallet.BAL.Repository
         // OK
         public IList<ProjectModel> GetCurrentLoggedInUserCreatedProjects(ClaimsIdentity identity)
         {
-            long currentUserId;
+            var publicurl = UtilMethods.GetHostUrl();
 
+            long currentUserId;
+            
             try
             {
                 currentUserId = uow.UserRepository
@@ -315,79 +317,22 @@ namespace Viva.Wallet.BAL.Repository
                         UpdatedDate = e.UpdateDate,
                         FundingEndDate = e.FundingEndDate,
                         FundingGoal = e.FundingGoal,
-                        Status = e.Status
+                        Status = e.Status,
+                        MainPhoto = e
+                                    .AttachmentSet
+                                    .Attachments
+                                    .Where(f => f.FilePath != null)
+                                    .OrderBy(o => o.OrderNo).Select(g => g.FilePath)
+                                    .FirstOrDefault()?.Replace("D:\\home\\site\\wwwroot\\", publicurl)
                     }).OrderByDescending(e => e.UpdatedDate).ToList();
 
         }
 
-        /*
-         
-        // OK
-        public IList<ProjectModel> GetUserAllFundings(int userId)
-        {
-            var _user = uow.UserRepository.FindById(userId);
-
-            //user not found
-            if (_user == null)
-            {
-                return new List<ProjectModel>() { };
-            }
-
-            else
-            {
-                using (var ctx = new VivaWalletEntities())
-                {
-                    //Get user funded projects
-                    return ctx.Database.SqlQuery<ProjectModel>(
-                        @" 
-                            SELECT 
-                                p.Id Id,
-	                            pc.Id ProjectCategoryId, 
-	                            pc.Name ProjectCategoryDesc,
-	                            p.AttachmentSetId AttachmentSetId,
-	                            p.Title Title,
-	                            p.Description Description,
-	                            p.CreatedDate CreatedDate,
-	                            p.UpdateDate UpdateDate,
-	                            p.FundingEndDate FundingEndDate,
-	                            p.FundingGoal FundingGoal,
-	                            p.Status Status,
-	                            p.UserId OwnerId,
-	                            u.Name OwnerName
-                            FROM 
-	                            UserFundings uf
-                            LEFT JOIN
-	                            FundingPackages fp
-                            ON 
-	                            uf.FundingPackageId = fp.Id
-                            LEFT JOIN 
-	                            Projects p
-                            ON 
-	                            fp.ProjectId = p.Id
-                            LEFT JOIN
-                                ProjectCategories pc
-                            ON 
-                                p.ProjectCategoryId = pc.Id
-                            LEFT JOIN
-	                            Users u
-                            ON
-	                            p.UserId = u.Id
-                            WHERE
-	                            uf.UserId = {0}
-                            ORDER BY
-	                            uf.WhenDateTime DESC
-                        ", userId
-                    ).ToList<ProjectModel>();
-                }
-            }
-        }     
-             
-        
-        */
-
         // OK
         public IList<ProjectModel> GetUserFundedProjects(int userId)
         {
+            var publicurl = UtilMethods.GetHostUrl();
+
             var _user = uow.UserRepository.FindById(userId);
 
             //user not found
@@ -424,11 +369,25 @@ namespace Viva.Wallet.BAL.Repository
                             UpdatedDate = uffppr.pr.UpdateDate,
                             FundingEndDate = uffppr.pr.FundingEndDate,
                             FundingGoal = uffppr.pr.FundingGoal,
-                            Status = uffppr.pr.Status
+                            Status = uffppr.pr.Status,
+                            MainPhoto = uffppr.pr
+                                                .AttachmentSet
+                                                .Attachments
+                                                .Where(f => f.FilePath != null)
+                                                .OrderBy(o => o.OrderNo).Select(g => g.FilePath)
+                                                .FirstOrDefault()
                         }).OrderByDescending(e => e.UpdatedDate);
 
                     IEnumerable<ProjectModel> userFundings = userFundingsOrderedQueryable.AsEnumerable();
-                    
+
+                    foreach (var uf in userFundings)
+                    {
+                        if(uf.MainPhoto != null)
+                        {
+                            uf.MainPhoto = uf.MainPhoto.Replace("D:\\home\\site\\wwwroot\\", publicurl);
+                        }
+                    }
+
                     //return the filtered set of rows as a IList for the view to render
                     return UserRepository.DistinctBy(userFundings, p => p.Id).ToList();
                 }
@@ -485,6 +444,9 @@ namespace Viva.Wallet.BAL.Repository
         
         public IList<ProjectModel> GetUserFundedCompletedProjects(ClaimsIdentity identity, bool showAll)
         {
+
+            var publicurl = UtilMethods.GetHostUrl();
+
             long currentUserId;
 
             try
@@ -525,7 +487,13 @@ namespace Viva.Wallet.BAL.Repository
                         UpdatedDate = uffppr.pr.UpdateDate,
                         FundingEndDate = uffppr.pr.FundingEndDate,
                         FundingGoal = uffppr.pr.FundingGoal,
-                        Status = uffppr.pr.Status
+                        Status = uffppr.pr.Status,
+                        MainPhoto = uffppr.pr
+                                            .AttachmentSet
+                                            .Attachments
+                                            .Where(f => f.FilePath != null)
+                                            .OrderBy(o => o.OrderNo).Select(g => g.FilePath)
+                                            .FirstOrDefault()
                     }).OrderByDescending(e => e.UpdatedDate);
 
                 IEnumerable<ProjectModel> userFundings;
@@ -540,6 +508,14 @@ namespace Viva.Wallet.BAL.Repository
                 else
                 {
                     userFundings = userFundingsOrderedQueryable.Take(5).AsEnumerable();
+                }
+
+                foreach (var uf in userFundings)
+                {
+                    if (uf.MainPhoto != null)
+                    {
+                        uf.MainPhoto = uf.MainPhoto.Replace("D:\\home\\site\\wwwroot\\", publicurl);
+                    }
                 }
 
                 //return the filtered set of rows as a IList for the view to render

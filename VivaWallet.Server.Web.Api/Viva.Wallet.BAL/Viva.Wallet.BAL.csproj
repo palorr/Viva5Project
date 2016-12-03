@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\UtilMethods.cs" />
     <Compile Include="Models\AdminPanelViewModel.cs" />
     <Compile Include="Models\AttachmentModel.cs" />
     <Compile Include="Models\AttachmentSetModel.cs" />

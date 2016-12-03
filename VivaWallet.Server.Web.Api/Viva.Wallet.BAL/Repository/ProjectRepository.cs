@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Viva.Wallet.BAL.Helpers;
 using Viva.Wallet.BAL.Models;
 using VivaWallet.DAL;
 
@@ -27,26 +28,31 @@ namespace Viva.Wallet.BAL.Repository
         // OK
         public IList<ProjectModel> GetAll()
         {
-           return uow.ProjectRepository
+            var publicurl = UtilMethods.GetHostUrl();
+
+            return uow.ProjectRepository
                      .All()?
-                   //  .Where(e => (e.Status != "CRE" && e.Status != "FAI"))
                      .Select(e => new ProjectModel()
                         {
-                           Id = e.Id,
-                           Title = e.Title,
-                           CreatedDate = e.CreatedDate,
-                           Description = e.Description,
-                           FundingEndDate = e.FundingEndDate,
-                           FundingGoal = e.FundingGoal,
-                           OwnerId = e.User.Id,
-                           OwnerName = e.User.Name,
-                           ProjectCategoryDesc = e.ProjectCategory.Name,
-                           ProjectCategoryId = e.ProjectCategoryId,
-                           Status = e.Status,
-                           UpdatedDate = e.UpdateDate
-
-                       }
-                     ).OrderByDescending(e => e.CreatedDate).ToList();
+                            Id = e.Id,
+                            Title = e.Title,
+                            CreatedDate = e.CreatedDate,
+                            Description = e.Description,
+                            FundingEndDate = e.FundingEndDate,
+                            FundingGoal = e.FundingGoal,
+                            OwnerId = e.User.Id,
+                            OwnerName = e.User.Name,
+                            ProjectCategoryDesc = e.ProjectCategory.Name,
+                            ProjectCategoryId = e.ProjectCategoryId,
+                            Status = e.Status,
+                            UpdatedDate = e.UpdateDate,
+                            MainPhoto = e
+                                        .AttachmentSet
+                                        .Attachments
+                                        .Where(f => f.FilePath != null)
+                                        .OrderBy(o => o.OrderNo).Select(g => g.FilePath)
+                                        .FirstOrDefault()?.Replace("D:\\home\\site\\wwwroot\\", publicurl)
+                        }).OrderByDescending(e => e.CreatedDate).ToList();
         }
 
 
@@ -64,7 +70,25 @@ namespace Viva.Wallet.BAL.Repository
                             pro.Description Description, pro.FundingEndDate FundingEndDate,
                             pro.FundingGoal FundingGoal, us.Id OwnerId, us.Name OwnerName,
                             pc.Name ProjectCategoryDesc, pc.Id ProjectCategoryId,
-                            pro.Status Status, pro.UpdateDate UpdateDate
+                            pro.Status Status, pro.UpdateDate UpdateDate,
+                            (
+                                SELECT 
+                                    TOP(1) at.FilePath
+                                FROM 
+	                                Projects pr
+                                LEFT JOIN
+	                                AttachmentSets ats
+                                ON
+	                                pr.AttachmentSetId = ats.Id
+                                LEFT JOIN 
+	                                Attachments at 
+                                ON 
+	                                ats.Id = at.AttachementSetId
+                                WHERE
+	                                pr.Id = pro.Id AND at.IsDeleted = 0 AND at.FilePath IS NOT NULL
+                                ORDER BY 
+	                                at.OrderNo
+                            ) MainPhoto
                         FROM 
 	                        Projects pro
                         LEFT JOIN
@@ -89,6 +113,8 @@ namespace Viva.Wallet.BAL.Repository
         // OK
         public ProjectModelToView GetProjectById(long projectId, ClaimsIdentity identity = null)
         {
+            var publicurl = UtilMethods.GetHostUrl();
+
             bool isRequestorProjectCreator = false;
 
             if(identity != null)
@@ -98,8 +124,7 @@ namespace Viva.Wallet.BAL.Repository
 
             try
             {
-                var s = System.Web.HttpContext.Current.Request.Url;
-                var publicurl = s.OriginalString.Replace(s.AbsolutePath, "/");
+                
                 return uow.ProjectRepository
                           .SearchFor(e => e.Id == projectId)
                           .Select(e => new ProjectModelToView()
@@ -118,9 +143,13 @@ namespace Viva.Wallet.BAL.Repository
                               Status = e.Status,
                               UpdatedDate = e.UpdateDate,
                               IsRequestorProjectCreator = isRequestorProjectCreator,
-                              MainPhoto = e.AttachmentSet.Attachments.Where(f => f.FilePath != null)
-                            .Select(g => g.FilePath)
-                            .FirstOrDefault()?.Replace("D:\\home\\site\\wwwroot\\", publicurl)
+                              MainPhoto = e
+                                            .AttachmentSet
+                                            .Attachments
+                                            .Where(f => f.FilePath != null)
+                                            .Select(g => g.FilePath)
+                                            .FirstOrDefault()?
+                                            .Replace("D:\\home\\site\\wwwroot\\", publicurl)
                           }).SingleOrDefault();
             }
             catch (InvalidOperationException ex)
@@ -222,8 +251,8 @@ namespace Viva.Wallet.BAL.Repository
         // OK
         public IList<ProjectModel> GetByCategoryId(long catId)
         {
-            var s = System.Web.HttpContext.Current.Request.Url;
-            var publicurl = s.OriginalString.Replace(s.AbsolutePath, "/");
+            var publicurl = UtilMethods.GetHostUrl();
+
             return uow.ProjectRepository
                       .SearchFor(e => e.ProjectCategoryId == catId)
                       .Select(e => new ProjectModel()
@@ -241,15 +270,21 @@ namespace Viva.Wallet.BAL.Repository
                             ProjectCategoryId = e.ProjectCategoryId,
                             Status = e.Status,
                             UpdatedDate = e.UpdateDate,
-                            MainPhoto = e.AttachmentSet.Attachments.Where(f=>f.FilePath != null)
-                            .Select(g=>g.FilePath)
-                            .FirstOrDefault()?.Replace("D:\\home\\site\\wwwroot\\", publicurl)
+                            MainPhoto = e
+                                        .AttachmentSet
+                                        .Attachments
+                                        .Where(f=>f.FilePath != null)
+                                        .Select(g=>g.FilePath)
+                                        .FirstOrDefault()?
+                                        .Replace("D:\\home\\site\\wwwroot\\", publicurl)
                       }).OrderByDescending(e => e.CreatedDate).ToList();
 
         }
         
         public IList<ProjectModel> GetByName(string searchTerm)
         {
+            var publicurl = UtilMethods.GetHostUrl();
+
             return uow.ProjectRepository
                       .SearchFor(e => e.Title.Contains(searchTerm))
                       .Select(e => new ProjectModel()
@@ -266,7 +301,14 @@ namespace Viva.Wallet.BAL.Repository
                           ProjectCategoryDesc = e.ProjectCategory.Name,
                           ProjectCategoryId = e.ProjectCategoryId,
                           Status = e.Status,
-                          UpdatedDate = e.UpdateDate
+                          UpdatedDate = e.UpdateDate,
+                          MainPhoto = e
+                                        .AttachmentSet
+                                        .Attachments
+                                        .Where(f => f.FilePath != null)
+                                        .Select(g => g.FilePath)
+                                        .FirstOrDefault()?
+                                        .Replace("D:\\home\\site\\wwwroot\\", publicurl)
                       }).OrderByDescending(e => e.CreatedDate).ToList();
 
         }
