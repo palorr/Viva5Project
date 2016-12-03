@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Viva.Wallet.BAL.Helpers;
 using Viva.Wallet.BAL.Models;
 using VivaWallet.DAL;
 
@@ -126,8 +127,8 @@ namespace Viva.Wallet.BAL.Repository
                 {
                     //check if current user is the projectId's creator
                     //else return NOT ALLOWED
-                    long requestorUserId = GetRequestorIdFromIdentity(identity);
-                    
+                    long requestorUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
+
                     if (_project.User.Id != requestorUserId)
                     {
                         return StatusCodes.NOT_AUTHORIZED;
@@ -171,7 +172,7 @@ namespace Viva.Wallet.BAL.Repository
                 else
                 {
                     // funding package found. does the user that wishes to update it really is the project creator? check this here
-                    long requestorUserId = GetRequestorIdFromIdentity(identity);
+                    long requestorUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
 
                     if (_fundingPackage.Project.UserId != requestorUserId)
                     {
@@ -216,7 +217,7 @@ namespace Viva.Wallet.BAL.Repository
                 else
                 {
                     // funding package found. does the user that wishes to delete it really is the project creator? check this here
-                    long requestorUserId = GetRequestorIdFromIdentity(identity);
+                    long requestorUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
 
                     //if not the project creater OR if the funding package is the donations package NOT_AUTHORIZED to delete it in either cases
                     if ((_fundingPackage.Project.UserId != requestorUserId) || (_fundingPackage.PledgeAmount == null))
@@ -234,25 +235,7 @@ namespace Viva.Wallet.BAL.Repository
                 throw;
             }
         }
-
-        // OK
-        private long GetRequestorIdFromIdentity(ClaimsIdentity identity)
-        {
-            try
-            {
-                long requestorUserId = uow.UserRepository
-                                          .SearchFor(e => e.Username == identity.Name)
-                                          .Select(e => e.Id)
-                                          .SingleOrDefault();
-
-                return requestorUserId;
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new InvalidOperationException("User lookup for requestor Id for project funding package module failed", ex);
-            }
-        }
-
+        
         public enum StatusCodes
         {
             NOT_FOUND = 0,

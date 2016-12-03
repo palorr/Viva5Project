@@ -13,5 +13,21 @@ namespace Viva.Wallet.BAL.Helpers
             var requestURL = System.Web.HttpContext.Current.Request.Url;
             return requestURL.OriginalString.Replace(requestURL.AbsolutePath, "/");
         }
+
+        public static long GetCurrentUserId(UnitOfWork uow, string username)
+        {
+            try
+            {
+                return uow
+                        .UserRepository
+                        .SearchFor(e => e.Username == username)
+                        .Select(e => e.Id)
+                        .SingleOrDefault();
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException("User lookup for current logged in User Id failed", ex);
+            }
+        }
     }
 }

@@ -209,23 +209,8 @@ namespace Viva.Wallet.BAL.Repository
                 else
                 {
                     // user found. is the user authorized? check this here
-                    long requestorUserId;
-
-                    try
-                    {
-                        requestorUserId = uow.UserRepository
-                                             .SearchFor(e => e.Username == identity.Name)
-                                             .Select(e => e.Id)
-                                             .SingleOrDefault();
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        throw new InvalidOperationException("User lookup for requestor Id failed", ex);
-                    }
-
-                    //var userIdClaim = identity.Claims
-                    //.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
-
+                    long requestorUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
+                   
                     if (userId != requestorUserId)
                     {
                         return StatusCodes.NOT_AUTHORIZED;
@@ -288,21 +273,9 @@ namespace Viva.Wallet.BAL.Repository
         public IList<ProjectModel> GetCurrentLoggedInUserCreatedProjects(ClaimsIdentity identity)
         {
             var publicurl = UtilMethods.GetHostUrl();
+            
+            long currentUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
 
-            long currentUserId;
-            
-            try
-            {
-                currentUserId = uow.UserRepository
-                                 .SearchFor(e => e.Username == identity.Name)
-                                 .Select(e => e.Id)
-                                 .SingleOrDefault();
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new InvalidOperationException("User lookup for current logged in User Id failed", ex);
-            }
-            
             return uow.ProjectRepository
                     .SearchFor(e => e.UserId == currentUserId)
                     .Select(e => new ProjectModel()
@@ -399,19 +372,7 @@ namespace Viva.Wallet.BAL.Repository
 
         public IList<ProjectUpdateModel> GetCurrentUserFundedProjectsLatestUpdates(ClaimsIdentity identity)
         {
-            long currentUserId;
-
-            try
-            {
-                currentUserId = uow.UserRepository
-                                 .SearchFor(e => e.Username == identity.Name)
-                                 .Select(e => e.Id)
-                                 .SingleOrDefault();
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new InvalidOperationException("User lookup for current logged in User Id failed in GetUserFundedProjectsCompletedNotifications", ex);
-            }
+            long currentUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
             
             //get user funded projects updates
             using (var ctx = new VivaWalletEntities())
@@ -450,19 +411,7 @@ namespace Viva.Wallet.BAL.Repository
 
             var publicurl = UtilMethods.GetHostUrl();
 
-            long currentUserId;
-
-            try
-            {
-                currentUserId = uow.UserRepository
-                                 .SearchFor(e => e.Username == identity.Name)
-                                 .Select(e => e.Id)
-                                 .SingleOrDefault();
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new InvalidOperationException("User lookup for current logged in User Id failed in GetUserFundedProjectsCompletedNotifications", ex);
-            }
+            long currentUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
             
             //get user funded projects that have status = "COM"
             using (var ctx = new VivaWalletEntities())
@@ -547,19 +496,7 @@ namespace Viva.Wallet.BAL.Repository
         {
             try
             {
-                long requestorUserId;
-
-                try
-                {
-                    requestorUserId = uow.UserRepository
-                                            .SearchFor(e => e.Username == identity.Name)
-                                            .Select(e => e.Id)
-                                            .SingleOrDefault();
-                }
-                catch (InvalidOperationException ex)
-                {
-                    throw new InvalidOperationException("User lookup for requestor Id failed", ex);
-                }
+                long requestorUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
 
                 var _adminUser = uow.UserRepository.FindById(requestorUserId);
 

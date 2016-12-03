@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Viva.Wallet.BAL.Helpers;
 using Viva.Wallet.BAL.Models;
 using VivaWallet.DAL;
 
@@ -48,19 +49,7 @@ namespace Viva.Wallet.BAL.Repository
 
         public IList<UserFundingModelWithProjectId> GetCurrentUserProjectFundings(ClaimsIdentity identity, int projectId)
         {
-            long requestorUserId;
-
-            try
-            {
-                requestorUserId = uow.UserRepository
-                                     .SearchFor(e => e.Username == identity.Name)
-                                     .Select(e => e.Id)
-                                     .SingleOrDefault();
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new InvalidOperationException("User lookup for requestor Id failed in GetCurrentUserProjectFundings", ex);
-            }
+            long requestorUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
 
             return uow.UserFundingRepository
                       .SearchFor(e => e.UserId == requestorUserId)
@@ -81,19 +70,7 @@ namespace Viva.Wallet.BAL.Repository
 
         public long Insert(UserFundingModel source, int projectId, ClaimsIdentity identity)
         {
-            long requestorUserId;
-
-            try
-            {
-                requestorUserId = uow.UserRepository
-                                     .SearchFor(e => e.Username == identity.Name)
-                                     .Select(e => e.Id)
-                                     .SingleOrDefault();
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new InvalidOperationException("User lookup for requestor Id for user funding creation failed", ex);
-            }
+            long requestorUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
 
             try
             {

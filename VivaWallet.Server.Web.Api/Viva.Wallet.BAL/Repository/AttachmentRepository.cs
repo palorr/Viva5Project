@@ -55,7 +55,7 @@ namespace Viva.Wallet.BAL.Repository
         {
             try
             {
-                 var s = System.Web.HttpContext.Current.Request.Url;
+                var s = System.Web.HttpContext.Current.Request.Url;
                 var publicurl = s.OriginalString.Replace(s.AbsolutePath, "/");
                 
 

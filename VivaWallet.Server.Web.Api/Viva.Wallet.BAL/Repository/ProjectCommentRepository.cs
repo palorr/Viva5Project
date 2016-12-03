@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Viva.Wallet.BAL.Helpers;
 using Viva.Wallet.BAL.Models;
 using VivaWallet.DAL;
 
@@ -39,19 +40,7 @@ namespace Viva.Wallet.BAL.Repository
         {
             bool isRequestorProjectCommentCreator = false;
 
-            long requestorUserId;
-
-            try
-            {
-                requestorUserId = uow.UserRepository
-                                     .SearchFor(e => e.Username == identity.Name)
-                                     .Select(e => e.Id)
-                                     .SingleOrDefault();
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new InvalidOperationException("User lookup for requestor Id for get all project comments failed", ex);
-            }
+            long requestorUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
 
             isRequestorProjectCommentCreator = this.IsRequestorProjectCommentCreator((long)commentId, requestorUserId);
 
@@ -86,18 +75,7 @@ namespace Viva.Wallet.BAL.Repository
 
             if (identity != null)
             {
-                try
-                {
-                    requestorUserId = uow.UserRepository
-                                         .SearchFor(e => e.Username == identity.Name)
-                                         .Select(e => e.Id)
-                                         .SingleOrDefault();
-                }
-                catch (InvalidOperationException ex)
-                {
-                    throw new InvalidOperationException("User lookup for requestor Id for get all project comments failed", ex);
-                }
-                
+                requestorUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
             }
 
             return uow.ProjectCommentreRepository
@@ -120,19 +98,7 @@ namespace Viva.Wallet.BAL.Repository
         // OK
         public IList<ProjectCommentModelToView> GetAllCurrentUserCreatedProjectComments(ClaimsIdentity identity)
         {
-            long requestorUserId;
-
-            try
-            {
-                requestorUserId = uow.UserRepository
-                                        .SearchFor(e => e.Username == identity.Name)
-                                        .Select(e => e.Id)
-                                        .SingleOrDefault();
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new InvalidOperationException("User lookup for requestor Id for get all project comments failed", ex);
-            }
+            long requestorUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
 
             //get current user created projects comments
             using (var ctx = new VivaWalletEntities())
@@ -180,19 +146,7 @@ namespace Viva.Wallet.BAL.Repository
 
                 else
                 {
-                    long requestorUserId;
-
-                    try
-                    {
-                        requestorUserId = uow.UserRepository
-                                             .SearchFor(e => e.Username == identity.Name)
-                                             .Select(e => e.Id)
-                                             .SingleOrDefault();
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        throw new InvalidOperationException("User lookup for requestor Id for project comment creation failed", ex);
-                    }
+                    long requestorUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
 
                     var _projectComment = new ProjectComment()
                     {
@@ -229,19 +183,7 @@ namespace Viva.Wallet.BAL.Repository
                 else
                 {
                     // comment found. does the user that wishes to update it really is the comment creator? check this here
-                    long requestorUserId;
-
-                    try
-                    {
-                        requestorUserId = uow.UserRepository
-                                             .SearchFor(e => e.Username == identity.Name)
-                                             .Select(e => e.Id)
-                                             .SingleOrDefault();
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        throw new InvalidOperationException("User lookup for requestor Id for project comment edit failed", ex);
-                    }
+                    long requestorUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
 
                     if (_projectComment.UserId != requestorUserId)
                     {
@@ -277,19 +219,7 @@ namespace Viva.Wallet.BAL.Repository
                 else
                 {
                     // comment found. does the user that wishes to delete it really is the comment creator? check this here
-                    long requestorUserId;
-
-                    try
-                    {
-                        requestorUserId = uow.UserRepository
-                                             .SearchFor(e => e.Username == identity.Name)
-                                             .Select(e => e.Id)
-                                             .SingleOrDefault();
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        throw new InvalidOperationException("User lookup for requestor Id for project comment delete failed", ex);
-                    }
+                    long requestorUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
 
                     if (_projectComment.UserId != requestorUserId)
                     {

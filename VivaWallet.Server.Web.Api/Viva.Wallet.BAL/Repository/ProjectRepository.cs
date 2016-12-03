@@ -175,19 +175,7 @@ namespace Viva.Wallet.BAL.Repository
         // OK
         public bool IsProjectCreator(int projectId, ClaimsIdentity identity)
         {
-            long requestorUserId;
-
-            try
-            {
-                requestorUserId = uow.UserRepository
-                                     .SearchFor(e => e.Username == identity.Name)
-                                     .Select(e => e.Id)
-                                     .SingleOrDefault();
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new InvalidOperationException("User lookup for requestor Id failed", ex);
-            }
+            long requestorUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
 
             try
             {
@@ -211,19 +199,7 @@ namespace Viva.Wallet.BAL.Repository
         // OK
         public AuthorizationModel IsCurrentUserAuthorized(int targetId, string targetType, ClaimsIdentity identity)
         {
-            long requestorUserId;
-
-            try
-            {
-                requestorUserId = uow.UserRepository
-                                     .SearchFor(e => e.Username == identity.Name)
-                                     .Select(e => e.Id)
-                                     .SingleOrDefault();
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new InvalidOperationException("User lookup for requestor Id failed", ex);
-            }
+            long requestorUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
 
             try
             {
@@ -330,19 +306,7 @@ namespace Viva.Wallet.BAL.Repository
         // OK
         public long Insert(ProjectModel source, ClaimsIdentity identity)
         {
-            long requestorUserId;
-
-            try
-            {
-                requestorUserId = uow.UserRepository
-                                     .SearchFor(e => e.Username == identity.Name)
-                                     .Select(e => e.Id)
-                                     .SingleOrDefault();
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new InvalidOperationException("User lookup for requestor Id for project creation failed", ex);
-            }
+            long requestorUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
 
             try
             {
@@ -409,19 +373,7 @@ namespace Viva.Wallet.BAL.Repository
                 else
                 {
                     // project found. does the user that wishes to update it really is the project creator? check this here
-                    long requestorUserId;
-
-                    try
-                    {
-                        requestorUserId = uow.UserRepository
-                                             .SearchFor(e => e.Username == identity.Name)
-                                             .Select(e => e.Id)
-                                             .SingleOrDefault();
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        throw new InvalidOperationException("User lookup for requestor Id for project update creation failed", ex);
-                    }
+                    long requestorUserId = UtilMethods.GetCurrentUserId(uow, identity.Name);
 
                     if (_project.UserId != requestorUserId)
                     {
