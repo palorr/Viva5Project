@@ -214,7 +214,6 @@ namespace VivaWallet.Server.Web.Api.Controllers
             }
         }
 
-        // HERE WE MAY NEED REFACTOR AGAIN
         //CREATE NEW PROJECT - OK
         [HttpPost]
         [Route("")]
@@ -227,36 +226,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             using (var s = new ProjectRepository())
             {
-                //STEP 1 - Create new Attachment Set and assign it to the model coming from the client
-                using (var attRepo = new AttachmentSetRepository())
-                {
-                    long attachmentSetId = attRepo.CreateAttachmentSet();
-                    project.AttachmentSetId = attachmentSetId;
-                }
-                
-                //STEP 2 - Create the Project and save to Projects table
                 long newProjectId = s.Insert(project, identity);
-
-                //STEP 3 - Create Project Stats Screen and Save to ProjectStats Table
-                using (var sr = new ProjectStatRepository())
-                {
-                    bool statCreated = sr.CreateProjectStat((int)newProjectId);
-                    if(!statCreated)
-                    {
-                        return Request.CreateResponse(HttpStatusCode.NotFound);
-                    }
-                }
-
-                //STEP 4 - Create new Project Funding Package for Donations
-                using (var fpRepo = new FundingPackageRepository())
-                {
-                    FundingPackageModel newFundingPackageModel = new FundingPackageModel();
-                    newFundingPackageModel.AttachmentSetId = null;
-                    newFundingPackageModel.Title = "Donations Funding Package";
-                    newFundingPackageModel.Description = "Feel free to donate whatever amount you wish!";
-
-                    fpRepo.CreateFundingPackage(newFundingPackageModel, identity, (int)newProjectId, true);
-                }
                 
                 return Request.CreateResponse(HttpStatusCode.Created, newProjectId);
             }
