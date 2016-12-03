@@ -64,7 +64,7 @@ namespace Viva.Wallet.BAL.Repository
 
             using (var ctx = new VivaWalletEntities())
             {
-                //Get trending projects
+                //Get trending projects - OK
                 IList<ProjectModel> trendingProjects = ctx.Database.SqlQuery<ProjectModel>(
                     @" 
                         SELECT 
@@ -74,7 +74,7 @@ namespace Viva.Wallet.BAL.Repository
                             pro.FundingGoal FundingGoal, us.Id OwnerId, us.Name OwnerName,
                             pc.Name ProjectCategoryDesc, pc.Id ProjectCategoryId,
                             pro.Status Status, pro.UpdateDate UpdateDate,
-                            pro.AttachmentSetId AttachmentSetId
+                            pro.AttachmentSetId AttachmentSetId,
                             (
                                 SELECT 
                                     TOP(1) at.FilePath
