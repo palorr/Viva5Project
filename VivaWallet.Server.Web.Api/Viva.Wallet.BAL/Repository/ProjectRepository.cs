@@ -59,10 +59,12 @@ namespace Viva.Wallet.BAL.Repository
         // OK
         public IList<ProjectModel> GetTrendingProjects()
         {
+            var publicurl = UtilMethods.GetHostUrl();
+
             using (var ctx = new VivaWalletEntities())
             {
                 //Get trending projects
-                return ctx.Database.SqlQuery<ProjectModel>(
+                IList<ProjectModel> trendingProjects = ctx.Database.SqlQuery<ProjectModel>(
                     @" 
                         SELECT 
                             TOP 10 
@@ -107,6 +109,16 @@ namespace Viva.Wallet.BAL.Repository
 	                        ps.MoneyPledged DESC, ps.BackersNo DESC, ps.SharesNo DESC, ps.CommentsNo DESC;
                     "
                 ).ToList();
+
+                foreach(var project in trendingProjects)
+                {
+                    if (project.MainPhoto != null)
+                    {
+                        project.MainPhoto = project.MainPhoto.Replace("D:\\home\\site\\wwwroot\\", publicurl);
+                    }
+                }
+
+                return trendingProjects;
             }
         }
 
