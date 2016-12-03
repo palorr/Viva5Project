@@ -36,6 +36,7 @@ namespace Viva.Wallet.BAL.Repository
                         {
                             Id = e.Id,
                             Title = e.Title,
+                            AttachmentSetId = e.AttachmentSetId,
                             CreatedDate = e.CreatedDate,
                             Description = e.Description,
                             FundingEndDate = e.FundingEndDate,
@@ -73,6 +74,7 @@ namespace Viva.Wallet.BAL.Repository
                             pro.FundingGoal FundingGoal, us.Id OwnerId, us.Name OwnerName,
                             pc.Name ProjectCategoryDesc, pc.Id ProjectCategoryId,
                             pro.Status Status, pro.UpdateDate UpdateDate,
+                            pro.AttachmentSetId AttachmentSetId
                             (
                                 SELECT 
                                     TOP(1) at.FilePath

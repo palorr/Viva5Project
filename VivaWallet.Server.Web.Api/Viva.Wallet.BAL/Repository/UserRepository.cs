@@ -273,6 +273,7 @@ namespace Viva.Wallet.BAL.Repository
                                 FundingEndDate = e.FundingEndDate,
                                 FundingGoal = e.FundingGoal,
                                 Status = e.Status,
+                                AttachmentSetId = e.AttachmentSetId,
                                 MainPhoto = e
                                             .AttachmentSet
                                             .Attachments
@@ -317,6 +318,7 @@ namespace Viva.Wallet.BAL.Repository
                         UpdatedDate = e.UpdateDate,
                         FundingEndDate = e.FundingEndDate,
                         FundingGoal = e.FundingGoal,
+                        AttachmentSetId = e.AttachmentSetId,
                         Status = e.Status,
                         MainPhoto = e
                                     .AttachmentSet
@@ -370,6 +372,7 @@ namespace Viva.Wallet.BAL.Repository
                             FundingEndDate = uffppr.pr.FundingEndDate,
                             FundingGoal = uffppr.pr.FundingGoal,
                             Status = uffppr.pr.Status,
+                            AttachmentSetId = uffppr.pr.AttachmentSetId,
                             MainPhoto = uffppr.pr
                                                 .AttachmentSet
                                                 .Attachments
@@ -488,6 +491,7 @@ namespace Viva.Wallet.BAL.Repository
                         FundingEndDate = uffppr.pr.FundingEndDate,
                         FundingGoal = uffppr.pr.FundingGoal,
                         Status = uffppr.pr.Status,
+                        AttachmentSetId = uffppr.pr.AttachmentSetId,
                         MainPhoto = uffppr.pr
                                             .AttachmentSet
                                             .Attachments
