@@ -12,11 +12,14 @@ namespace Viva.Wallet.BAL.Repository
 {
     public class AttachmentSetRepository : IDisposable
     {
-        protected UnitOfWork uow;
+        protected IUnitOfWork uow;
 
-        public AttachmentSetRepository()
+        public AttachmentSetRepository(IUnitOfWork _uow)
         {
-            uow = new UnitOfWork();
+            if (_uow == null)
+                uow = new UnitOfWork();
+            else
+                uow = _uow;
         }
 
         public long CreateAttachmentSet()
@@ -41,7 +44,7 @@ namespace Viva.Wallet.BAL.Repository
 
         public void Dispose()
         {
-            uow.Dispose();
+          
         }
     }
 }

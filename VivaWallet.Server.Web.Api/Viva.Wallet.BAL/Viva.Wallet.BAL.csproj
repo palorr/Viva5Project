@@ -93,6 +93,8 @@
     <Compile Include="Repository\ProjectUpdateRepository.cs" />
     <Compile Include="Repository\UserFundingRepository.cs" />
     <Compile Include="Repository\UserRepository.cs" />
+    <Compile Include="UnitOfWork\IUnitOfWork.cs" />
+    <Compile Include="UnitOfWork\UnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VivaWallet.DAL\VivaWallet.DAL.csproj">

@@ -14,7 +14,7 @@ namespace Viva.Wallet.BAL.Helpers
             return requestURL.OriginalString.Replace(requestURL.AbsolutePath, "/");
         }
 
-        public static long GetCurrentUserId(UnitOfWork uow, string username)
+        public static long GetCurrentUserId(IUnitOfWork uow, string username)
         {
             try
             {

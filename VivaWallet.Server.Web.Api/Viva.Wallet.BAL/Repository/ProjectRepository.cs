@@ -13,16 +13,19 @@ namespace Viva.Wallet.BAL.Repository
 {
     public class ProjectRepository  :IDisposable
     {
-        protected UnitOfWork uow;
+        protected IUnitOfWork uow;
 
-        public ProjectRepository()
+        public ProjectRepository(IUnitOfWork _uow)
         {
-            uow = new UnitOfWork();
+            if (_uow == null)
+                uow = new UnitOfWork();
+            else
+                uow = _uow;
         }
 
         public void Dispose()
         {
-            uow.Dispose();
+          
         }
         
         // OK
@@ -313,7 +316,7 @@ namespace Viva.Wallet.BAL.Repository
             try
             {
                 //STEP 1 - Create new Attachment Set and assign it to the model coming from the client
-                using (var attRepo = new AttachmentSetRepository())
+                using (var attRepo = new AttachmentSetRepository(uow))
                 {
                     long attachmentSetId = attRepo.CreateAttachmentSet();
                     source.AttachmentSetId = attachmentSetId;
@@ -337,13 +340,13 @@ namespace Viva.Wallet.BAL.Repository
                 uow.ProjectRepository.Insert(_pro , true);
 
                 //STEP 3 - Create Project Stats Screen and Save to ProjectStats Table
-                using (var sr = new ProjectStatRepository())
+                using (var sr = new ProjectStatRepository(uow))
                 {
                     bool statCreated = sr.CreateProjectStat((int)_pro.Id);
                 }
 
                 //STEP 4 - Create new Default Project Funding Package for Donations
-                using (var fpRepo = new FundingPackageRepository())
+                using (var fpRepo = new FundingPackageRepository(uow))
                 {
                     FundingPackageModel newFundingPackageModel = new FundingPackageModel();
                     newFundingPackageModel.AttachmentSetId = null;

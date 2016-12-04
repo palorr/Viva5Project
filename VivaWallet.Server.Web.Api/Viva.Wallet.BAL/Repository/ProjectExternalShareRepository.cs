@@ -13,11 +13,14 @@ namespace Viva.Wallet.BAL.Repository
 {
     public class ProjectExternalShareRepository : IDisposable
     {
-        protected UnitOfWork uow;
+        protected IUnitOfWork uow;
 
-        public ProjectExternalShareRepository()
+        public ProjectExternalShareRepository(IUnitOfWork _uow)
         {
-            uow = new UnitOfWork();
+            if (_uow == null)
+                uow = new UnitOfWork();
+            else
+                uow = _uow;
         }
 
         public bool CreateExternalShare(ProjectExternalShareModel source, ClaimsIdentity identity, int projectId)
@@ -42,7 +45,7 @@ namespace Viva.Wallet.BAL.Repository
                 uow.ProjectExternalShareRepository.Insert(_projectExternalShare, true);
 
                 //STEP 2 - Update the project statistic for external share
-                using (var ps = new ProjectStatRepository())
+                using (var ps = new ProjectStatRepository(uow))
                 {
                     bool hasUpdatedProjectStat = ps.IncrementProjectStatSharesNo(projectId);
 
@@ -60,7 +63,7 @@ namespace Viva.Wallet.BAL.Repository
 
         public void Dispose()
         {
-            uow.Dispose();
+           
         }
     }
 }

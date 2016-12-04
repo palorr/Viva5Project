@@ -10,11 +10,14 @@ namespace Viva.Wallet.BAL.Repository
 {
    public class AttachmentRepository : IDisposable
     {
-        protected UnitOfWork uow;
+        protected IUnitOfWork uow;
 
-        public AttachmentRepository()
+        public AttachmentRepository(IUnitOfWork _uow)
         {
-            uow = new UnitOfWork();
+            if (_uow == null)
+                uow = new UnitOfWork();
+            else
+                uow = _uow;
         }
 
         public async Task saveAttachment(string username, long projectId, AttachmentModel newAttachemt)
@@ -39,7 +42,7 @@ namespace Viva.Wallet.BAL.Repository
                 _newAttachment.Name = newAttachemt.Name;
                 _newAttachment.OrderNo = newAttachemt.OrderNo;
                 _newAttachment.CreatedDateTime = DateTime.Now;
-                uow.AttachemntRepository.Insert(_newAttachment, false);
+                uow.AttachmentRepository.Insert(_newAttachment, false);
 
                 await uow.SaveChangesAsync();
             }
@@ -64,7 +67,7 @@ namespace Viva.Wallet.BAL.Repository
                 if (userProject == null)
                     throw new InvalidOperationException();
 
-                var attachmentList = uow.AttachemntRepository.SearchFor(e => e.AttachementSetId == userProject.AttachmentSetId)
+                var attachmentList = uow.AttachmentRepository.SearchFor(e => e.AttachementSetId == userProject.AttachmentSetId)
                     .Select(e => new AttachmentModel()
                     {
                         Id = e.Id,
@@ -96,7 +99,7 @@ namespace Viva.Wallet.BAL.Repository
                     throw new UnauthorizedAccessException("User does not exists");
                 }
 
-                var attachmentToDelete = uow.AttachemntRepository.FindById(attachmentId);
+                var attachmentToDelete = uow.AttachmentRepository.FindById(attachmentId);
 
                 if(attachmentToDelete != null)
                 {
@@ -106,7 +109,7 @@ namespace Viva.Wallet.BAL.Repository
                         .FirstOrDefault();
                     if (userOwner != null &&  user.Id == userOwner.Id)
                     {
-                        await uow.AttachemntRepository.DeleteAsync(attachmentToDelete ,true);
+                        await uow.AttachmentRepository.DeleteAsync(attachmentToDelete ,true);
                     }
                 }
             }
@@ -118,7 +121,7 @@ namespace Viva.Wallet.BAL.Repository
         }
         public void Dispose()
         {
-            uow.Dispose();
+           
         }
     }
     

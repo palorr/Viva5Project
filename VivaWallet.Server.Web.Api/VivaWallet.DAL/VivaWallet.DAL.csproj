@@ -70,7 +70,6 @@
       <DependentUpon>VivaWalletEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="GenericRepository\IRepository.cs" />
-    <Compile Include="UnitOfWork\IUnitOfWork.cs" />
     <Compile Include="Project.cs">
       <DependentUpon>VivaWalletEntities.tt</DependentUpon>
     </Compile>
@@ -93,7 +92,6 @@
     <Compile Include="GenericRepository\Repository.cs" />
     <Compile Include="SoftDelete\SoftDeleteInterceptor.cs" />
     <Compile Include="SoftDelete\SoftDeleteSqlQuerySelector.cs" />
-    <Compile Include="UnitOfWork\UnitOfWork.cs" />
     <Compile Include="User.cs">
       <DependentUpon>VivaWalletEntities.tt</DependentUpon>
     </Compile>

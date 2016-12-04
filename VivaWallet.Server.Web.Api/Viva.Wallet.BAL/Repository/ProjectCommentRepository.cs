@@ -13,11 +13,14 @@ namespace Viva.Wallet.BAL.Repository
 {
     public class ProjectCommentRepository : IDisposable
     {
-        protected UnitOfWork uow;
+        protected IUnitOfWork uow;
 
-        public ProjectCommentRepository()
+        public ProjectCommentRepository(IUnitOfWork _uow)
         {
-            uow = new UnitOfWork();
+            if (_uow == null)
+                uow = new UnitOfWork();
+            else
+                uow = _uow;
         }
 
         private bool IsRequestorProjectCommentCreator(long commentId, long requestorId)
@@ -239,7 +242,7 @@ namespace Viva.Wallet.BAL.Repository
 
         public void Dispose()
         {
-            uow.Dispose();
+          
         }
 
         public enum StatusCodes

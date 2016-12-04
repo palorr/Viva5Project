@@ -29,8 +29,8 @@ namespace VivaWallet.AuthServer.Authorization.Web.Api.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            using (var repo = new UserRepository())
+            Viva.Wallet.BAL.IUnitOfWork uow = new Viva.Wallet.BAL.UnitOfWork();
+            using (var repo = new UserRepository(uow))
             {
                 var user = new Viva.Wallet.BAL.Models.UserModel();
                 user.Username = userModel.UserName;

@@ -13,11 +13,14 @@ namespace Viva.Wallet.BAL.Repository
 {
     public class UserRepository : IDisposable
     {
-        protected UnitOfWork uow;
+        protected IUnitOfWork uow;
 
-        public UserRepository()
+        public UserRepository(IUnitOfWork _uow)
         {
-            uow = new UnitOfWork();
+            if (_uow == null)
+                uow = new UnitOfWork();
+            else
+                uow = _uow;
         }
 
         // OK
@@ -603,7 +606,7 @@ namespace Viva.Wallet.BAL.Repository
 
         public void Dispose()
         {
-            uow.Dispose();
+           
         }
 
         public enum StatusCodes

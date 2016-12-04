@@ -15,6 +15,11 @@ namespace VivaWallet.Server.Web.Api.Controllers
     [RoutePrefix("api/users")]
     public class UsersController : ApiController
     {
+        private IUnitOfWork uow;
+        public UsersController()
+        {
+            uow = new UnitOfWork();
+        }
         /*
          *  
          * USER ROUTES
@@ -27,7 +32,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
         [Route("")]
         public HttpResponseMessage GetAllUsers()
         {
-            using (var s = new UserRepository())
+            using (var s = new UserRepository(uow))
             {
                 var v = s.GetAllUsers();
 
@@ -41,7 +46,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
         [Route("lastTen")]
         public HttpResponseMessage GetLastTenRegisteredUsers()
         {
-            using (var s = new UserRepository())
+            using (var s = new UserRepository(uow))
             {
                 var v = s.GetLastTenRegisteredUsers();
 
@@ -58,7 +63,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             if (userId <= 0)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
 
-            using (var s = new UserRepository())
+            using (var s = new UserRepository(uow))
             {
                 var v = s.GetUser(userId);
 
@@ -79,7 +84,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             if (!ModelState.IsValid)
                 return Request.CreateResponse(HttpStatusCode.BadRequest); ;
 
-            using (var s = new UserRepository())
+            using (var s = new UserRepository(uow))
             {
                 var v = s.GetUserByUsername(user.Username);
 
@@ -102,7 +107,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new UserRepository())
+            using (var s = new UserRepository(uow))
             {
                 var httpStatusCode = HttpStatusCode.OK;
 
@@ -135,7 +140,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new UserRepository())
+            using (var s = new UserRepository(uow))
             {
 
                 var httpStatusCode = HttpStatusCode.NoContent;
@@ -177,7 +182,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
         {
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new UserRepository())
+            using (var s = new UserRepository(uow))
             {
                 var v = s.GetCurrentLoggedInUserCreatedProjects(identity);
 
@@ -194,7 +199,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             if (userId <= 0)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             
-            using (var s = new UserRepository())
+            using (var s = new UserRepository(uow))
             {
                 var v = s.GetUserCreatedProjects(userId);
 
@@ -211,7 +216,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             if (userId <= 0)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
 
-            using (var s = new UserRepository())
+            using (var s = new UserRepository(uow))
             {
                 var v = s.GetUserFundedProjects(userId);
 
@@ -226,7 +231,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
         {
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new UserRepository())
+            using (var s = new UserRepository(uow))
             {
                 var v = s.GetUserFundedCompletedProjects(identity, true);
 
@@ -241,7 +246,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
         {
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new UserRepository())
+            using (var s = new UserRepository(uow))
             {
                 var v = s.GetUserFundedCompletedProjects(identity, false);
 
@@ -255,7 +260,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
         [Route("getAllUsersByName/{searchTerm}")]
         public HttpResponseMessage GetAllUsersByName(string searchTerm)
         {
-            using (var s = new UserRepository())
+            using (var s = new UserRepository(uow))
             {
                 
                 var v = s.GetByName(searchTerm);
@@ -271,7 +276,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
         {
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new UserRepository())
+            using (var s = new UserRepository(uow))
             {
                 var v = s.GetCurrentUserFundedProjectsLatestUpdates(identity);
 
@@ -286,7 +291,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
         {
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new UserRepository())
+            using (var s = new UserRepository(uow))
             {
                 var v = s.GetAdminPanelInfo(identity);
 

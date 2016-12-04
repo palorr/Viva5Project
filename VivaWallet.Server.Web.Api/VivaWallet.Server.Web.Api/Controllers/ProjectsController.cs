@@ -19,7 +19,12 @@ namespace VivaWallet.Server.Web.Api.Controllers
     [RoutePrefix("api/projects")]
     public class ProjectsController : ApiController
     {
+        protected IUnitOfWork uow;
 
+        public ProjectsController()
+        {
+            uow = new UnitOfWork();
+        }
         /*
          *  
          * PROJECT ROUTES
@@ -32,7 +37,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
         [Route("projectCategories")]
         public HttpResponseMessage GetProjectCategories()
         {
-            using (var s = new ProjectCategoryRepository())
+            using (var s = new ProjectCategoryRepository(uow))
             {
                 var v = s.GetAll();
 
@@ -46,7 +51,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
         [Route("getAllProjectsByCategory/{categoryId}")]
         public HttpResponseMessage GetAllProjectsByCategory(int categoryId)
         {
-            using (var s = new ProjectRepository())
+            using (var s = new ProjectRepository(uow))
             {
                 s.CheckForFailedProjects();
 
@@ -62,7 +67,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
         [Route("getAllProjectsByName/{searchTerm}")]
         public HttpResponseMessage GetAllProjectsByName(string searchTerm)
         {
-            using (var s = new ProjectRepository())
+            using (var s = new ProjectRepository(uow))
             {
                 s.CheckForFailedProjects();
 
@@ -78,7 +83,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
         [Route("")]
         public HttpResponseMessage GetAllProjects()
         {
-            using (var s = new ProjectRepository())
+            using (var s = new ProjectRepository(uow))
             {
                 s.CheckForFailedProjects();
 
@@ -94,7 +99,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
         [Route("trending")]
         public HttpResponseMessage GetTrendingProjects()
         {
-            using (var s = new ProjectRepository())
+            using (var s = new ProjectRepository(uow))
             {
                 s.CheckForFailedProjects();
 
@@ -110,7 +115,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
         [Route("lastTenBackedProjects")]
         public HttpResponseMessage GetLastTenBackedProjects()
         {
-            using (var s = new ProjectRepository())
+            using (var s = new ProjectRepository(uow))
             {
                 s.CheckForFailedProjects();
 
@@ -129,7 +134,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             if (projectId <= 0)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             
-            using (var s = new ProjectRepository())
+            using (var s = new ProjectRepository(uow))
             {
                 s.CheckForFailedProjects();
 
@@ -154,7 +159,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new ProjectRepository())
+            using (var s = new ProjectRepository(uow))
             {
                 s.CheckForFailedProjects();
 
@@ -178,7 +183,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             if (projectId <= 0)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             
-            using (var s = new ProjectStatRepository())
+            using (var s = new ProjectStatRepository(uow))
             {
                 var v = s.GetProjectStats(projectId);
 
@@ -201,7 +206,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new ProjectStatRepository())
+            using (var s = new ProjectStatRepository(uow))
             {
                 var v = s.GetProjectStats(projectId, identity);
 
@@ -224,7 +229,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new ProjectRepository())
+            using (var s = new ProjectRepository(uow))
             {
                 long newProjectId = s.Insert(project, identity);
                 
@@ -242,7 +247,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new ProjectRepository())
+            using (var s = new ProjectRepository(uow))
             {
                 var httpStatusCode = HttpStatusCode.OK;
 
@@ -280,7 +285,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var pr = new ProjectRepository())
+            using (var pr = new ProjectRepository(uow))
             {
                 var v = pr.IsCurrentUserAuthorized(projectId, "PROJECT", identity);
                 
@@ -303,7 +308,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             if (projectId <= 0)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
 
-            using (var s = new ProjectUpdateRepository())
+            using (var s = new ProjectUpdateRepository(uow))
             {
                 var v = s.GetAllProjectUpdates(projectId);
 
@@ -321,7 +326,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new ProjectUpdateRepository())
+            using (var s = new ProjectUpdateRepository(uow))
             {
                 var v = s.GetAllProjectUpdates(projectId, identity);
                 
@@ -339,7 +344,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new ProjectUpdateRepository())
+            using (var s = new ProjectUpdateRepository(uow))
             {
                 var v = s.GetProjectUpdateById(projectId, updateId, identity);
 
@@ -358,7 +363,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new ProjectUpdateRepository())
+            using (var s = new ProjectUpdateRepository(uow))
             {
 
                 var httpStatusCode = HttpStatusCode.Created;
@@ -425,7 +430,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new ProjectUpdateRepository())
+            using (var s = new ProjectUpdateRepository(uow))
             {
 
                 var httpStatusCode = HttpStatusCode.NoContent;
@@ -469,7 +474,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             if (projectId <= 0)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
 
-            using (var s = new ProjectCommentRepository())
+            using (var s = new ProjectCommentRepository(uow))
             {
                 var v = s.GetAllProjectComments(projectId);
 
@@ -487,7 +492,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new ProjectCommentRepository())
+            using (var s = new ProjectCommentRepository(uow))
             {
                 var v = s.GetAllProjectComments(projectId, identity);
 
@@ -505,7 +510,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new ProjectCommentRepository())
+            using (var s = new ProjectCommentRepository(uow))
             {
                 var v = s.GetProjectCommentById(projectId, commentId, identity);
 
@@ -520,7 +525,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
         {
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new ProjectCommentRepository())
+            using (var s = new ProjectCommentRepository(uow))
             {
                 var v = s.GetAllCurrentUserCreatedProjectComments(identity);
 
@@ -539,7 +544,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new ProjectCommentRepository())
+            using (var s = new ProjectCommentRepository(uow))
             {
 
                 var httpStatusCode = HttpStatusCode.Created;
@@ -601,7 +606,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new ProjectCommentRepository())
+            using (var s = new ProjectCommentRepository(uow))
             {
 
                 var httpStatusCode = HttpStatusCode.NoContent;
@@ -645,7 +650,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             if (projectId <= 0)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
 
-            using (var s = new FundingPackageRepository())
+            using (var s = new FundingPackageRepository(uow))
             {
                 var v = s.GetAllProjectFundingPackages(projectId);
 
@@ -663,7 +668,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new FundingPackageRepository())
+            using (var s = new FundingPackageRepository(uow))
             {
                 var v = s.GetAllProjectFundingPackages(projectId, identity);
 
@@ -681,7 +686,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new FundingPackageRepository())
+            using (var s = new FundingPackageRepository(uow))
             {
                 var v = s.GetProjectFundingPackageById(projectId, fundingPackageId, identity);
 
@@ -697,7 +702,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             if (projectId <= 0 || fundingPackageId <= 0)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             
-            using (var s = new FundingPackageRepository())
+            using (var s = new FundingPackageRepository(uow))
             {
                 var v = s.GetProjectFundingPackageByIdForPaymentView(projectId, fundingPackageId);
 
@@ -715,7 +720,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new FundingPackageRepository())
+            using (var s = new FundingPackageRepository(uow))
             {
 
                 var httpStatusCode = HttpStatusCode.Created;
@@ -754,7 +759,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new FundingPackageRepository())
+            using (var s = new FundingPackageRepository(uow))
             {
                 var httpStatusCode = HttpStatusCode.OK;
 
@@ -792,7 +797,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new FundingPackageRepository())
+            using (var s = new FundingPackageRepository(uow))
             {
 
                 var httpStatusCode = HttpStatusCode.NoContent;
@@ -837,7 +842,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new ProjectExternalShareRepository())
+            using (var s = new ProjectExternalShareRepository(uow))
             {
 
                 var httpStatusCode = HttpStatusCode.Created;
@@ -876,7 +881,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             if (projectId <= 0)
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
 
-            using (var s = new UserFundingRepository())
+            using (var s = new UserFundingRepository(uow))
             {
                 var v = s.GetProjectFundings(projectId);
 
@@ -894,7 +899,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new UserFundingRepository())
+            using (var s = new UserFundingRepository(uow))
             {
                 var v = s.GetCurrentUserProjectFundings(identity, projectId);
 
@@ -912,7 +917,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
             var identity = User.Identity as ClaimsIdentity;
 
-            using (var s = new UserFundingRepository())
+            using (var s = new UserFundingRepository(uow))
             {
                 
                 long newFundingId = s.Insert(funding, projectId, identity);
@@ -929,7 +934,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             
-            using (var s = new UserFundingRepository())
+            using (var s = new UserFundingRepository(uow))
             {
                 TransactionResult task = await s.ChargeAsync(vivaWalletModel.vivaWalletToken);
 
@@ -965,7 +970,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
 
                     source.FilePath = path;
                 }
-                using (var repo = new AttachmentRepository())
+                using (var repo = new AttachmentRepository(uow))
                 {
                     await repo.saveAttachment(identity.Name, projectId, source);
                 }
@@ -988,7 +993,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             try
             {
                     
-                using (var repo = new AttachmentRepository())
+                using (var repo = new AttachmentRepository(uow))
                 {
                     var res = repo.GetProjectAttachmets( projectId);
 
@@ -1010,7 +1015,7 @@ namespace VivaWallet.Server.Web.Api.Controllers
             {
                 var identity = User.Identity as ClaimsIdentity;
 
-                using (var repo = new AttachmentRepository())
+                using (var repo = new AttachmentRepository(uow))
                 {
                     await repo.DeleteAttachment(identity.Name, attachmentId);
                 }

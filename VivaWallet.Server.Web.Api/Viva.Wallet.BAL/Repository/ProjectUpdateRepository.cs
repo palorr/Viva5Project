@@ -13,11 +13,14 @@ namespace Viva.Wallet.BAL.Repository
 {
     public class ProjectUpdateRepository : IDisposable
     {
-        protected UnitOfWork uow;
+        protected IUnitOfWork uow;
 
-        public ProjectUpdateRepository()
+        public ProjectUpdateRepository(IUnitOfWork _uow)
         {
-            uow = new UnitOfWork();
+            if (_uow == null)
+                uow = new UnitOfWork();
+            else
+                uow = _uow;
         }
         
         // OK
@@ -27,7 +30,7 @@ namespace Viva.Wallet.BAL.Repository
 
             if (identity != null)
             {
-                ProjectRepository _prRepo = new ProjectRepository();
+                ProjectRepository _prRepo = new ProjectRepository(uow);
                 isRequestorProjectCreator = _prRepo.IsProjectCreator((int)projectId, identity);
             }
             
@@ -51,7 +54,7 @@ namespace Viva.Wallet.BAL.Repository
         {
             bool isRequestorProjectCreator = false;
 
-            ProjectRepository _prRepo = new ProjectRepository();
+            ProjectRepository _prRepo = new ProjectRepository(uow);
             isRequestorProjectCreator = _prRepo.IsProjectCreator(projectId, identity);
         
             try
@@ -190,7 +193,7 @@ namespace Viva.Wallet.BAL.Repository
 
         public void Dispose()
         {
-            uow.Dispose();
+           
         }
 
         public enum StatusCodes

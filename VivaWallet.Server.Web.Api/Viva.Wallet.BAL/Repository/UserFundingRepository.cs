@@ -15,15 +15,18 @@ namespace Viva.Wallet.BAL.Repository
 {
     public class UserFundingRepository : IDisposable
     {
-        protected UnitOfWork uow;
+        protected IUnitOfWork uow;
         
         //Viva Team 5 API Credentials
         private const string merchantId = "22413f73-97d5-4040-a57b-44c7979f0731";
         private const string apiKey = "=Npy2s";
 
-        public UserFundingRepository()
+        public UserFundingRepository(IUnitOfWork _uow)
         {
-            uow = new UnitOfWork();
+            if (_uow == null)
+                uow = new UnitOfWork();
+            else
+                uow = _uow;
         }
 
         public IList<UserFundingModel> GetProjectFundings(int projectId)
@@ -83,7 +86,7 @@ namespace Viva.Wallet.BAL.Repository
                 uow.UserFundingRepository.Insert(_userFunding, true);
 
                 //STEP 2 - Update Project Stats Screen Amount + NoOfBackings
-                using (var sr = new ProjectStatRepository())
+                using (var sr = new ProjectStatRepository(uow))
                 {
                     bool statAmountUpdated = sr.IncrementProjectStatMoneyPledged(projectId, source.AmountPaid);
                     bool statNoOfBackersUpdated = sr.IncrementProjectStatBackersNo(projectId);
@@ -118,7 +121,7 @@ namespace Viva.Wallet.BAL.Repository
 
         public void Dispose()
         {
-            uow.Dispose();
+           
         }
 
     }
