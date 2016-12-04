@@ -107,6 +107,8 @@ namespace Viva.Wallet.BAL.Repository
                             ProjectCategories pc
                         ON
                             pro.ProjectCategoryId = pc.Id
+                        WHERE
+                            pro.IsDeleted = 0
                         ORDER BY
 	                        ps.MoneyPledged DESC, ps.BackersNo DESC, ps.SharesNo DESC, ps.CommentsNo DESC;
                     "
@@ -385,11 +387,7 @@ namespace Viva.Wallet.BAL.Repository
                     _project.Title = source.Title;
                     _project.Description = source.Description;
                     _project.UpdateDate = DateTime.Now;
-
-                    // TO BE CONSIDERED IF THEY CAN CHANGE ONCE DEFINED IN CREATION PHASE - KICKSTARTER DOES NOT ALLOW THESE TO CHANGE
-                    //_project.FundingEndDate = source.FundingEndDate;
-                    //_project.FundingGoal = source.FundingGoal;
-
+                    
                     uow.ProjectRepository.Update(_project, true);
                 }
 
@@ -466,6 +464,8 @@ namespace Viva.Wallet.BAL.Repository
                             Users us
                         ON
                             pro.UserId = us.Id
+                        WHERE
+                            pro.IsDeleted = 0
                         ORDER BY
 	                        uf.WhenDateTime DESC
                         

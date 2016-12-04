@@ -124,7 +124,6 @@ namespace Viva.Wallet.BAL.Repository
                     CreatedDateTime = DateTime.Now,
                     UpdateDateTime = DateTime.Now,
                     Name = source.Name,
-                    //Name = "Anonymous User",
                     ShortBio = "",
                     AvatarImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSODALYDYo2dqN0DG_kPNi2X7EAy1K8SpRRZQWkNv9alC62IHggOw"
                 };
@@ -553,6 +552,8 @@ namespace Viva.Wallet.BAL.Repository
 	                            ProjectCategories pc
                             ON 
 	                            pr.ProjectCategoryId = pc.Id
+                            WHERE
+                                pr.IsDeleted = 0
                             GROUP BY 
 	                            pc.Name
                         "
@@ -571,6 +572,8 @@ namespace Viva.Wallet.BAL.Repository
                                 COUNT(pr.Id) NoOfProjects
                             FROM 
 	                            Projects pr
+                            WHERE
+                                pr.IsDeleted = 0
                             GROUP BY
 	                            pr.Status
                         "
@@ -591,6 +594,8 @@ namespace Viva.Wallet.BAL.Repository
 	                            SUM(ps.CommentsNo) NoOfTotalProjectComments
                             FROM 
 	                            ProjectStats ps
+                            WHERE
+                                ps.IsDeleted = 0
                         "
                     ).FirstOrDefault();
             }

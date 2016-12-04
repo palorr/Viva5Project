@@ -16,12 +16,8 @@ namespace Viva.Wallet.BAL.Repository
     public class UserFundingRepository : IDisposable
     {
         protected UnitOfWork uow;
-
-        //Orestis Meikopoulos VIVA
-        //private const string merchantId = "e8da1677-f9ca-4126-a72c-2b574a291d22";
-        //private const string apiKey = "e]CmmG";
-
-        //Viva Team 5 
+        
+        //Viva Team 5 API Credentials
         private const string merchantId = "22413f73-97d5-4040-a57b-44c7979f0731";
         private const string apiKey = "=Npy2s";
 
